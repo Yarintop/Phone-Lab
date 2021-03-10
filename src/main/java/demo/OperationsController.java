@@ -6,12 +6,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class OperationsController {
+public class OperationsController
+{
 	@RequestMapping(
-		path = "/hello", 
-		method = RequestMethod.GET, 
-		produces = MediaType.APPLICATION_JSON_VALUE)
-	public MessageBoundary hello () {
+		path = "/twins/operations/hello",
+		method = RequestMethod.GET,
+		produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public MessageBoundary hello()
+	{
 		return new MessageBoundary("hello world");
 	}
 }
