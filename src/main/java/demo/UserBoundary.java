@@ -1,53 +1,69 @@
 package demo;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class UserBoundary
 {
-    private String firstName;
-    private String lastName;
-    private String userEmail;
-    private long userSpace;
+	private Map<String, String> userId; // This line might change
+	private String role;
+	private String username;
+    private String avatar;
+    
+    public UserBoundary() { /* Default Constructor */ }
 
-    public UserBoundary() { }
-
-    public UserBoundary(String firstName, String lastName, String userEmail, long userSpace)
+    public UserBoundary(String role, String username, String avatar, String email)
     {
-        super();
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userEmail = userEmail;
-        this.userSpace = userSpace;
+        this.userId = new HashMap<>();
+        this.role = role;
+        this.username = username;
+        this.avatar = avatar;
+        
+        // Setting userId's details
+        userId.put("space", "2021b.twins");
+        userId.put("email", email);
+        
+    }
+    
+    // Constructor to create a new user directly from a NewUserDetails object
+    public UserBoundary(NewUserDetails userDetails)
+    {
+    	this(userDetails.getRole(), userDetails.getUsername(), 
+    			userDetails.getAvatar(), userDetails.getEmail());
     }
 
-    public String getFirstName() {
-        return this.firstName;
-    }
+	public Map<String, String> getUserId() {
+		return userId;
+	}
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+	public void setUserId(Map<String, String> userId) {
+		this.userId = userId;
+	}
 
-    public String getLastName() {
-        return this.lastName;
-    }
+	public String getRole() {
+		return role;
+	}
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+	public void setRole(String role) {
+		this.role = role;
+	}
 
-    public String getUserEmail() {
-        return this.userEmail;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public long getUserSpace() {
-        return this.userSpace;
-    }
+	public String getAvatar() {
+		return avatar;
+	}
 
-    public void setUserSpace(long userSpace) {
-        this.userSpace = userSpace;
-    }
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
+   
 
 }

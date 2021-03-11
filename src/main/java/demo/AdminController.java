@@ -17,15 +17,15 @@ public class AdminController
 		method = RequestMethod.GET,
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
-	public List<UserBoundary> exportAllUsers(@PathVariable("userSpace") long id, @PathVariable("userEmail") String userEmail)
+	public List<UserBoundary> exportAllUsers(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail)
 	{
 		List<UserBoundary> allUsers = new ArrayList<>();
 		
 		allUsers.add(
-			new UserBoundary("Dima is", "The Bestest Guy", "dima@bestguy.com", 0)
+			new UserBoundary("The Bestest Guy", "Dima", "D", "dima@bestguy.com") // ++
 		);
 		allUsers.add(
-			new UserBoundary("Yarin", "Top Londong Mizrahi Tfahot", "yarin@whatismyname.com", 0)
+			new UserBoundary("Bank", "Yarin Top Londong Mizrahi Tfahot", "Y", "yarin@whatismyname.com") // ++
 		);
 
 		return allUsers;
@@ -36,7 +36,7 @@ public class AdminController
 		method = RequestMethod.GET,
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
-	public List<OperationBoundary> exportAllOperations(@PathVariable("userSpace") long id, @PathVariable("userEmail") String userEmail)
+	public List<OperationBoundary> exportAllOperations(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail)
 	{
 		List<OperationBoundary> allOperations = new ArrayList<OperationBoundary>();
 		
