@@ -34,4 +34,14 @@ public class UserController {
 	{
 		// STUB implementation - this methods does nothing (For now)	
 	}
+
+	@RequestMapping(
+			path = "/twins/users",
+			method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE
+	)
+	public void createNewUsers(@PathVariable("userSpace") String userSpace, @PathVariable("userEmail") String userEmail, @RequestBody UserBoundary user)
+	{
+		// STUB implementation - this methods does nothing (For now)
+	}
 }
