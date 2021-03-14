@@ -22,7 +22,7 @@ public class UserController {
 	}
 	
 	
-	/* Rafi will implement the POST method for this controller */
+
 	
 	
 	@RequestMapping(
@@ -36,12 +36,13 @@ public class UserController {
 	}
 
 	@RequestMapping(
-			path = "/twins/users",//yese
+			path = "/twins/users",
 			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE
+			consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE
 	)
-	public void createNewUsers(@PathVariable("userSpace") String userSpace, @PathVariable("userEmail") String userEmail, @RequestBody UserBoundary user)
+	public UserBoundary createNewUsers(@RequestBody NewUserDetails newUserDetails)
 	{
-		// STUB implementation - this methods does nothing (For now)
+		return new UserBoundary(newUserDetails);
 	}
 }
