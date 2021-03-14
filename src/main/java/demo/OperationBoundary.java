@@ -8,9 +8,9 @@ public class OperationBoundary {
 
     private Map<String, String> operationId;
     private String operationType;
-    private DigitalItemBoundary item;
+    private DigitalItemBoundary item; // FIXME: return only itemId
     private Date createdTimestamp;
-    private UserBoundary invokedBy;
+    private UserBoundary invokedBy; // FIXME: return only userId
     private Map<String, Object> operationAttributes;
 
 
