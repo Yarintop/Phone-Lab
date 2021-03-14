@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 public class OperationsController {
     @RequestMapping(
@@ -27,6 +30,15 @@ public class OperationsController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public OperationBoundary aSynchronousOperation(@RequestBody OperationBoundary operationBoundary) {
+////        FOR REFERENCE FROM DIGITAL ITEM CONTROLLER , TODA BAUOMM
+//        Map<String,String> userId = new HashMap<>();
+//        Map<String,Map<String,String>> createdBy = new HashMap<>();
+//        userId.put("space", userSpace);
+//        userId.put("email", userEmail);
+//        createdBy.put("userId", userId);
+
+
+
         return new OperationBoundary(null, "Operation Type", new DigitalItemBoundary(), new UserBoundary());
     }
 }
