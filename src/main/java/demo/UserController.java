@@ -36,7 +36,7 @@ public class UserController {
 	}
 
 	@RequestMapping(
-			path = "/twins/users",
+			path = "/twins/users",//yese
 			method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE
 	)
