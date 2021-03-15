@@ -1,13 +1,23 @@
 package demo;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import demo.jsonViews.Views;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class UserBoundary
 {
+	@JsonView(Views.Public.class)
 	private Map<String, String> userId; // This line might change
+
+	@JsonView(Views.User.class)
 	private String role;
+
+	@JsonView(Views.User.class)
 	private String username;
+
+	@JsonView(Views.User.class)
     private String avatar;
     
     public UserBoundary() { /* Default Constructor */ }

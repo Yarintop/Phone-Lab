@@ -1,16 +1,30 @@
 package demo;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import demo.jsonViews.Views;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class OperationBoundary {
 
+    @JsonView(Views.Public.class)
     private Map<String, String> operationId;
+
+    @JsonView(Views.Operation.class)
     private String operationType;
-    private DigitalItemBoundary item; // FIXME: return only itemId
+
+    @JsonView(Views.Operation.class)
+    private DigitalItemBoundary item;
+
+    @JsonView(Views.Operation.class)
     private Date createdTimestamp;
-    private UserBoundary invokedBy; // FIXME: return only userId
+
+    @JsonView(Views.Operation.class)
+    private UserBoundary invokedBy;
+
+    @JsonView(Views.Operation.class)
     private Map<String, Object> operationAttributes;
 
 

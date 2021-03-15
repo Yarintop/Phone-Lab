@@ -1,17 +1,36 @@
 package demo;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import demo.jsonViews.Views;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DigitalItemBoundary {
+
+	@JsonView(Views.Public.class)
 	private Map<String, String> itemId; // This line might change
+
+	@JsonView(Views.Item.class)
 	private String type;
+
+	@JsonView(Views.Item.class)
 	private String name;
+
+	@JsonView(Views.Item.class)
 	private Boolean active;
+
+	@JsonView(Views.Item.class)
 	private Date createdTimestamp;
+
+	@JsonView(Views.Item.class)
 	private Map<String, Map<String, String>> createdBy; // This line might change
+
+	@JsonView(Views.Item.class)
 	private Map<String, Double> location;
+
+	@JsonView(Views.Item.class)
 	private Map<String, Object> itemAttributes;
 
 	public DigitalItemBoundary() { /* Default Constructor */
