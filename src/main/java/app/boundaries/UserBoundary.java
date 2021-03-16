@@ -1,24 +1,24 @@
-package demo;
+package app.boundaries;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import demo.jsonViews.Views;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import app.jsonViews.Views;
 
 public class UserBoundary
 {
 	@JsonView(Views.Public.class)
-	private Map<String, String> userId; // This line might change
+	private Map<String, String> userId = new HashMap<>(); // This line might change
 
 	@JsonView(Views.User.class)
-	private String role;
+	private String role = "undefined";
 
 	@JsonView(Views.User.class)
-	private String username;
+	private String username = "undefined";
 
 	@JsonView(Views.User.class)
-    private String avatar;
+    private String avatar = "undefined";
     
     public UserBoundary() { /* Default Constructor */ }
 
@@ -73,7 +73,4 @@ public class UserBoundary
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
 	}
-
-   
-
 }

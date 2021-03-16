@@ -1,4 +1,4 @@
-package demo.jsonViews;
+package app.jsonViews;
 
 public class Views {
     public static class Public{}

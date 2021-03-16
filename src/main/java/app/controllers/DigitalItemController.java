@@ -1,23 +1,24 @@
-package demo;
+package app.controllers;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+// import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import app.boundaries.DigitalItemBoundary;
+
 @RestController
 public class DigitalItemController {
 	@RequestMapping(
-	path = "/twins/items/{userSpace}/{userEmail}",
-	method = RequestMethod.POST,
-	consumes = MediaType.APPLICATION_JSON_VALUE
+		path = "/twins/items/{userSpace}/{userEmail}",
+		method = RequestMethod.POST,
+		consumes = MediaType.APPLICATION_JSON_VALUE
 	)
 	public DigitalItemBoundary updateUserDetails(@PathVariable("userSpace") String userSpace, @PathVariable("userEmail") String userEmail)
 	{
@@ -34,9 +35,9 @@ public class DigitalItemController {
 	}
 	
 	@RequestMapping(
-	path = "/twins/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}",
-	method = RequestMethod.PUT,
-	consumes = MediaType.APPLICATION_JSON_VALUE
+		path = "/twins/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}",
+		method = RequestMethod.PUT,
+		consumes = MediaType.APPLICATION_JSON_VALUE
 	)
 	public void updateItem(@PathVariable("userSpace") String userSpace, @PathVariable("userEmail") String userEmail, @PathVariable("itemSpace") String itemSpace, @PathVariable("itemId") Map<String,String> itemId)
 	{
@@ -50,8 +51,8 @@ public class DigitalItemController {
 	)
 	public DigitalItemBoundary getSpecificItem(@PathVariable("userSpace") String userSpace, @PathVariable("userEmail") String userEmail, @PathVariable("itemSpace") String itemSpace, @PathVariable("itemId") Map<String,String> itemId)
 	{
-		Map<String,String> userId = new HashMap<>();
-		Map<String,Map<String,String>> createdBy = new HashMap<>();
+		Map<String, String> userId = new HashMap<>();
+		Map<String, Map<String, String>> createdBy = new HashMap<>();
 		userId.put("space", userSpace);
 		userId.put("email", userEmail);
 		createdBy.put("userId", userId);
@@ -62,23 +63,29 @@ public class DigitalItemController {
 	}
 	
 	@RequestMapping(
-			path = "/twins/items/{userSpace}/{userEmail}",
-			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE
+		path = "/twins/items/{userSpace}/{userEmail}",
+		method = RequestMethod.GET,
+		produces = MediaType.APPLICATION_JSON_VALUE
 	)
 	public DigitalItemBoundary[] getAllItems(@PathVariable("userSpace") String userSpace, @PathVariable("userEmail") String userEmail)
 	{
 		Map<String,String> userId = new HashMap<>();
-		Map<String,Map<String,String>> createdBy = new HashMap<>();
+		Map<String, Map<String, String>> createdBy = new HashMap<>();
 		userId.put("space", userSpace);
 		userId.put("email", userEmail);
 		createdBy.put("userId", userId);
 		
-		return Stream.of(new DigitalItemBoundary(),new DigitalItemBoundary(),new DigitalItemBoundary())
-				.map(input -> {
-					input.setCreatedBy(createdBy);
-					return input;
-				}).collect(Collectors.toList())
-				.toArray(new DigitalItemBoundary[0]);
-		}
+		return Stream
+			.of(
+				new DigitalItemBoundary(),
+				new DigitalItemBoundary(),
+				new DigitalItemBoundary()
+			)
+			.map(input -> {
+				input.setCreatedBy(createdBy);
+				return input;
+			})
+			.collect(Collectors.toList())
+			.toArray(new DigitalItemBoundary[0]);
+	}
 }

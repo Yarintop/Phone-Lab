@@ -1,44 +1,37 @@
-package demo;
+package app.boundaries;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import demo.jsonViews.Views;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import app.jsonViews.Views;
+
 public class OperationBoundary {
 
     @JsonView(Views.Public.class)
-    private Map<String, String> operationId;
+    private Map<String, String> operationId = new HashMap<>();
 
     @JsonView(Views.Operation.class)
-    private String operationType;
+    private String operationType = "undefined";
 
     @JsonView(Views.Operation.class)
-    private DigitalItemBoundary item;
+    private DigitalItemBoundary item = new DigitalItemBoundary();
 
     @JsonView(Views.Operation.class)
-    private Date createdTimestamp;
+    private Date createdTimestamp = new Date();
 
     @JsonView(Views.Operation.class)
-    private UserBoundary invokedBy;
+    private UserBoundary invokedBy = new UserBoundary();
 
     @JsonView(Views.Operation.class)
-    private Map<String, Object> operationAttributes;
+    private Map<String, Object> operationAttributes = new HashMap<>();
 
 
     /**
-     * This is the default constructor, all the fields will be get the default values
+     * This is the default constructor, all the fields will be the default values
      */
-    public OperationBoundary() {
-        this.operationId = new HashMap<>();
-        this.operationType = "undefined";
-        this.item = new DigitalItemBoundary();
-        this.createdTimestamp = new Date();
-        this.invokedBy = new UserBoundary();
-        this.operationAttributes = new HashMap<>();
-    }
+    public OperationBoundary() { /* Default Constructor */ }
 
     /**
      * This is constructor, will create an operation with the given parameters

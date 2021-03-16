@@ -1,7 +1,9 @@
-package demo;
+package app.boundaries;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 // Java Bean used as Boundary - contains a default constructor + get/set
@@ -20,19 +22,14 @@ import java.util.Map;
 //	"versionHistory":["v1.0", "v1.1", "v1.2", "v2.0"]
 //}
 public class MessageBoundary {
-	private String message;
-	private Date messageTimestamp;
-	private Long counter;
-	private Boolean important;
-	private Map<String, Object> customAttributes;
-	private String[] versionHistory;
+	private String message = "no message";
+	private Date messageTimestamp = new Date();
+	private long counter = -1;
+	private Boolean important = false;
+	private Map<String, Object> customAttributes = new HashMap<>();
+	private List<String> versionHistory = new ArrayList<>();
 			
-	public MessageBoundary() {
-		this.messageTimestamp = new Date();
-		this.important = false;
-		this.customAttributes = new HashMap<>();
-		this.versionHistory = new String[0];
-	}
+	public MessageBoundary() { /* Default Constructor */}
 
 	public MessageBoundary(String message) {
 		this();
@@ -55,11 +52,11 @@ public class MessageBoundary {
 		this.messageTimestamp = messageTimestamp;
 	}
 	
-	public Long getCounter() {
+	public long getCounter() {
 		return counter;
 	}
 	
-	public void setCounter(Long counter) {
+	public void setCounter(long counter) {
 		this.counter = counter;
 	}
 
@@ -79,11 +76,11 @@ public class MessageBoundary {
 		this.customAttributes = customAttributes;
 	}
 	
-	public String[] getVersionHistory() {
+	public List<String> getVersionHistory() {
 		return versionHistory;
 	}
 	
-	public void setVersionHistory(String[] versionHistory) {
+	public void setVersionHistory(List<String> versionHistory) {
 		this.versionHistory = versionHistory;
 	}
 }

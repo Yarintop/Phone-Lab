@@ -1,4 +1,4 @@
-package demo;
+package app.controllers;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import app.boundaries.NewUserDetails;
+import app.boundaries.UserBoundary;
 
 @RestController
 public class UserController {
@@ -16,13 +19,13 @@ public class UserController {
 	)
 	public UserBoundary getUserDetails(@PathVariable("userSpace") String userSpace, @PathVariable("userEmail") String userEmail)
 	{
-		return new UserBoundary("The Killer", "Rafi", "R", userEmail); 
-		
-		
+		return new UserBoundary(
+			"The Killer",
+			"Rafi",
+			"R",
+			userEmail
+		);
 	}
-	
-	
-
 	
 	
 	@RequestMapping(
@@ -36,13 +39,15 @@ public class UserController {
 	}
 
 	@RequestMapping(
-			path = "/twins/users",
-			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE
+		path = "/twins/users",
+		method = RequestMethod.POST,
+		consumes = MediaType.APPLICATION_JSON_VALUE,
+		produces = MediaType.APPLICATION_JSON_VALUE
 	)
 	public UserBoundary createNewUsers(@RequestBody NewUserDetails newUserDetails)
 	{
-		return new UserBoundary(newUserDetails);
+		return new UserBoundary(
+			newUserDetails
+		);
 	}
 }
