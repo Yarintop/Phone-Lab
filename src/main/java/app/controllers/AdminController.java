@@ -16,6 +16,12 @@ import app.jsonViews.Views;
 @RestController
 public class AdminController
 {
+	/**
+	 * Returns all users in the requested space
+	 * @param id		- Requested user space
+	 * @param userEmail - Invoker's email
+	 * @return List of {@link UserBoundary}
+	 */
 	@RequestMapping(
 		path = "/twins/admin/users/{userSpace}/{userEmail}",
 		method = RequestMethod.GET,
@@ -46,6 +52,12 @@ public class AdminController
 		return allUsers;
 	}
 
+	/**
+	 * Returns all operations in the requested space
+	 * @param id		- Requested user space
+	 * @param userEmail - Invoker's email
+	 * @return List of {@link OperationBoundary}
+	 */
 	@RequestMapping(
 		path = "/twins/admin/operations/{userSpace}/{userEmail}",
 		method = RequestMethod.GET,
@@ -66,6 +78,11 @@ public class AdminController
 		return allOperations;
 	}
 
+	/**
+	 * Deletes all users in the requested space
+	 * @param id		- Requested user space
+	 * @param userEmail - Invoker's email
+	 */
 	@RequestMapping(
 		path = "/twins/admin/users/{userSpace}/{userEmail}",
 		method = RequestMethod.DELETE
@@ -75,6 +92,11 @@ public class AdminController
 		//TODO
 	}
 
+	/**
+	 * Deletes all items in the requested space
+	 * @param id		- Requested user space
+	 * @param userEmail - Invoker's email
+	 */
 	@RequestMapping(
 		path = "/twins/admin/items/{userSpace}/{userEmail}",
 		method = RequestMethod.DELETE
@@ -84,6 +106,11 @@ public class AdminController
 		//TODO
 	}
 
+	/**
+	 * Deletes all operations in the requested space
+	 * @param id		- Requested user space
+	 * @param userEmail - Invoker's email
+	 */
 	@RequestMapping(
 		path = "/twins/admin/operations/{userSpace}/{userEmail}",
 		method = RequestMethod.DELETE
