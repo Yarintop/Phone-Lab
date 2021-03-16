@@ -28,6 +28,9 @@ public class OperationBoundary {
     private Map<String, Object> operationAttributes;
 
 
+    /**
+     * This is the default constructor, all the fields will be get the default values
+     */
     public OperationBoundary() {
         this.operationId = new HashMap<>();
         this.operationType = "undefined";
@@ -37,6 +40,14 @@ public class OperationBoundary {
         this.operationAttributes = new HashMap<>();
     }
 
+    /**
+     * This is constructor, will create an operation with the given parameters
+     *
+     * @param id            - an ID for the operation, it will part of the {@link HashMap} of the Boundary Item
+     * @param operationType - Operation type
+     * @param item          - The item that the operation require {@link DigitalItemBoundary}
+     * @param invokedBy     - The user whom invoked the operation {@link UserBoundary}
+     */
     public OperationBoundary(String id, String operationType, DigitalItemBoundary item, UserBoundary invokedBy) {
         this();
         this.operationId.put("space", "2021b.twins"); //TODO: pull it from a resource, make it less hard-coded.

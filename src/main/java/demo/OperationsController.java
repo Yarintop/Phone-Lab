@@ -14,7 +14,7 @@ import java.util.Map;
 @RestController
 public class OperationsController {
 
-    @JsonView(Views.Operation.class)
+
     @RequestMapping(
             path = "/twins/operations",
             method = RequestMethod.POST,
@@ -22,11 +22,10 @@ public class OperationsController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public Object InvokeOperationOnItem(@RequestBody OperationBoundary operationBoundary) {
-//        return "Yese of json object";
-        return  operationBoundary;
+        return operationBoundary;
     }
 
-
+    @JsonView(Views.Operation.class)
     @RequestMapping(
             path = "/twins/operations/async",
             method = RequestMethod.POST,
@@ -34,15 +33,7 @@ public class OperationsController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public OperationBoundary aSynchronousOperation(@RequestBody OperationBoundary operationBoundary) {
-////        FOR REFERENCE FROM DIGITAL ITEM CONTROLLER , TODA BAUOMM
-//        Map<String,String> userId = new HashMap<>();
-//        Map<String,Map<String,String>> createdBy = new HashMap<>();
-//        userId.put("space", userSpace);
-//        userId.put("email", userEmail);
-//        createdBy.put("userId", userId);
 
-
-
-        return new OperationBoundary(null, "Operation Type", new DigitalItemBoundary(), new UserBoundary());
+        return new OperationBoundary("123Temp123", "Operation Type", new DigitalItemBoundary(), new UserBoundary());
     }
 }
