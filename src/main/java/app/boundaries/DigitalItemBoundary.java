@@ -25,7 +25,7 @@ public class DigitalItemBoundary {
 	private Date createdTimestamp = new Date();
 
 	@JsonView(Views.Item.class)
-	private Map<String, Map<String, String>> createdBy = new HashMap<>(); // This line might change
+	private UserBoundary createdBy = new UserBoundary(); // This line might change
 
 	@JsonView(Views.Item.class)
 	private Map<String, Double> location = new HashMap<>();
@@ -36,7 +36,7 @@ public class DigitalItemBoundary {
 	public DigitalItemBoundary() { /* Default Constructor */ }
 
 	public DigitalItemBoundary(Map<String, String> itemId, String type, String name, Boolean active,
-			Date createdTimestamp, Map<String, Map<String, String>> createdBy, Map<String, Double> location,
+			Date createdTimestamp, UserBoundary createdBy, Map<String, Double> location,
 			Map<String, Object> itemAttributes) {
 		this.itemId = itemId;
 		this.type = type;
@@ -46,6 +46,14 @@ public class DigitalItemBoundary {
 		this.createdBy = createdBy;
 		this.location = location;
 		this.itemAttributes = itemAttributes;
+	}
+
+	public UserBoundary getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(UserBoundary createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	public Map<String, String> getItemId() {
@@ -86,14 +94,6 @@ public class DigitalItemBoundary {
 
 	public void setCreatedTimestamp(Date createdTimestamp) {
 		this.createdTimestamp = createdTimestamp;
-	}
-
-	public Map<String, Map<String, String>> getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(Map<String, Map<String, String>> createdBy) {
-		this.createdBy = createdBy;
 	}
 
 	public Map<String, Double> getLocation() {
