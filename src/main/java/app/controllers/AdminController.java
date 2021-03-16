@@ -2,6 +2,8 @@ package app.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import app.dummyData.DummyData;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,14 +68,10 @@ public class AdminController
 	@JsonView(Views.Operation.class)
 	public List<OperationBoundary> exportAllOperations(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail)
 	{
-		List<OperationBoundary> allOperations = new ArrayList<OperationBoundary>();
+		List<OperationBoundary> allOperations = new ArrayList<>();
 		
-		allOperations.add(
-			new OperationBoundary()
-		);
-		allOperations.add(
-			new OperationBoundary()
-		);
+		allOperations.add(DummyData.getRandomOperation());
+		allOperations.add(DummyData.getRandomOperation());
 
 		return allOperations;
 	}

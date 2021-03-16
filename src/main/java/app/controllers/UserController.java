@@ -29,7 +29,7 @@ public class UserController {
 	
 	
 	@RequestMapping(
-	path = "/twins/users/login/{userSpace}/{userEmail}",
+	path = "/twins/users/{userSpace}/{userEmail}",
 	method = RequestMethod.PUT,
 	consumes = MediaType.APPLICATION_JSON_VALUE
 	)
