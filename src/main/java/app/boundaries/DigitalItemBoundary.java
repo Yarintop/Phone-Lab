@@ -35,9 +35,9 @@ public class DigitalItemBoundary {
 
 	public DigitalItemBoundary() { /* Default Constructor */ }
 
-	public DigitalItemBoundary(Map<String, String> itemId, String type, String name, Boolean active,
-			Date createdTimestamp, UserBoundary createdBy, Map<String, Double> location,
-			Map<String, Object> itemAttributes) {
+	public DigitalItemBoundary(Map<String, String> itemId, String type, String name, Boolean active, Date createdTimestamp,
+			UserBoundary createdBy, Map<String, Double> location, Map<String, Object> itemAttributes)
+	{
 		this.itemId = itemId;
 		this.type = type;
 		this.name = name;

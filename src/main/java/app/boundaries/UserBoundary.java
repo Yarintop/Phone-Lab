@@ -32,9 +32,17 @@ public class UserBoundary
         // Setting userId's details
         userId.put("space", "2021b.twins");
         userId.put("email", email);
-        
     }
     
+	public UserBoundary(String email, String space)
+    {
+		this.userId = new HashMap<>();
+        
+        // Setting userId's details
+        userId.put("space", space);
+        userId.put("email", email);
+    }
+
     // Constructor to create a new user directly from a NewUserDetails object
     public UserBoundary(NewUserDetails userDetails)
     {
@@ -44,6 +52,14 @@ public class UserBoundary
 
 	public Map<String, String> getUserId() {
 		return userId;
+	}
+
+	public void setSpace(String userSpace) {
+		this.userId.put("space", userSpace);
+	}
+	
+	public void setEmail(String userEmail) {
+		this.userId.put("email", userEmail);
 	}
 
 	public void setUserId(Map<String, String> userId) {

@@ -34,22 +34,8 @@ public class AdminController
 	{
 		List<UserBoundary> allUsers = new ArrayList<>();
 		
-		allUsers.add(
-			new UserBoundary(
-				"Bestest Guy",
-				"Dima",
-				"D",
-				"dima@bestguy.com"
-			)
-		);
-		allUsers.add(
-			new UserBoundary(
-				"Bank",
-				"Yarin Top Londong Mizrahi Tfahot",
-				"Y",
-				"yarin@whatismyname.com"
-			)
-		);
+		allUsers.add(DummyData.getRandomUser());
+		allUsers.add(DummyData.getRandomUser());
 
 		return allUsers;
 	}
@@ -87,7 +73,7 @@ public class AdminController
 	)
 	public void deleteAllUsers(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail)
 	{
-		//TODO
+		// STUB implementation - this methods does nothing (For now)
 	}
 
 	/**
@@ -101,7 +87,7 @@ public class AdminController
 	)
 	public void deleteAllItems(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail)
 	{
-		//TODO
+		// STUB implementation - this methods does nothing (For now)
 	}
 
 	/**
@@ -115,6 +101,6 @@ public class AdminController
 	)
 	public void deleteAllOperations(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail)
 	{
-		//TODO
+		// STUB implementation - this methods does nothing (For now)
 	}	
 }
