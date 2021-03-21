@@ -2,3 +2,5 @@
 !src
 !src/**
 !.gitignore
+!pom.xml
+!bitbucket-pipelines.yml
