@@ -9,8 +9,8 @@ import app.jsonViews.Views;
 public class UserBoundary
 {
 	@JsonView(Views.Public.class)
-	private Map<String, String> userId = new HashMap<>(); // This line might change
-
+	private Map<String, String> userId = new HashMap<>(); 
+	
 	@JsonView(Views.User.class)
 	private String role = "undefined";
 

@@ -1,4 +1,4 @@
 package app.twins.logic;
 
-public class ItemsService {
+public interface ItemsService {
 }

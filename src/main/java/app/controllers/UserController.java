@@ -1,5 +1,6 @@
 package app.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,9 +10,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import app.boundaries.NewUserDetails;
 import app.boundaries.UserBoundary;
+import app.twins.logic.UsersService;
 
 @RestController
 public class UserController {
+	
+	
+	// New Part
+	
+	private UsersService userService;
+	
+	@Autowired
+	public UserController(UsersService userService) {
+		this.userService = userService;
+	}
+	
+	// New Part
+
 	@RequestMapping(
 		path = "/twins/users/login/{userSpace}/{userEmail}",
 		method = RequestMethod.GET,

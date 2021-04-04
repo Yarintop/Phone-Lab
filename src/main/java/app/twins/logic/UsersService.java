@@ -1,4 +1,4 @@
 package app.twins.logic;
 
-public class UsersService {
+public interface UsersService {
 }
