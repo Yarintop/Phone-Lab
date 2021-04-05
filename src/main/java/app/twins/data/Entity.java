@@ -1,4 +1,5 @@
 package app.twins.data;
 
-public enum UserRole {
+public interface Entity {
+
 }

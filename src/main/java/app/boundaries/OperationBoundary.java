@@ -8,7 +8,7 @@ import java.util.Map;
 
 import app.jsonViews.Views;
 
-public class OperationBoundary {
+public class OperationBoundary implements Boundary {
 
     @JsonView(Views.Public.class)
     private Map<String, String> operationId = new HashMap<>();

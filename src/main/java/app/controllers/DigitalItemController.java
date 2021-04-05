@@ -1,9 +1,10 @@
 package app.controllers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -100,47 +101,18 @@ public class DigitalItemController {
 		method = RequestMethod.GET,
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
-	public List<DigitalItemBoundary> getAllItems(
+	public DigitalItemBoundary[] getAllItems(
 	// public DigitalItemBoundary[] getAllItems(
 			@PathVariable("userSpace") String userSpace,
 			@PathVariable("userEmail") String userEmail)
 	{
-		ArrayList<DigitalItemBoundary> res = new ArrayList<>();
-
-		res.add(DummyData.getRandomDigitalItem(userSpace, userEmail));
-		res.add(DummyData.getRandomDigitalItem(userSpace, userEmail));
-
-		return res;
-
-		// UserBoundary userId = new UserBoundary("","","",userEmail);
-		// Map<String,Double> location = new HashMap<>();
-		// Map<String,Object> itemAttributes = new HashMap<>();
-		// AtomicLong counter = new AtomicLong(1L);
-		
-		// location.put("lat", 32.115139);
-		// location.put("lng", 34.817804);
-		
-		// itemAttributes.put("test1","hello");
-		// itemAttributes.put("test2",58);
-		// itemAttributes.put("test3",false);
-		
-		// return Stream
-		// 	.of(
-		// 		new DigitalItemBoundary(),
-		// 		new DigitalItemBoundary(),
-		// 		new DigitalItemBoundary()
-		// 	)
-		// 	.map(input -> {
-		// 		Map<String, String> complexItemId = new HashMap<>();
-		// 		complexItemId.put("space", userSpace);
-		// 		complexItemId.put("id", "" + counter.getAndIncrement());
-		// 		input.setCreatedBy(userId);
-		// 		input.setItemId(complexItemId);
-		// 		input.setLocation(location);
-		// 		input.setItemAttributes(itemAttributes);
-		// 		return input;
-		// 	})
-		// 	.collect(Collectors.toList())
-		// 	.toArray(new DigitalItemBoundary[0]);
+		return Stream
+			.of(
+				DummyData.getRandomDigitalItem(userSpace, userEmail),
+				DummyData.getRandomDigitalItem(userSpace, userEmail),
+				DummyData.getRandomDigitalItem(userSpace, userEmail)
+			)
+			.collect(Collectors.toList())
+			.toArray(new DigitalItemBoundary[0]);
 	}
 }

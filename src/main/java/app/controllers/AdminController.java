@@ -1,7 +1,7 @@
 package app.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import app.dummyData.DummyData;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -22,7 +22,7 @@ public class AdminController
 	 * Returns all users in the requested space
 	 * @param id		- Requested user space
 	 * @param userEmail - Invoker's email
-	 * @return List of {@link UserBoundary}
+	 * @return Array of {@link UserBoundary}
 	 */
 	@RequestMapping(
 		path = "/twins/admin/users/{userSpace}/{userEmail}",
@@ -30,21 +30,23 @@ public class AdminController
 		produces = MediaType.APPLICATION_JSON_VALUE
 		)
 	@JsonView(Views.User.class)
-	public List<UserBoundary> exportAllUsers(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail)
+	public UserBoundary[] exportAllUsers(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail)
 	{
-		List<UserBoundary> allUsers = new ArrayList<>();
-		
-		allUsers.add(DummyData.getRandomUser());
-		allUsers.add(DummyData.getRandomUser());
-
-		return allUsers;
+		return Stream
+			.of(
+				DummyData.getRandomUser(),
+				DummyData.getRandomUser(),
+				DummyData.getRandomUser()
+			)
+			.collect(Collectors.toList())
+			.toArray(new UserBoundary[0]);
 	}
 
 	/**
 	 * Returns all operations in the requested space
 	 * @param id		- Requested user space
 	 * @param userEmail - Invoker's email
-	 * @return List of {@link OperationBoundary}
+	 * @return Array of {@link OperationBoundary}
 	 */
 	@RequestMapping(
 		path = "/twins/admin/operations/{userSpace}/{userEmail}",
@@ -52,14 +54,16 @@ public class AdminController
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
 	@JsonView(Views.Operation.class)
-	public List<OperationBoundary> exportAllOperations(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail)
+	public OperationBoundary[] exportAllOperations(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail)
 	{
-		List<OperationBoundary> allOperations = new ArrayList<>();
-		
-		allOperations.add(DummyData.getRandomOperation());
-		allOperations.add(DummyData.getRandomOperation());
-
-		return allOperations;
+		return Stream
+			.of(
+				DummyData.getRandomOperation(),
+				DummyData.getRandomOperation(),
+				DummyData.getRandomOperation()
+			)
+			.collect(Collectors.toList())
+			.toArray(new OperationBoundary[0]);
 	}
 
 	/**
