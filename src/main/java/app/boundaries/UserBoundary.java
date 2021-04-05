@@ -6,7 +6,7 @@ import java.util.Map;
 
 import app.jsonViews.Views;
 
-public class UserBoundary
+public class UserBoundary implements Boundary
 {
 	@JsonView(Views.Public.class)
 	private Map<String, String> userId = new HashMap<>(); 

@@ -1,7 +1,7 @@
 package app.twins.data;
 
 
-public class UserEntity {
+public class UserEntity implements Entity {
 	
 	private String space = "undefined";
 	

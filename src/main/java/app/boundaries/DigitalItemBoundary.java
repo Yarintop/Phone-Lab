@@ -7,7 +7,7 @@ import java.util.Map;
 
 import app.jsonViews.Views;
 
-public class DigitalItemBoundary {
+public class DigitalItemBoundary implements Boundary{
 
 	@JsonView(Views.Public.class)
 	private Map<String, String> itemId = new HashMap<>(); // This line might change

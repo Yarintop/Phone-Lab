@@ -3,10 +3,10 @@ package app.converters;
 import app.boundaries.Boundary;
 import app.twins.data.Entity;
 
-public interface EntityConverter {
+public interface EntityConverter <E extends Entity, B extends Boundary> {
 	
-	 Entity toEntity(Boundary boundaryObject);
+	 E toEntity(B boundaryObject);
 	 
-	 Boundary toBoundary(Entity entityObject);
+	 B toBoundary(E entityObject);
 	
 }

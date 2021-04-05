@@ -1,4 +1,4 @@
 package app.twins.data;
 
-public class OperationEntity {
+public class OperationEntity implements Entity{
 }
