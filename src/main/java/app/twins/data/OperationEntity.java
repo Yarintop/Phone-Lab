@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OperationEntity {
+public class OperationEntity implements Entity{
     private Map<String, String> operationId = new HashMap<>();
     private String operationType = "undefined";
     private DigitalItemBoundary item = new DigitalItemBoundary();
