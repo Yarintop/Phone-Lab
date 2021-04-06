@@ -58,61 +58,61 @@ public class ItemsServiceMockup implements ItemsService {
 		String secondaryId = this.entityConverter.toSecondaryId(itemSpace, itemId);
 		
 		// get existing message from mockup database
-				if (this.items.get(primaryId) != null && this.items.get(primaryId).get(secondaryId) != null) {
-					ItemEntity existing = this.items.get(primaryId).get(secondaryId);
-					boolean dirty = false;
-					
-					// update collection and return update
-					if (update.getActive() != null) {
-						existing.setActive(update.getActive());
-						dirty = true;
-					}
-					
-					if (update.getType() != null) {
-						existing.setType(update.getType());
-						dirty = true;
-					}
-					
-					if (update.getName() != null) {
-						existing.setName(update.getName());
-						dirty = true;
-					}
-					
-					// ignore id from update - as ids are never changed
-					
-					if (update.getItemAttributes() != null) {
-						existing.getItemAttributes().putAll(update.getItemAttributes());
-						dirty = true;
-					}
-					
-					// ignore timestamp as creation timestamp is never changed
+		if (this.items.get(primaryId) != null && this.items.get(primaryId).get(secondaryId) != null) {
+			ItemEntity existing = this.items.get(primaryId).get(secondaryId);
+			boolean dirty = false;
+			
+			// update collection and return update
+			if (update.getActive() != null) {
+				existing.setActive(update.getActive());
+				dirty = true;
+			}
+			
+			if (update.getType() != null) {
+				existing.setType(update.getType());
+				dirty = true;
+			}
+			
+			if (update.getName() != null) {
+				existing.setName(update.getName());
+				dirty = true;
+			}
+			
+			// ignore id from update - as ids are never changed
+			
+			if (update.getItemAttributes() != null) {
+				existing.getItemAttributes().putAll(update.getItemAttributes());
+				dirty = true;
+			}
+			
+			// ignore timestamp as creation timestamp is never changed
 
-					// ignore createdBy as created user is never changed
+			// ignore createdBy as created user is never changed
 
-					if (update.getLocation() != null) {
-						if (update.getLocation().get("lat") != null) {
-							existing.getLocation().put("lat", update.getLocation().get("lat"));
-							dirty = true;
-						}
-						
-						if (update.getLocation().get("lng") != null) {
-							existing.getLocation().put("lng", update.getLocation().get("lng"));
-							dirty = true;
-						}
-					}
-					
-					// update mockup database
-					if (dirty) {
-						this.items.get(primaryId).put(secondaryId, existing);
-					}
-					
-					DigitalItemBoundary rv = this.entityConverter.toBoundary(existing);
-					return rv;
-					
-				}else {
-					// TODO have server return status 404 here
-					throw new RuntimeException("could not find message by id: " + primaryId + "&" + secondaryId);// NullPointerException
+			if (update.getLocation() != null) {
+				if (update.getLocation().get("lat") != null) {
+					existing.getLocation().put("lat", update.getLocation().get("lat"));
+					dirty = true;
 				}
+				
+				if (update.getLocation().get("lng") != null) {
+					existing.getLocation().put("lng", update.getLocation().get("lng"));
+					dirty = true;
+				}
+			}
+			
+			// update mockup database
+			if (dirty) {
+				this.items.get(primaryId).put(secondaryId, existing);
+			}
+			
+			DigitalItemBoundary rv = this.entityConverter.toBoundary(existing);
+			return rv;
+			
+		}else {
+			// TODO have server return status 404 here
+			throw new RuntimeException("could not find message by id: " + primaryId + "&" + secondaryId);// NullPointerException
+		}
 	}
 	@Override
 	public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail) {

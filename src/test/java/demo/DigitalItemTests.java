@@ -91,6 +91,5 @@ public class DigitalItemTests {
 		assertThat(actualItem.getItemAttributes())
 			.overridingErrorMessage("expected Item Attributes not to be null")
 			.isNotNull();
-		
 	}
 }
