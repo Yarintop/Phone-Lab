@@ -62,7 +62,7 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
     		userEmail = "";
     	return "userSpace=" + userSpace + "&userEmail=" + userEmail;
     }
-    
+     
     public String toSecondaryId(String itemSpace, String itemId)
     {
     	if(itemSpace == null)
