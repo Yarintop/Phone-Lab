@@ -1,8 +1,11 @@
 package app.twins.logic;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import app.converters.UserConverter;
+import app.twins.data.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,7 @@ public class UsersServiceMockup implements UsersService {
 
 
     private UserConverter converter;
+    private Map<String, UserEntity> users;
 
     @Autowired
     public void setUserConverter(UserConverter converter) {

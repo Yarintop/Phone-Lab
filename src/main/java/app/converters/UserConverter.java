@@ -2,8 +2,10 @@ package app.converters;
 
 import app.boundaries.UserBoundary;
 import app.twins.data.UserEntity;
+import app.twins.data.UserRole;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -17,6 +19,13 @@ public class UserConverter implements EntityConverter<UserEntity, UserBoundary> 
         if (boundaryObject.getUsername() != null) {
             ue.setUsername(boundaryObject.getUsername());
         }
+        if (boundaryObject.getUserId() != null) {
+            ue.setSpace(boundaryObject.getUserId().get("space"));
+            ue.setEmail(boundaryObject.getUserId().get("email"));
+        }
+        if (boundaryObject.getRole() != null) {
+            ue.setRole(UserRole.valueOf(boundaryObject.getRole()));
+        }
         return ue;
     }
 
@@ -25,7 +34,11 @@ public class UserConverter implements EntityConverter<UserEntity, UserBoundary> 
         UserBoundary ub =new UserBoundary();
         ub.setAvatar(entityObject.getAvatar());
         ub.setUsername(entityObject.getUsername());
-        ub.setUserId((new UserBoundary(entityObject.getEmail(),entityObject.getSpace())).getUserId());
+        Map<String,String> userId = new HashMap<>();
+        userId.put("space", entityObject.getSpace());
+        userId.put("email", entityObject.getEmail());
+        ub.setRole(entityObject.getRole().toString());
+        ub.setUserId(userId);
         return ub;
     }
 }
