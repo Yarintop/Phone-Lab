@@ -3,15 +3,15 @@ package app.twins.data;
 
 public class UserEntity implements Entity {
 	
-	private String space = "undefined";
+	private String space;
 	
-	private String email = "undefined";
+	private String email;
 
-	private UserRole role = null;
+	private UserRole role = UserRole.PLAYER;
 
-	private String username = "undefined";
+	private String username;
 
-    private String avatar = "undefined";
+    private String avatar;
 
     
     public UserEntity() { /* Default Constructor */ }
