@@ -12,13 +12,13 @@ public class UserBoundary implements Boundary
 	private Map<String, String> userId = new HashMap<>(); 
 	
 	@JsonView(Views.User.class)
-	private String role = "undefined";
+	private String role;
 
 	@JsonView(Views.User.class)
-	private String username = "undefined";
+	private String username;
 
 	@JsonView(Views.User.class)
-    private String avatar = "undefined";
+    private String avatar;
     
     public UserBoundary() { /* Default Constructor */ }
 
