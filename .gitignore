@@ -4,3 +4,4 @@
 !.gitignore
 !*.xml
 !bitbucket-pipelines.yml
+!*.md
