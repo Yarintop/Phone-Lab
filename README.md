@@ -9,7 +9,7 @@ This repo is for the backend part of the Repair Management System built with Spr
     │   │   ├── java                # Folder that contains all the server code
     │   │   └── resources           # Folder that contains all the resources for the server
     │   └── test                    
-    │       └── java                # Folder that contains all the tests for the server
+    │       └── java                # Folder that contains all the tests for the server (ending with *Test.java)
     ├── pom.xml                     # Maven file, for building and testing the project
     ├── all_dependencoes.xml        # File that includes all the dependencies from the Moodle, the file is not in use
     ├── bitbucket-pipelines.yml     # Bitbucket's pipeline configuration file
