@@ -63,6 +63,11 @@ public class DigitalItemBoundary implements Boundary{
 	public void setItemId(Map<String, String> itemId) {
 		this.itemId = itemId;
 	}
+	public void setItemId(String itemId, String itemSpace) {
+		this.itemId = new HashMap<>();
+		this.itemId.put("id", itemId);
+		this.itemId.put("space", itemSpace);
+	}
 
 	public String getType() {
 		return type;
