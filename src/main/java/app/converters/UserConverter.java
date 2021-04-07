@@ -13,6 +13,10 @@ public class UserConverter implements EntityConverter<UserEntity, UserBoundary> 
     @Override
     public UserEntity toEntity(UserBoundary boundaryObject) {
         UserEntity ue = new UserEntity();
+
+        if (boundaryObject == null)
+            return null;
+
         if (boundaryObject.getAvatar() != null) {
             ue.setAvatar(boundaryObject.getAvatar());
         }
@@ -24,21 +28,28 @@ public class UserConverter implements EntityConverter<UserEntity, UserBoundary> 
             ue.setEmail(boundaryObject.getUserId().get("email"));
         }
         if (boundaryObject.getRole() != null) {
-            ue.setRole(UserRole.valueOf(boundaryObject.getRole()));
+            ue.setRole(UserRole.valueOf(boundaryObject.getRole().toUpperCase()));
         }
         return ue;
     }
 
     @Override
     public UserBoundary toBoundary(UserEntity entityObject) {
-        UserBoundary ub =new UserBoundary();
+        UserBoundary ub = new UserBoundary();
+
+        if (entityObject == null)
+            return null;
+
         ub.setAvatar(entityObject.getAvatar());
         ub.setUsername(entityObject.getUsername());
         Map<String,String> userId = new HashMap<>();
         userId.put("space", entityObject.getSpace());
         userId.put("email", entityObject.getEmail());
-        ub.setRole(entityObject.getRole().toString());
         ub.setUserId(userId);
+
+        if (entityObject.getRole() != null) // Making sure the role is not null
+            ub.setRole(entityObject.getRole().toString());
+        
         return ub;
     }
 }
