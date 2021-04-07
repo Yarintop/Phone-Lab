@@ -93,17 +93,17 @@ public class DigitalItemController {
 		return allItems.toArray(new DigitalItemBoundary[0]);
 	}
     
-	/**
-	 * Deletes all items in the requested space
-	 * @param adminSpace - Requested admin space
-	 * @param adminEmail - Invoker's admin email
-	 */
-	@RequestMapping(
-		path = "/twins/admin/items/{userSpace}/{userEmail}",
-		method = RequestMethod.DELETE
-	)
-	public void deleteAllItems(@PathVariable("userSpace") String adminSpace, @PathVariable("userEmail") String adminEmail)
-	{
-		this.itemLogic.deleteAllItems(adminSpace, adminEmail);
-	}
+//	/**
+//	 * Deletes all items in the requested space
+//	 * @param adminSpace - Requested admin space
+//	 * @param adminEmail - Invoker's admin email
+//	 */
+//	@RequestMapping(
+//		path = "/twins/admin/items/{userSpace}/{userEmail}",
+//		method = RequestMethod.DELETE
+//	)
+//	public void deleteAllItems(@PathVariable("userSpace") String adminSpace, @PathVariable("userEmail") String adminEmail)
+//	{
+//		this.itemLogic.deleteAllItems(adminSpace, adminEmail);
+//	}
 }

@@ -15,9 +15,10 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.web.client.RestTemplate;
 
+import app.Application;
 import app.boundaries.DigitalItemBoundary;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes= Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class DigitalItemTests {
 	private int port;
 	private RestTemplate restTemplate;
@@ -44,8 +45,9 @@ public class DigitalItemTests {
 	
 	@AfterEach
 	public void teardown () {
-		this.restTemplate
-			.delete(this.baseUrl);
+//		this.restTemplate
+//			.delete(this.baseUrl);
+		System.err.println("After test..");
 	}
 	
 	@Test

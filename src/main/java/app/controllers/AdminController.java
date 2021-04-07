@@ -85,14 +85,14 @@ public class AdminController
 	 * @param id		- Requested user space
 	 * @param userEmail - Invoker's email
 	 */
-//	@RequestMapping(
-//		path = "/twins/admin/items/{userSpace}/{userEmail}",
-//		method = RequestMethod.DELETE
-//	)
-//	public void deleteAllItems(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail)
-//	{
-//		// STUB implementation - this methods does nothing (For now)
-//	}
+	@RequestMapping(
+		path = "/twins/admin/items/{userSpace}/{userEmail}",
+		method = RequestMethod.DELETE
+	)
+	public void deleteAllItems(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail)
+	{
+		// STUB implementation - this methods does nothing (For now)
+	}
 
 	
 	/**
