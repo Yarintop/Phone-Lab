@@ -1,10 +1,8 @@
 package app.controllers;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,12 +13,20 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import app.jsonViews.Views;
+import app.twins.logic.ItemsService;
 import app.boundaries.DigitalItemBoundary;
-import app.boundaries.UserBoundary;
-import app.dummyData.DummyData;
 
 @RestController
 public class DigitalItemController {
+	private ItemsService itemLogic;
+	
+
+	@Autowired	
+	public DigitalItemController(ItemsService itemLogic) {
+		super();
+		this.itemLogic = itemLogic;
+	}
+	
     @JsonView(Views.Item.class)
 	@RequestMapping(
 		path = "/twins/items/{userSpace}/{userEmail}",
@@ -31,16 +37,10 @@ public class DigitalItemController {
 	public DigitalItemBoundary updateUserDetails(
 			@PathVariable("userSpace") String userSpace,
 			@PathVariable("userEmail") String userEmail,
-			@RequestBody DigitalItemBoundary newAccount)
+			@RequestBody DigitalItemBoundary newItem)
 	{
-		// STUB implementation - this methods does nothing (For now)	
-		Map<String,String> itemId = new HashMap<>();
-		
-		itemId.put("space", userSpace);
-		itemId.put("id", "99");
-		newAccount.setItemId(itemId);
-		
-		return newAccount;
+		return itemLogic
+				.createItem(userSpace, userEmail, newItem);
 	}
 	
 	@RequestMapping(
@@ -56,7 +56,8 @@ public class DigitalItemController {
 			@RequestBody DigitalItemBoundary update)
 
 	{
-		// STUB implementation - this methods does nothing (For now)	
+		this.itemLogic
+		.updateItem(userSpace, userEmail, itemSpace, itemId, update);
 	}
 	
     @JsonView(Views.Item.class)
@@ -71,28 +72,8 @@ public class DigitalItemController {
 			@PathVariable("itemSpace") String itemSpace,
 			@PathVariable("itemId") String itemId)
 	{
-		UserBoundary userId = new UserBoundary("","","",userEmail);
-		Map<String, String> complexItemId = new HashMap<>();
-		DigitalItemBoundary item = new DigitalItemBoundary();
-		Map<String,Double> location = new HashMap<>();
-		Map<String,Object> itemAttributes = new HashMap<>();
-
-		
-		complexItemId.put("space", userSpace);
-		complexItemId.put("id", itemId);
-		
-		location.put("lat", 32.115139);
-		location.put("lng", 34.817804);
-		
-		itemAttributes.put("test1","hello");
-		itemAttributes.put("test2",58);
-		itemAttributes.put("test3",false);
-		
-		item.setCreatedBy(userId);
-		item.setItemId(complexItemId);
-		item.setLocation(location);
-		item.setItemAttributes(itemAttributes);
-		return item;
+		return this.itemLogic
+				.getSpecificItem(userSpace, userEmail, itemSpace, itemId);
 	}
 	
     @JsonView(Views.Item.class)
@@ -106,13 +87,23 @@ public class DigitalItemController {
 			@PathVariable("userSpace") String userSpace,
 			@PathVariable("userEmail") String userEmail)
 	{
-		return Stream
-			.of(
-				DummyData.getRandomDigitalItem(userSpace, userEmail),
-				DummyData.getRandomDigitalItem(userSpace, userEmail),
-				DummyData.getRandomDigitalItem(userSpace, userEmail)
-			)
-			.collect(Collectors.toList())
-			.toArray(new DigitalItemBoundary[0]);
+		List<DigitalItemBoundary> allItems = 
+				this.itemLogic.getAllItems(userSpace, userEmail);
+			
+		return allItems.toArray(new DigitalItemBoundary[0]);
 	}
+    
+//	/**
+//	 * Deletes all items in the requested space
+//	 * @param adminSpace - Requested admin space
+//	 * @param adminEmail - Invoker's admin email
+//	 */
+//	@RequestMapping(
+//		path = "/twins/admin/items/{userSpace}/{userEmail}",
+//		method = RequestMethod.DELETE
+//	)
+//	public void deleteAllItems(@PathVariable("userSpace") String adminSpace, @PathVariable("userEmail") String adminEmail)
+//	{
+//		this.itemLogic.deleteAllItems(adminSpace, adminEmail);
+//	}
 }

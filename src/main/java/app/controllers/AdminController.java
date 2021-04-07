@@ -94,6 +94,7 @@ public class AdminController
 		// STUB implementation - this methods does nothing (For now)
 	}
 
+	
 	/**
 	 * Deletes all operations in the requested space
 	 * @param id		- Requested user space
