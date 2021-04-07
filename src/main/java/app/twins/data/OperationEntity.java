@@ -7,8 +7,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OperationEntity implements Entity{
-    private Map<String, String> operationId = new HashMap<>();
+public class OperationEntity implements Entity {
+    private Map<String, String> operationId = new HashMap<>(); //TODO: Change to string
+    //    private Map<String, String> operationId = new HashMap<>();
     private String operationType = "undefined";
     private DigitalItemBoundary item = new DigitalItemBoundary();
     private Date createdTimestamp = new Date();
@@ -16,7 +17,6 @@ public class OperationEntity implements Entity{
     private Map<String, Object> operationAttributes = new HashMap<>();
 
     public OperationEntity() {
-
     }
 
     public Map<String, String> getOperationId() {
@@ -25,6 +25,11 @@ public class OperationEntity implements Entity{
 
     public void setOperationId(Map<String, String> operationId) {
         this.operationId = operationId;
+    }
+
+    public void setOperationId(String id, String spaceId) {
+        this.operationId.put("id", id);
+        this.operationId.put("space", spaceId);
     }
 
     public String getOperationType() {
