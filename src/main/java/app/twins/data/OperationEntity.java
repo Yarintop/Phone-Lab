@@ -8,8 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class OperationEntity implements Entity {
-    private Map<String, String> operationId = new HashMap<>(); //TODO: Change to string
-    //    private Map<String, String> operationId = new HashMap<>();
+    private String operationId = "";
     private String operationType = "undefined";
     private DigitalItemBoundary item = new DigitalItemBoundary();
     private Date createdTimestamp = new Date();
@@ -19,17 +18,16 @@ public class OperationEntity implements Entity {
     public OperationEntity() {
     }
 
-    public Map<String, String> getOperationId() {
+    public String getOperationId() {
         return operationId;
     }
 
-    public void setOperationId(Map<String, String> operationId) {
+    public void setOperationId(String operationId) {
         this.operationId = operationId;
     }
 
     public void setOperationId(String id, String spaceId) {
-        this.operationId.put("id", id);
-        this.operationId.put("space", spaceId);
+        this.operationId = id + "&" + spaceId;
     }
 
     public String getOperationType() {
