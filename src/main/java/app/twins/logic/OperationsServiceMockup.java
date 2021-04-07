@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -99,9 +98,9 @@ public class OperationsServiceMockup implements OperationsService {
     }
 
     @Override
-    public OperationBoundary[] getAllOperations(String adminSpace, String adminEmail) {
+    public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail) {
         //TODO: Do something with adminSpace and adminEmail here
-        return (OperationBoundary[]) operations.values().toArray();
+        return operations.values().stream().map(converter::toBoundary).collect(Collectors.toList());
     }
 
     @Override
