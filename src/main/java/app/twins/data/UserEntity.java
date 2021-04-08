@@ -7,7 +7,7 @@ public class UserEntity implements Entity {
 	
 	private String email;
 
-	private UserRole role = UserRole.PLAYER;
+	private UserRole role;
 
 	private String username;
 

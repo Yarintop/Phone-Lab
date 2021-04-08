@@ -2,6 +2,7 @@ package app.boundaries;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import app.jsonViews.Views;
@@ -25,7 +26,7 @@ public class UserBoundary implements Boundary
     public UserBoundary(String role, String username, String avatar, String email)
     {
         this.userId = new HashMap<>();
-        this.role = role;
+        this.role = role.toUpperCase();
         this.username = username;
         this.avatar = avatar;
         

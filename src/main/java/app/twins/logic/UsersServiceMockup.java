@@ -37,21 +37,42 @@ public class UsersServiceMockup implements UsersService {
     }
 
     @Override
-    public UserBoundary createUser(UserBoundary user) {
-        UserEntity userEntity = this.converter.toEntity(user);
+    public UserBoundary createUser(UserBoundary user) throws RuntimeException {
 
+        if (user == null)  // If user doesn't have email
+            throw (new RuntimeException("User can't be null")); // User can't be null
+
+        if (user.getUserId().get("email") == null)  // If user doesn't have email
+            throw (new RuntimeException("Can't create a user without email")); // Users must have email
+
+        // Making sure the user has a valid role (Player, Manager or Admin)
+        try {
+            UserRole.valueOf(user.getRole().toUpperCase());
+        }
+
+        // If it doesn't changing it to 'Player' by default
+        catch (IllegalArgumentException e) {
+            user.setRole("PLAYER");
+        }
+
+        // Adding user to the system
+        UserEntity userEntity = this.converter.toEntity(user);
         userEntity.setSpace(spaceId); // Setting the user's space
 
         // Generating key
         String key = userEntity.getSpace() + "&" + userEntity.getEmail();
-        this.users.put(key, userEntity);
+
+        if (users.get(key) == null) // Making sure the user is a new user in the system
+            this.users.put(key, userEntity);
+        else
+            throw (new RuntimeException("There is already a user with email: " + user.getUserId().get("email")));
 
 
         return this.converter.toBoundary(userEntity); // Just testing the converter
     }
 
     @Override
-    public UserBoundary login(String userSpace, String userEmail) {
+    public UserBoundary login(String userSpace, String userEmail) throws RuntimeException {
 
         // Getting key
         String key = userSpace + "&" + userEmail;
@@ -59,13 +80,13 @@ public class UsersServiceMockup implements UsersService {
 
         // Making sure the user exists
         if (res == null)
-            return null;
+            throw (new RuntimeException("Could not find user with the given email and space"));
 
         return this.converter.toBoundary(res); // Returning result
     }
 
     @Override
-    public UserBoundary updateUser(String userSpace, String userEmail, UserBoundary update) {
+    public UserBoundary updateUser(String userSpace, String userEmail, UserBoundary update) throws RuntimeException {
 
         // Getting key
         String key = userSpace + "&" + userEmail;
@@ -74,7 +95,7 @@ public class UsersServiceMockup implements UsersService {
         
         // In case user doesn't exist
         if (user == null)
-            return null;
+            throw (new RuntimeException("Could not find user with the given email and space"));
 
         // Updating only the desired fields
         if (updateEntity.getAvatar() != null)
@@ -90,26 +111,35 @@ public class UsersServiceMockup implements UsersService {
     }
 
     @Override
-    public List<UserBoundary> getAllUsers(String adminSpace, String adminEmail) {
+    public List<UserBoundary> getAllUsers(String adminSpace, String adminEmail) throws RuntimeException {
 
         // Getting key and user
         String key = adminSpace + "&" + adminEmail;
         UserEntity user = users.get(key);
         
-        if ((user != null) && (user.getRole() == UserRole.ADMIN))
-            return users.values().stream().map(this.converter::toBoundary).collect(Collectors.toList());
+        if (user == null)
+        throw (new RuntimeException("Could not find user with the given email and space"));
 
-        return new ArrayList<>(); // If the user is not an admin he will get an empty list
+        if (user.getRole() != UserRole.ADMIN)
+            throw (new RuntimeException("User doesn't have permissions"));
+
+
+        return users.values().stream().map(this.converter::toBoundary).collect(Collectors.toList());
     }
 
     @Override
-    public void deleteAllUsers(String adminSpace, String adminEmail) {
+    public void deleteAllUsers(String adminSpace, String adminEmail) throws RuntimeException {
 
         // Getting key and user
         String key = adminSpace + "&" + adminEmail;
         UserEntity user = users.get(key);
 
-        if ((user != null) && (user.getRole() == UserRole.ADMIN))
-            this.users.clear();
+        if (user == null)
+            throw (new RuntimeException("Could not find user with the given email and space"));
+
+        if (user.getRole() != UserRole.ADMIN)
+            throw (new RuntimeException("User doesn't have permissions"));
+
+        this.users.clear();
     }
 }
