@@ -23,7 +23,7 @@ import app.boundaries.DigitalItemBoundary;
 import app.dummyData.DummyData;
 
 @SpringBootTest(classes= Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
-public class DigitalItemTests {
+public class DigitalItemTest {
 	private int port;
 	private RestTemplate restTemplate;
 	private String baseUrl;

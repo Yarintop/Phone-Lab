@@ -17,6 +17,7 @@ public class DummyData {
 
     /**
      * Set the id key, to avoid hard coding the "id" as the key value (future proofing)
+     *
      * @param idKey - the key for the id in the map values
      */
     @Value("${key.id:id}")
@@ -26,6 +27,7 @@ public class DummyData {
 
     /**
      * Set the spaceId key, to avoid hard coding the "spaceId" as the key value (future proofing)
+     *
      * @param spaceIdKey - the key for the spaceId in the map values
      */
     @Value("${key.space:spaceId}")
@@ -35,6 +37,7 @@ public class DummyData {
 
     /**
      * Set the spaceId , to avoid hard coding the "2021b.twins" as the key value (future proofing)
+     *
      * @param spaceId - the value for the spaceId in the map values
      */
     @Value("${spring.application.name:2021b.twins}")
@@ -45,6 +48,43 @@ public class DummyData {
     public String getRandomId(int bound) {
         Random rand = new Random();
         return String.valueOf(rand.nextInt(bound));
+    }
+
+
+    public OperationBoundary getRandomOperation(boolean withId) {
+        Map<String, String> itemId = new HashMap<>();
+        itemId.put(spaceIdKey, spaceId);
+        itemId.put(idKey, getRandomId(10000000));
+
+        UserBoundary user = new UserBoundary(
+                "Random",
+                "Name",
+                "Something",
+                "Else@else.com"
+        );
+
+        DigitalItemBoundary item = new DigitalItemBoundary(
+                itemId,
+                "RandomItem",
+                "RandomName",
+                false,
+                new Date(),
+                user,
+                new HashMap<>(),
+                new HashMap<>()
+        );
+
+        OperationBoundary operation = new OperationBoundary();
+        operation.setOperationType("RandomOperation");
+        operation.setItem(item);
+        operation.setInvokedBy(user);
+        if (withId) {
+            Map<String, String> operationId = new HashMap<>();
+            operationId.put(spaceIdKey, spaceId);
+            operationId.put(idKey, getRandomId(10000000));
+            operation.setOperationId(operationId);
+        }
+        return operation;
     }
 
     ///////////////////////////////////////////////////////////
@@ -139,6 +179,5 @@ public class DummyData {
                 attrs
         );
     }
-
 
 }
