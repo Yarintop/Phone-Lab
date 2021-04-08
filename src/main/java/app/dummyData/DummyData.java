@@ -127,7 +127,7 @@ public class DummyData {
         );
     }
 
-    private static final String[] roles = {"bestGuy", "bank", "thug"};
+    private static final String[] roles = {"Manager", "Player", "Admin"};
     private static final String[][] users = {
             {"dima", "dima@guy.com"},
             {"yarin.mizrahiTfahot", "yarin@guy.com"},
