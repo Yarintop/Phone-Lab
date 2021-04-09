@@ -11,10 +11,11 @@ import javax.annotation.PostConstruct;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,7 +28,34 @@ public class DigitalItemTest {
 	private int port;
 	private RestTemplate restTemplate;
 	private String baseUrl;
+	private String spaceId;
+	private DummyData dataGenerator;
 	
+    /**
+     * Sets the spaceId value from the application.properties file
+     *
+     * @param spaceId the loaded spaceId value, default would be "2021b.twins"
+     */
+    @Value("${spring.application.name:2021b.twins}")
+    public void setSpaceId(String spaceId) {
+        this.spaceId = spaceId;
+    }
+    
+    /**
+     * This function will set the dummy data generator
+     *
+     * @param dataGenerator - an instance of {@link DummyData}
+     */
+    @Autowired
+    public void setDummyDataGenerator(DummyData dataGenerator) {
+        this.dataGenerator = dataGenerator;
+    }
+	
+    /**
+     * Sets the port for the testing environment
+     *
+     * @param port - the port given from Spring
+     */
 	@LocalServerPort
 	public void setPort(int port) {
 		this.port = port;
@@ -63,13 +91,20 @@ public class DigitalItemTest {
 		// THEN spring starts up with no errors
 	}
 	
+	
+    /**
+     * Tests that Item is created with POST (given empty JSON {}), returns a JSON , code 200
+     * and a valid ItemBoundary object.
+     *
+     * @throws Exception if there is an error when making the request
+     */
 	@Test
 	public void testPostEmptyMessageOnServer() throws Exception {
 		// GIVEN the server is up
 		// do nothing
 		
 		// WHEN I POST using /twins/items/{userSpace}/{userEmail} with {}
-		String space = "2021b.phone";
+		String space = this.spaceId;
 		String email = "lol@gmail.com";
 		String theUrl = this.baseUrl + space + "/" + email;
 		
@@ -107,65 +142,172 @@ public class DigitalItemTest {
 			.isNotNull();
 	}
 	
+    /**
+     * Tests that Item is created with POST, returns a JSON , code 200
+     * and a valid ItemBoundary object.
+     *
+     * @throws Exception if there is an error when making the request
+     */
 	@Test
 	public void testPostSuccessfulAllKeys() throws Exception {
 		// GIVEN the server is up
 		// do nothing
 		
 		// WHEN I POST using /twins/items/{userSpace}/{userEmail} with a specific JSON
-		String space = "2021b.phone";
+		String space = this.spaceId;
 		String email = "lol@gmail.com";
 		String theUrl = this.baseUrl + space + "/" + email;
         ObjectMapper mapper = new ObjectMapper();
-		DigitalItemBoundary randomItem = DummyData.getRandomDigitalItem(space, email);
+		DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
 		
 		Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
 		DigitalItemBoundary actualItem = this.restTemplate
 			.postForObject(theUrl, myItem, DigitalItemBoundary.class);
 		
-		// Date time should not be null
-		assertThat(actualItem.getCreatedTimestamp()).isNotNull();
-
-		// Date time should be based on real creation and not about what was given so should have different value than given
-		assertThat(actualItem.getCreatedTimestamp().toString())
-		.isNotEqualTo(randomItem.getCreatedTimestamp());
-		
-		// Make sure name value is same as was given
-		assertThat(actualItem.getName())
-		.isEqualTo(randomItem.getName());
-		
-		// Make sure type value is same as was given
-		assertThat(actualItem.getType())
-		.isEqualTo(randomItem.getType());
-		
-		// Make sure active value is same as was given
-		assertThat(actualItem.getActive())
-		.isEqualTo(randomItem.getActive());
-		
-		// Must have userId map that is not null and have the keys email and space with correct values
-		assertThat(actualItem.getCreatedBy()).isNotNull();
-		assertThat(actualItem.getCreatedBy().getUserId()).isNotNull();
-		assertThat(actualItem.getCreatedBy().getUserId().get("email")).isEqualTo(email);
-		assertThat(actualItem.getCreatedBy().getUserId().get("space")).isEqualTo(space);
-		
-		// The Item attributes should exist and have the same key and values
-		assertThat(actualItem.getItemAttributes()).isNotNull();
-		assertThat(actualItem.getItemAttributes()).isEqualTo(randomItem.getItemAttributes());
+		assertTwoItemsAreEqual(actualItem, randomItem);
 	}
 	
+	private void assertTwoItemsAreEqual(DigitalItemBoundary resultItem, DigitalItemBoundary originalItem) throws Exception {
+		String email = originalItem.getCreatedBy().getUserId().get("email");
+		String space = originalItem.getCreatedBy().getUserId().get("space");
+				
+		// Must have ItemId map that is not null and have the keys id and space with correct values
+		assertThat(resultItem.getItemId()).isNotNull();
+		assertThat(resultItem.getItemId().get("id")).isNotNull();
+		assertThat(resultItem.getItemId().get("space")).isNotNull().isEqualTo(space);
+		
+		// Date time should not be null
+		assertThat(resultItem.getCreatedTimestamp()).isNotNull();
+		
+		// Make sure name value is same as was given
+		assertThat(resultItem.getName())
+		.isEqualTo(originalItem.getName());
+		
+		// Make sure type value is same as was given
+		assertThat(resultItem.getType())
+		.isEqualTo(originalItem.getType());
+		
+		// Make sure active value is same as was given
+		assertThat(resultItem.getActive())
+		.isEqualTo(originalItem.getActive());
+		
+		// Must have userId map that is not null and have the keys email and space with correct values
+		assertThat(resultItem.getCreatedBy()).isNotNull();
+		assertThat(resultItem.getCreatedBy().getUserId()).isNotNull();
+		assertThat(resultItem.getCreatedBy().getUserId().get("email")).isEqualTo(email);
+		assertThat(resultItem.getCreatedBy().getUserId().get("space")).isEqualTo(space);
+		
+		// The Item attributes should exist and have the same key and values
+		assertThat(resultItem.getItemAttributes()).isNotNull();
+		assertThat(resultItem.getItemAttributes()).isEqualTo(originalItem.getItemAttributes());
+	}
+	
+	
+    /**
+     * Tests that a specific item is correctly retrieved when using GET 
+     * 
+     *
+     * @throws Exception if there is an error when making the request
+     */
+	@Test
+	public void testGetSpecificItem() throws Exception {
+		// GIVEN the server is up
+		// do nothing
+		
+		// WHEN I GET using /twins/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}
+		String space = this.spaceId;
+		String email = "lol@gmail.com";
+		String theUrl = this.baseUrl + space + "/" + email;
+        ObjectMapper mapper = new ObjectMapper();
+		DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
+		
+		// Add an item to the existing items so that I can use get specific item
+		Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
+		DigitalItemBoundary actualItem = this.restTemplate.postForObject(theUrl, myItem, DigitalItemBoundary.class);
+		
+		
+		String itemId = actualItem.getItemId().get("id");
+		String itemSpace = actualItem.getItemId().get("space");
+		
+		
+		theUrl = theUrl + "/" + itemSpace + "/" + itemId;
+		// Use the known ID of the created Item and search it
+		DigitalItemBoundary retrievedItem = this.restTemplate
+				.getForEntity(theUrl, DigitalItemBoundary.class).getBody();
+		
+		// Check that item id matches
+		assertThat(retrievedItem.getItemId().get("id")).isEqualTo(itemId);
+		assertThat(retrievedItem.getItemId().get("space")).isEqualTo(itemSpace);
+		
+		// Make sure all values are the same.
+		assertTwoItemsAreEqual(retrievedItem, actualItem);
+	}
+	
+    /**
+     * Tests that an item is updated when using PUT and checking it
+     * by using GET.
+     *
+     * @throws Exception if there is an error when making the request
+     */
+	@Test
+	public void testUpdateItem() throws Exception {
+		// GIVEN the server is up
+		// do nothing
+		
+		// WHEN I PUT using /twins/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}
+		String space = this.spaceId;
+		String email = "lol@gmail.com";
+		String theUrl = this.baseUrl + space + "/" + email;
+        ObjectMapper mapper = new ObjectMapper();
+		DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
+		
+		// First add an item to the existing items so that I can update it
+		Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
+		DigitalItemBoundary actualItem = this.restTemplate.postForObject(theUrl, myItem, DigitalItemBoundary.class);
+		
+		
+		String itemId = actualItem.getItemId().get("id");
+		String itemSpace = actualItem.getItemId().get("space");
+		
+		randomItem = dataGenerator.getRandomDigitalItem(space, email);
+		theUrl = theUrl + "/" + itemSpace + "/" + itemId;
+		
+		// Update the Item
+        restTemplate.put(theUrl, randomItem, DigitalItemBoundary.class);
+
+		
+		// Use the known ID of the created Item and search it
+		DigitalItemBoundary retrievedItem = this.restTemplate
+				.getForEntity(theUrl, DigitalItemBoundary.class).getBody();
+		
+		// Check that item id matches even though was updated
+		assertThat(retrievedItem.getItemId().get("id")).isEqualTo(itemId);
+		assertThat(retrievedItem.getItemId().get("space")).isEqualTo(itemSpace);
+		
+		// Make sure all values are the same as new random data.
+		assertTwoItemsAreEqual(retrievedItem, randomItem);
+	}
+	
+	
+    /**
+     * Tests that all items are correctly retrieved when using GET 
+     * 
+     *
+     * @throws Exception if there is an error when making the request
+     */
 	@Test
 	public void testGetAllItems() throws Exception {
 		// GIVEN the server is up
 		// do nothing
 		
-		// WHEN I get using /twins/items/{userSpace}/{userEmail} with {}
+		// WHEN I GET all using /twins/items/{userSpace}/{userEmail}
 
-		String space = "2021b.phone";
+		String space = this.spaceId;
 		String email = "lol@gmail.com";
 		String theUrl = this.baseUrl + space + "/" + email;
 
         ObjectMapper mapper = new ObjectMapper();
-		DigitalItemBoundary randomItem = DummyData.getRandomDigitalItem(space, email);
+		DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
 		Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
 		
 
@@ -194,9 +336,6 @@ public class DigitalItemTest {
 //		System.out.println(response[1].getItemAttributes());
 //		System.out.println(response[1].getItemId());
 //		System.out.println(response[1].getCreatedBy().getUserId());
-
-
 	}
-	
 	
 }
