@@ -10,24 +10,45 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import app.boundaries.DigitalItemBoundary;
+import app.boundaries.OperationBoundary;
 import app.boundaries.UserBoundary;
 import app.converters.ItemConverter;
+import app.converters.OperationConverter;
 import app.twins.data.ItemEntity;
 
 @Service
 public class ItemsServiceMockup implements ItemsService {
 	
 	private Map<String, Map<String, ItemEntity>> items;
+    private String spaceId;
 	private ItemConverter entityConverter;
+	
+	
+    /**
+     * Sets the spaceId value from the application.properties file
+     *
+     * @param spaceId the loaded spaceId value, default would be "2021b.twins"
+     */
+    @Value("${spring.application.name:2021b.twins}")
+    public void setSpaceId(String spaceId) {
+        this.spaceId = spaceId;
+    }
 	
 	public ItemsServiceMockup() {
 		// create a thread safe collection
 		this.items = Collections.synchronizedMap(new HashMap<>());
 	}
 	
+    /**
+     * This function will set the converter that will be used to
+     * convert boundary objects to entity objects and vice versa
+     *
+     * @param converter - an instance of {@link ItemConverter}
+     */
 	@Autowired
 	public void setEntityConverter(ItemConverter entityConverter) {
 		this.entityConverter = entityConverter;
@@ -56,6 +77,8 @@ public class ItemsServiceMockup implements ItemsService {
 		
 		return this.entityConverter.toBoundary(entity);
 	}
+	
+	
 	@Override
 	public DigitalItemBoundary updateItem(String userSpace, String userEmail, String itemSpace, String itemId,
 			DigitalItemBoundary update) {
