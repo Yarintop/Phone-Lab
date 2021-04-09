@@ -84,7 +84,8 @@ public class UsersTest {
     }
 
     /**
-     * Tests that invoking a sync operation returns a JSON and code 200
+     * Tests that user is created with POST, returns a JSON , code 200
+     * and a valid UserBoundary object.
      *
      * @throws Exception if there is an error when making the request
      */
@@ -114,50 +115,62 @@ public class UsersTest {
 
         assertThat(createdUser).isEqualToComparingFieldByFieldRecursively(user);
         // Checking that the user that was created is the same as the one that was given
-
-        // TODO: Create tests for PUT & GET
     }
 
     /**
-     * Tests that invoking an async operation creates new ID, and returns the same boundary just with an ID.
+     * Tests that a user is updated when using PUT and checking it
+     * by using GET.
      *
      * @throws Exception if there is an error when making the request
      */
-   /* @Test
-    public void testPostUsersReturnsUser() throws Exception {
+    @Test
+    public void testPutUserUpdatesUser() throws Exception {
         // GIVEN the server is up
         // do nothing
 
-        // WHEN I POST using /twins/users with an user
+        // WHEN I PUT using /twins/users/{space}/{email} with an user
 
+        // THEN the server updates the user accordingly without allowing changing space and email
+
+
+        // First creating a user by using POST
         UserBoundary user = dataGenerator.getRandomUser();
         NewUserDetails userDetails = new NewUserDetails(user.getUserId().get("email"), user.getRole(),
                 user.getUsername(), user.getAvatar());
         ResponseEntity<UserBoundary> entity = restTemplate.postForEntity(baseUrl, userDetails, UserBoundary.class);
+
         int returnCode = entity.getStatusCodeValue();
-        MediaType contentType = entity.getHeaders().getContentType();
-        UserBoundary res = entity.getBody();
 
-        // THEN the server invokes the operation and return JSON result
-
-        // assert that the server returned OK code
+        // Assert that the server returned OK code
         assertThat(returnCode).isEqualTo(200);
 
-        // assert result is not null
-        assertThat(res).isNotNull();
 
-        // assert all the fields that are not ID, equal to the original
-        assertThat(res.getRole()).isEqualTo(userDetails.getRole());
-        assertThat(res.getOperationType()).isEqualTo(operation.getOperationType());
-        assertThat(res.getOperationAttributes()).isEqualTo(operation.getOperationAttributes());
+        // Then updating the user by using PUT
 
-        /TODO: Implement equals method for UserBoundary & ItemBoundary, below methods are deprecated!/
-        assertThat(res.getItem()).isEqualToComparingFieldByFieldRecursively(operation.getItem());
-        assertThat(res.getInvokedBy()).isEqualToComparingFieldByFieldRecursively(operation.getInvokedBy());
+        // Details to update at the user (Fields with null won't be updated)
+        UserBoundary update = new UserBoundary("Admin", null, null, "new@email.com");
 
-        // assert that a new ID was generated
-        assertThat(res.getUserId()).isNotNull();
-    } */
+        String url = this.baseUrl + "/" + user.getUserId().get("space") + "/" + user.getUserId().get("email");
+        restTemplate.put(url, update, user.getUserId().get("space"), user.getUserId().get("email"));
+
+
+
+        // Finally making sure the user updated by using GET
+        url = this.baseUrl + "/login/" + user.getUserId().get("space") + "/" + user.getUserId().get("email");
+        ResponseEntity<UserBoundary> response = this.restTemplate.getForEntity(url, UserBoundary.class,
+                user.getUserId().get("space"), user.getUserId().get("email"));
+
+        UserBoundary res = response.getBody(); // Getting the UserBoundary from the body
+
+        // assert all the fields that should be update are updated
+        assertThat(res.getRole()).isEqualTo("ADMIN");
+
+        // Making sure that email didn't change even though we tried to change it
+        assertThat(res.getUserId().get("email")).isEqualTo(user.getUserId().get("email"));
+        assertThat(res.getUserId().get("space")).isEqualTo(user.getUserId().get("space"));
+        assertThat(res.getUsername()).isEqualTo(user.getUsername());
+        assertThat(res.getAvatar()).isEqualTo(user.getAvatar());
+    }
 
 
 }
