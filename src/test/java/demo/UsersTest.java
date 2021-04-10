@@ -73,7 +73,6 @@ public class UsersTest {
 
     @PostConstruct
     public void init() {
-        System.out.println("Hello");
         this.restTemplate = new RestTemplate();
         this.baseUrl = "http://localhost:" + this.port + "/twins/users/";
 

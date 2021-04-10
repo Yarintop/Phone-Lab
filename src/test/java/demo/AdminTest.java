@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import app.twins.logic.ItemsService;
+import app.twins.logic.OperationsService;
 import app.twins.logic.UsersService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +39,8 @@ public class AdminTest {
     private String spaceId;
     private DummyData dataGenerator;
     private UsersService usersService;
+    private OperationsService operationsService;
+    private ItemsService itemsService;
 
     /**
      * Sets the spaceId value from the application.properties file
@@ -59,8 +63,10 @@ public class AdminTest {
     }
 
     @Autowired
-    public void setUserService(UsersService usersService) {
+    public void setServices(UsersService usersService, ItemsService itemsService, OperationsService operationsService) {
+        this.operationsService = operationsService;
         this.usersService = usersService;
+        this.itemsService = itemsService;
     }
 
     /**
@@ -82,19 +88,20 @@ public class AdminTest {
 
     @BeforeEach
     public void setup() {
-        // init operations before each test
-        System.err.println("init before test..");
+        UserBoundary user = dataGenerator.getRandomUser();
+        user.setRole("Admin");
+        user.setEmail("remove@me.com");
+        usersService.createUser(user);
+        operationsService.deleteAllOperations(spaceId, user.getUserId().get("email"));
+        itemsService.deleteAllItems(spaceId, user.getUserId().get("email"));
+        usersService.deleteAllUsers(spaceId, user.getUserId().get("email"));
     }
 
 
     @AfterEach
     public void teardown() {
-        UserBoundary user = dataGenerator.getRandomUser();
-        user.setRole("Admin");
-        user.setEmail("remove@me.com");
-        usersService.createUser(user);
-        usersService.deleteAllUsers(spaceId, user.getUserId().get("email"));
         System.err.println("After test..");
+
     }
 
     /**
@@ -118,7 +125,8 @@ public class AdminTest {
 
         OperationBoundary[] response = this.restTemplate
                 .getForEntity(theUrl, OperationBoundary[].class).getBody();
-        assertThat(response).isNotNull().hasSize(0);
+        assertThat(response).isNotNull().hasSizeGreaterThanOrEqualTo(0);
+        int operationCount = response.length;
 
         // Then add operations by using POST
 
@@ -130,7 +138,7 @@ public class AdminTest {
 
 
         // Make sure we got array of size 2 from get all 
-        assertThat(response).isNotNull().hasSize(2);
+        assertThat(response).isNotNull().hasSize(operationCount + 2);
 
     }
 
