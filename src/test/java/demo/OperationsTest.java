@@ -68,20 +68,6 @@ public class OperationsTest {
 
     }
 
-//    @BeforeEach
-//    public void setup() {
-//        // init operations before each test
-//        System.err.println("init before test..");
-//    }
-//
-//
-//    @AfterEach
-//    public void teardown() {
-////		this.restTemplate
-////			.delete(this.baseUrl);
-//        System.err.println("After test..");
-//    }
-
     /**
      * Tests that invoking a sync operation returns a JSON and code 200
      *
@@ -104,7 +90,8 @@ public class OperationsTest {
         // assert that the server returned OK code
         assertThat(returnCode).isEqualTo(200);
 
-        // Must be of type application/json
+        // Must be of type application/json and not empty
+        assertThat(contentType).isNotNull();
         assertThat(contentType.toString()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
     }
 
@@ -121,7 +108,7 @@ public class OperationsTest {
         // WHEN I POST using /twins/operations with an operation
 
         OperationBoundary operation = dataGenerator.getRandomOperation(false);
-        ResponseEntity<OperationBoundary> entity = restTemplate.postForEntity(baseUrl, operation, OperationBoundary.class);
+        ResponseEntity<OperationBoundary> entity = restTemplate.postForEntity(baseUrl + "async", operation, OperationBoundary.class);
         int returnCode = entity.getStatusCodeValue();
         MediaType contentType = entity.getHeaders().getContentType();
         OperationBoundary res = entity.getBody();
@@ -139,12 +126,11 @@ public class OperationsTest {
         assertThat(res.getOperationType()).isEqualTo(operation.getOperationType());
         assertThat(res.getOperationAttributes()).isEqualTo(operation.getOperationAttributes());
 
-        //TODO: Implement equals method for UserBoundary & ItemBoundary, below methods are deprecated!
-        assertThat(res.getItem()).isEqualToComparingFieldByFieldRecursively(operation.getItem());
-        assertThat(res.getInvokedBy()).isEqualToComparingFieldByFieldRecursively(operation.getInvokedBy());
+        assertThat(res.getItem().getItemId()).isEqualTo(operation.getItem().getItemId());
+        assertThat(res.getInvokedBy().getUserId()).isEqualTo(operation.getInvokedBy().getUserId());
 
         // assert that a new ID was generated
-        assertThat(res.getOperationId()).isNotNull();
+        assertThat(res.getOperationId()).isNotNull().hasSize(2);
     }
 
 

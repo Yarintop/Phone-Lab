@@ -56,18 +56,21 @@ public class ItemsServiceMockup implements ItemsService {
 	
 	@Override
 	public DigitalItemBoundary createItem(String userSpace, String userEmail, DigitalItemBoundary item) {
+		userSpace = this.spaceId;
 		String newId = UUID.randomUUID().toString();
 		String primaryId = this.entityConverter.toPrimaryId(userSpace, userEmail);
 		String secondaryId = "";
 		ItemEntity entity = this.entityConverter.toEntity(item);
 		
-		entity.setItemId(newId, userSpace);
+		// Set space of the created item to be that of our project.
+		entity.setItemId(newId, this.spaceId);
 		entity.setCreatedTimestamp(new Date());
 		
-		if(entity.getCreatedBy().getUserId().get("email") == null)
-			entity.getCreatedBy().getUserId().put("email", userEmail);
-		if(entity.getCreatedBy().getUserId().get("space") == null)
-			entity.getCreatedBy().getUserId().put("space", userSpace);
+		//Update the info of the creating user to be those in the REST API /twins/items/{userSpace}/{userEmail})
+		entity.getCreatedBy().getUserId().put("email", userEmail);
+		entity.getCreatedBy().getUserId().put("space", userSpace);
+		
+		
 		
 		secondaryId = this.entityConverter.toSecondaryId(entity);
 		if(this.items.get(primaryId) == null) // No Map for this userSpace & userEmail
@@ -142,10 +145,18 @@ public class ItemsServiceMockup implements ItemsService {
 			throw new RuntimeException("could not find message by id: " + primaryId + "&" + secondaryId);// NullPointerException
 		}
 	}
+	
+	/**
+	 * Get all items created by UserId= {email: userEmail, space: userSpace}
+	 * 
+	 */
 	@Override
 	public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail) {
 		String primaryId = this.entityConverter.toPrimaryId(userSpace, userEmail);
-
+		
+		if(this.items.get(primaryId) == null) // If user didn't have any item he created
+			return new ArrayList<>();
+		
 		return this.items.get(primaryId)
 				.values()
 				.stream()

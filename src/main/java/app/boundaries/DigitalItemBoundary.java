@@ -117,4 +117,18 @@ public class DigitalItemBoundary implements Boundary{
 		this.itemAttributes = itemAttributes;
 	}
 
+	@Override
+	public String toString() {
+		return "DigitalItemBoundary:\n"
+				+ "itemId=" + itemId + "\n"
+				+ "type=" + type + "\n"
+				+ "name=" + name + "\n"
+				+ "active=" + active + "\n"
+				+ "createdTimestamp=" + createdTimestamp + "\n"
+				+ "createdBy=" + createdBy.getUserId() + "\n"
+				+ "location=" + location + "\n"
+				+ "itemAttributes=" + itemAttributes;
+	}
+	
+
 }
