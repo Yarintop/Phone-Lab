@@ -129,9 +129,9 @@ public class DummyData {
 
     private static final String[] roles = {"Manager", "Player", "Admin"};
     private static final String[][] users = {
-            {"dima", "dima@guy.com"},
-            {"yarin.mizrahiTfahot", "yarin@guy.com"},
-            {"rafi", "rafi@guy.com"}
+            {"dima" + getRandomIdString(100), "dima@guy.com" + getRandomIdString(100)},
+            {"yarin.mizrahiTfahot " + getRandomIdString(100), "yarin@guy.com" + getRandomIdString(100)},
+            {"rafi" + getRandomIdString(100), "rafi@guy.com" + getRandomIdString(100)}
     };
 
     public static UserBoundary getRandomUser() {
