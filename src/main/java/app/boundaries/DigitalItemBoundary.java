@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import app.jsonViews.Views;
 
@@ -115,6 +116,23 @@ public class DigitalItemBoundary implements Boundary{
 
 	public void setItemAttributes(Map<String, Object> itemAttributes) {
 		this.itemAttributes = itemAttributes;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		DigitalItemBoundary that = (DigitalItemBoundary) o;
+		return Objects.equals(itemId, that.itemId) && Objects.equals(type, that.type) &&
+				Objects.equals(name, that.name) && Objects.equals(active, that.active) &&
+				Objects.equals(createdTimestamp, that.createdTimestamp) &&
+				Objects.equals(createdBy, that.createdBy) && Objects.equals(location, that.location) &&
+				Objects.equals(itemAttributes, that.itemAttributes);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(itemId, type, name, active, createdTimestamp, createdBy, location, itemAttributes);
 	}
 
 	@Override

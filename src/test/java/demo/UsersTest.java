@@ -7,6 +7,7 @@ import app.boundaries.OperationBoundary;
 import app.boundaries.UserBoundary;
 import app.dummyData.DummyData;
 import app.jsonViews.Views;
+import app.twins.logic.UsersService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,13 +26,14 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes= Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UsersTest {
     private int port;
     private String baseUrl;
     private RestTemplate restTemplate;
     private String spaceId;
     private DummyData dataGenerator;
+    private UsersService usersService;
 
     /**
      * Sets the spaceId value from the application.properties file
@@ -53,6 +55,11 @@ public class UsersTest {
         this.dataGenerator = dataGenerator;
     }
 
+    @Autowired
+    public void setUserService(UsersService usersService) {
+        this.usersService = usersService;
+    }
+
     /**
      * Sets the port for the testing environment
      *
@@ -62,6 +69,7 @@ public class UsersTest {
     public void setPort(int port) {
         this.port = port;
     }
+
 
     @PostConstruct
     public void init() {
@@ -81,6 +89,11 @@ public class UsersTest {
 
     @AfterEach
     public void teardown() {
+        UserBoundary user = dataGenerator.getRandomUser();
+        user.setRole("Admin");
+        user.setEmail("remove@me.com");
+        usersService.createUser(user);
+        usersService.deleteAllUsers(spaceId, user.getUserId().get("email"));
         System.err.println("After test..");
     }
 
@@ -114,7 +127,7 @@ public class UsersTest {
 
         UserBoundary createdUser = entity.getBody(); // Getting the user that was created
 
-        assertThat(createdUser).isEqualToComparingFieldByFieldRecursively(user);
+        assertThat(createdUser).isEqualTo(user);
         // Checking that the user that was created is the same as the one that was given
     }
 
@@ -153,7 +166,6 @@ public class UsersTest {
 
         String url = this.baseUrl + "/" + user.getUserId().get("space") + "/" + user.getUserId().get("email");
         restTemplate.put(url, update, user.getUserId().get("space"), user.getUserId().get("email"));
-
 
 
         // Finally making sure the user updated by using GET

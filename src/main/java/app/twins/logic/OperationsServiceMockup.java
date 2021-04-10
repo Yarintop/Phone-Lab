@@ -65,7 +65,7 @@ public class OperationsServiceMockup implements OperationsService {
         OperationEntity entity = converter.toEntity(operation);
 
         //Generate mock ID, to simulate that an ID was created for this operation
-        String entityId = dataGenerator.getRandomId(1000000) + "&" + spaceId;
+        String entityId = dataGenerator.getRandomId() + "&" + spaceId;
         entity.setOperationId(entityId);
 
         //Save the entity in a collection
@@ -85,7 +85,7 @@ public class OperationsServiceMockup implements OperationsService {
         OperationEntity entity = converter.toEntity(operation);
 
         //Generate mock ID, to simulate that an ID was created for this operation
-        String entityId = dataGenerator.getRandomId(1000000) + "&" + spaceId;
+        String entityId = dataGenerator.getRandomId() + "&" + spaceId;
         entity.setOperationId(entityId);
 
         //Save the entity in a collection

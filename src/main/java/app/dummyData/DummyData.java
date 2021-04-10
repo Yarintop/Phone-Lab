@@ -11,6 +11,15 @@ import java.util.*;
 @Component
 public class DummyData {
 
+    private final String[] types = {"phone", "placeholder", "sparepart", "person"};
+    private final String[] names = {"donnu", "thing", "screw", "lg5"};
+    private final String[] roles = {"Manager", "Player", "Admin"};
+    private final String[][] users = {
+            {"dima", "dima@guy.com"},
+            {"yarin.mizrahiTfahot " , "yarin@guy.com"},
+            {"rafi", "rafi@guy.com"}
+    };
+
     private String spaceIdKey;
     private String spaceId;
     private String idKey;
@@ -45,16 +54,16 @@ public class DummyData {
         this.spaceId = spaceId;
     }
 
-    public String getRandomId(int bound) {
-        Random rand = new Random();
-        return String.valueOf(rand.nextInt(bound));
+    public String getRandomId() {
+        return String.valueOf(UUID.randomUUID());
     }
 
 
     public OperationBoundary getRandomOperation(boolean withId) {
         Map<String, String> itemId = new HashMap<>();
         itemId.put(spaceIdKey, spaceId);
-        itemId.put(idKey, getRandomId(10000000));
+
+        itemId.put(idKey, getRandomId());
 
         UserBoundary user = new UserBoundary(
                 "Random",
@@ -81,80 +90,16 @@ public class DummyData {
         if (withId) {
             Map<String, String> operationId = new HashMap<>();
             operationId.put(spaceIdKey, spaceId);
-            operationId.put(idKey, getRandomId(10000000));
+            operationId.put(idKey, getRandomId());
             operation.setOperationId(operationId);
         }
         return operation;
     }
-
-    ///////////////////////////////////////////////////////////
-    ////////////////After migration remove this////////////////
-    ///////////////////////////////////////////////////////////
-    private static String getRandomIdString(int bound) {
-        Random rand = new Random();
-        return String.valueOf(rand.nextInt(bound));
-    }
-
-
-    public static OperationBoundary getRandomOperation() {
-        Map<String, String> itemId = new HashMap<>();
-        itemId.put("space", "2021b.twins"); //TODO: pull it from a resource, make it less hard-coded.
-        itemId.put("id", getRandomIdString(10000));
-
-        UserBoundary user = new UserBoundary(
-                "Random",
-                "Name",
-                "Something",
-                "Else@else.com"
-        );
-
-        DigitalItemBoundary item = new DigitalItemBoundary(
-                itemId,
-                "RandomItem",
-                "RandomName",
-                false,
-                new Date(),
-                user,
-                new HashMap<>(),
-                new HashMap<>()
-        );
-
-        return new OperationBoundary(
-                getRandomIdString(10000),
-                "RandomOperation",
-                item,
-                user
-        );
-    }
-
-    private static final String[] roles = {"Manager", "Player", "Admin"};
-    private static final String[][] users = {
-            {"dima" + getRandomIdString(100), "dima@guy.com" + getRandomIdString(100)},
-            {"yarin.mizrahiTfahot " + getRandomIdString(100), "yarin@guy.com" + getRandomIdString(100)},
-            {"rafi" + getRandomIdString(100), "rafi@guy.com" + getRandomIdString(100)}
-    };
-
-    public static UserBoundary getRandomUser() {
-        Random rand = new Random();
-        String[] user = users[rand.nextInt(users.length)];
-        String role = roles[rand.nextInt(roles.length)];
-
-        return new UserBoundary(
-                role,
-                user[0],
-                user[0].toUpperCase().charAt(0) + "",
-                user[1]
-        );
-    }
-
-    private static final String[] types = {"phone", "placeholder", "sparepart", "person"};
-    private static final String[] names = {"donnu", "thing", "screw", "lg5"};
-
-    public static DigitalItemBoundary getRandomDigitalItem(String userSpace, String userEmail) {
+    public DigitalItemBoundary getRandomDigitalItem(String userSpace, String userEmail) {
         Random rand = new Random();
         // User ID
         Map<String, String> itemId = new HashMap<>();
-        itemId.put("id", getRandomIdString(10000));
+        itemId.put("id", getRandomId());
         itemId.put("space", userSpace);
 
         //Lat/Long
@@ -180,4 +125,16 @@ public class DummyData {
         );
     }
 
+    public UserBoundary getRandomUser() {
+        Random rand = new Random();
+        String[] user = users[rand.nextInt(users.length)];
+        String role = roles[rand.nextInt(roles.length)];
+
+        return new UserBoundary(
+                role,
+                user[0],
+                user[0].toUpperCase().charAt(0) + "",
+                user[1]
+        );
+    }
 }

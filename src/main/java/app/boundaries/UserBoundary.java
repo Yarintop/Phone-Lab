@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import app.jsonViews.Views;
 
@@ -89,5 +90,18 @@ public class UserBoundary implements Boundary
 
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		UserBoundary that = (UserBoundary) o;
+		return userId.equals(that.userId) && role.equals(that.role) && username.equals(that.username) && avatar.equals(that.avatar);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(userId, role, username, avatar);
 	}
 }

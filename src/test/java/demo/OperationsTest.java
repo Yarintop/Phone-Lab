@@ -3,6 +3,7 @@ package demo;
 import app.Application;
 import app.boundaries.DigitalItemBoundary;
 import app.boundaries.OperationBoundary;
+import app.boundaries.UserBoundary;
 import app.dummyData.DummyData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,6 +67,18 @@ public class OperationsTest {
         this.restTemplate = new RestTemplate();
         this.baseUrl = "http://localhost:" + this.port + "/twins/operations/";
 
+    }
+
+    @BeforeEach
+    public void setup() {
+        // init operations before each test
+        System.err.println("init before test..");
+    }
+
+
+    @AfterEach
+    public void teardown() {
+        System.err.println("After test..");
     }
 
     /**
