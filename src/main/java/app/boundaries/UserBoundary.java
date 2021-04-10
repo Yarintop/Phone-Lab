@@ -2,30 +2,32 @@ package app.boundaries;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import app.jsonViews.Views;
 
-public class UserBoundary
+public class UserBoundary implements Boundary
 {
 	@JsonView(Views.Public.class)
-	private Map<String, String> userId = new HashMap<>(); // This line might change
+	private Map<String, String> userId = new HashMap<>(); 
+	
+	@JsonView(Views.User.class)
+	private String role;
 
 	@JsonView(Views.User.class)
-	private String role = "undefined";
+	private String username;
 
 	@JsonView(Views.User.class)
-	private String username = "undefined";
-
-	@JsonView(Views.User.class)
-    private String avatar = "undefined";
+    private String avatar;
     
     public UserBoundary() { /* Default Constructor */ }
 
     public UserBoundary(String role, String username, String avatar, String email)
     {
         this.userId = new HashMap<>();
-        this.role = role;
+        this.role = role.toUpperCase();
         this.username = username;
         this.avatar = avatar;
         
@@ -88,5 +90,18 @@ public class UserBoundary
 
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		UserBoundary that = (UserBoundary) o;
+		return userId.equals(that.userId) && role.equals(that.role) && username.equals(that.username) && avatar.equals(that.avatar);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(userId, role, username, avatar);
 	}
 }

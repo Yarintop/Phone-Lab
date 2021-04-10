@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonView;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import app.jsonViews.Views;
 
-public class DigitalItemBoundary {
+public class DigitalItemBoundary implements Boundary{
 
 	@JsonView(Views.Public.class)
 	private Map<String, String> itemId = new HashMap<>(); // This line might change
@@ -63,6 +64,11 @@ public class DigitalItemBoundary {
 	public void setItemId(Map<String, String> itemId) {
 		this.itemId = itemId;
 	}
+	public void setItemId(String itemId, String itemSpace) {
+		this.itemId = new HashMap<>();
+		this.itemId.put("id", itemId);
+		this.itemId.put("space", itemSpace);
+	}
 
 	public String getType() {
 		return type;
@@ -111,5 +117,36 @@ public class DigitalItemBoundary {
 	public void setItemAttributes(Map<String, Object> itemAttributes) {
 		this.itemAttributes = itemAttributes;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		DigitalItemBoundary that = (DigitalItemBoundary) o;
+		return Objects.equals(itemId, that.itemId) && Objects.equals(type, that.type) &&
+				Objects.equals(name, that.name) && Objects.equals(active, that.active) &&
+				Objects.equals(createdTimestamp, that.createdTimestamp) &&
+				Objects.equals(createdBy, that.createdBy) && Objects.equals(location, that.location) &&
+				Objects.equals(itemAttributes, that.itemAttributes);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(itemId, type, name, active, createdTimestamp, createdBy, location, itemAttributes);
+	}
+
+	@Override
+	public String toString() {
+		return "DigitalItemBoundary:\n"
+				+ "itemId=" + itemId + "\n"
+				+ "type=" + type + "\n"
+				+ "name=" + name + "\n"
+				+ "active=" + active + "\n"
+				+ "createdTimestamp=" + createdTimestamp + "\n"
+				+ "createdBy=" + createdBy.getUserId() + "\n"
+				+ "location=" + location + "\n"
+				+ "itemAttributes=" + itemAttributes;
+	}
+	
 
 }

@@ -3,22 +3,67 @@ package app.dummyData;
 import app.boundaries.DigitalItemBoundary;
 import app.boundaries.OperationBoundary;
 import app.boundaries.UserBoundary;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
 public class DummyData {
-    private static String getRandomIdString(int bound) {
-        Random rand = new Random();
-        return String.valueOf(rand.nextInt(bound));
+
+    private final String[] types = {"phone", "placeholder", "sparepart", "person"};
+    private final String[] names = {"donnu", "thing", "screw", "lg5"};
+    private final String[] roles = {"Manager", "Player", "Admin"};
+    private final String[][] users = {
+            {"dima", "dima@guy.com"},
+            {"yarin.mizrahiTfahot " , "yarin@guy.com"},
+            {"rafi", "rafi@guy.com"}
+    };
+
+    private String spaceIdKey;
+    private String spaceId;
+    private String idKey;
+
+    /**
+     * Set the id key, to avoid hard coding the "id" as the key value (future proofing)
+     *
+     * @param idKey - the key for the id in the map values
+     */
+    @Value("${key.id:id}")
+    public void setIdKey(String idKey) {
+        this.idKey = idKey;
     }
 
-    // (Map<String, String> itemId, String type, String name, Boolean active,
-    //         Date createdTimestamp, UserBoundary createdBy, Map<String, Double> location,
-    //         Map<String, Object> itemAttributes) {
-    public static OperationBoundary getRandomOperation() {
+    /**
+     * Set the spaceId key, to avoid hard coding the "spaceId" as the key value (future proofing)
+     *
+     * @param spaceIdKey - the key for the spaceId in the map values
+     */
+    @Value("${key.space:spaceId}")
+    public void setSpaceIdKey(String spaceIdKey) {
+        this.spaceIdKey = spaceIdKey;
+    }
+
+    /**
+     * Set the spaceId , to avoid hard coding the "2021b.twins" as the key value (future proofing)
+     *
+     * @param spaceId - the value for the spaceId in the map values
+     */
+    @Value("${spring.application.name:2021b.twins}")
+    public void setSpaceId(String spaceId) {
+        this.spaceId = spaceId;
+    }
+
+    public String getRandomId() {
+        return String.valueOf(UUID.randomUUID());
+    }
+
+
+    public OperationBoundary getRandomOperation(boolean withId) {
         Map<String, String> itemId = new HashMap<>();
-        itemId.put("space", "2021b.twins"); //TODO: pull it from a resource, make it less hard-coded.
-        itemId.put("id", getRandomIdString(10000));
+        itemId.put(spaceIdKey, spaceId);
+
+        itemId.put(idKey, getRandomId());
 
         UserBoundary user = new UserBoundary(
                 "Random",
@@ -38,42 +83,23 @@ public class DummyData {
                 new HashMap<>()
         );
 
-        return new OperationBoundary(
-                getRandomIdString(10000),
-                "RandomOperation",
-                item,
-                user
-        );
+        OperationBoundary operation = new OperationBoundary();
+        operation.setOperationType("RandomOperation");
+        operation.setItem(item);
+        operation.setInvokedBy(user);
+        if (withId) {
+            Map<String, String> operationId = new HashMap<>();
+            operationId.put(spaceIdKey, spaceId);
+            operationId.put(idKey, getRandomId());
+            operation.setOperationId(operationId);
+        }
+        return operation;
     }
-
-    private static final String[] roles = {"bestGuy", "bank", "thug"};
-    private static final String[][] users = {
-            {"dima", "dima@guy.com"},
-            {"yarin.mizrahiTfahot", "yarin@guy.com"},
-            {"rafi", "rafi@guy.com"}
-    };
-
-    public static UserBoundary getRandomUser() {
-        Random rand = new Random();
-        String[] user = users[rand.nextInt(users.length)];
-        String role = roles[rand.nextInt(roles.length)];
-
-        return new UserBoundary(
-                role,
-                user[0],
-                user[0].toUpperCase().charAt(0) + "",
-                user[1]
-        );
-    }
-
-    private static final String[] types = {"phone", "placeholder", "sparepart", "person"};
-    private static final String[] names = {"donnu", "thing", "screw", "lg5"};
-
-    public static DigitalItemBoundary getRandomDigitalItem(String userSpace, String userEmail) {
+    public DigitalItemBoundary getRandomDigitalItem(String userSpace, String userEmail) {
         Random rand = new Random();
         // User ID
         Map<String, String> itemId = new HashMap<>();
-        itemId.put("id", getRandomIdString(10000));
+        itemId.put("id", getRandomId());
         itemId.put("space", userSpace);
 
         //Lat/Long
@@ -93,9 +119,22 @@ public class DummyData {
                 names[rand.nextInt(names.length)],
                 (rand.nextInt() % 2 == 0),
                 new Date(),
-                new UserBoundary(userEmail,userSpace),
+                new UserBoundary(userEmail, userSpace),
                 latlng,
                 attrs
+        );
+    }
+
+    public UserBoundary getRandomUser() {
+        Random rand = new Random();
+        String[] user = users[rand.nextInt(users.length)];
+        String role = roles[rand.nextInt(roles.length)];
+
+        return new UserBoundary(
+                role,
+                user[0],
+                user[0].toUpperCase().charAt(0) + "",
+                user[1]
         );
     }
 }

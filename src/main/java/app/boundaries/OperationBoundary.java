@@ -5,10 +5,11 @@ import com.fasterxml.jackson.annotation.JsonView;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import app.jsonViews.Views;
 
-public class OperationBoundary {
+public class OperationBoundary implements Boundary {
 
     @JsonView(Views.Public.class)
     private Map<String, String> operationId = new HashMap<>();
@@ -97,5 +98,22 @@ public class OperationBoundary {
 
     public void setOperationAttributes(Map<String, Object> operationAttributes) {
         this.operationAttributes = operationAttributes;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OperationBoundary that = (OperationBoundary) o;
+        return Objects.equals(operationId, that.operationId) &&
+                Objects.equals(operationType, that.operationType) &&
+                Objects.equals(item, that.item) && Objects.equals(createdTimestamp, that.createdTimestamp) &&
+                Objects.equals(invokedBy, that.invokedBy) &&
+                Objects.equals(operationAttributes, that.operationAttributes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(operationId, operationType, item, createdTimestamp, invokedBy, operationAttributes);
     }
 }
