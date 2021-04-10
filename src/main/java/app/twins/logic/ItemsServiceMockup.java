@@ -145,10 +145,18 @@ public class ItemsServiceMockup implements ItemsService {
 			throw new RuntimeException("could not find message by id: " + primaryId + "&" + secondaryId);// NullPointerException
 		}
 	}
+	
+	/**
+	 * Get all items created by UserId= {email: userEmail, space: userSpace}
+	 * 
+	 */
 	@Override
 	public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail) {
 		String primaryId = this.entityConverter.toPrimaryId(userSpace, userEmail);
-
+		
+		if(this.items.get(primaryId) == null) // If user didn't have any item he created
+			return new ArrayList<>();
+		
 		return this.items.get(primaryId)
 				.values()
 				.stream()

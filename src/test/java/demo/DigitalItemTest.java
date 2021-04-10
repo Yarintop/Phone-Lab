@@ -320,22 +320,6 @@ public class DigitalItemTest {
 		
 		// Make sure we got 2 items from get all as we only added 2 items
 		assertThat(response).isNotNull().hasSize(2);
-		
-//		System.out.println(response[0].getName());
-//		System.out.println(response[0].getType());
-//		System.out.println(response[0].getActive());
-//		System.out.println(response[0].getLocation());
-//		System.out.println(response[0].getItemAttributes());
-//		System.out.println(response[0].getItemId());
-//		System.out.println(response[0].getCreatedBy().getUserId());
-//		
-//		System.out.println(response[1].getName());
-//		System.out.println(response[1].getType());
-//		System.out.println(response[1].getActive());
-//		System.out.println(response[1].getLocation());
-//		System.out.println(response[1].getItemAttributes());
-//		System.out.println(response[1].getItemId());
-//		System.out.println(response[1].getCreatedBy().getUserId());
 	}
 	
 }
