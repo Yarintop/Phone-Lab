@@ -43,10 +43,9 @@ public class OperationBoundary implements Boundary {
      * @param item          - The item that the operation require {@link DigitalItemBoundary}
      * @param invokedBy     - The user whom invoked the operation {@link UserBoundary}
      */
-    public OperationBoundary(String id, String operationType, DigitalItemBoundary item, UserBoundary invokedBy) {
+    public OperationBoundary(Map<String,String> id, String operationType, DigitalItemBoundary item, UserBoundary invokedBy) {
         this();
-        this.operationId.put("space", "2021b.twins"); //TODO: pull it from a resource, make it less hard-coded.
-        this.operationId.put("id", id);
+        this.operationId = id;
         this.operationType = operationType;
         this.item = item;
         this.invokedBy = invokedBy;

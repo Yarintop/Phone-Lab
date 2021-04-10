@@ -2,7 +2,6 @@ package app.boundaries;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -24,7 +23,8 @@ public class UserBoundary implements Boundary
     
     public UserBoundary() { /* Default Constructor */ }
 
-    public UserBoundary(String role, String username, String avatar, String email)
+	// @Value("${spring.application.name:2021b.notdef}")
+    public UserBoundary(String role, String username, String avatar, String email, String space)
     {
         this.userId = new HashMap<>();
         this.role = role.toUpperCase();
@@ -32,7 +32,7 @@ public class UserBoundary implements Boundary
         this.avatar = avatar;
         
         // Setting userId's details
-        userId.put("space", "2021b.twins");
+        userId.put("space", space);
         userId.put("email", email);
     }
     
@@ -46,10 +46,10 @@ public class UserBoundary implements Boundary
     }
 
     // Constructor to create a new user directly from a NewUserDetails object
-    public UserBoundary(NewUserDetails userDetails)
+    public UserBoundary(NewUserDetails userDetails, String space)
     {
     	this(userDetails.getRole(), userDetails.getUsername(), 
-    			userDetails.getAvatar(), userDetails.getEmail());
+    			userDetails.getAvatar(), userDetails.getEmail(), space);
     }
 
 	public Map<String, String> getUserId() {

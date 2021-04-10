@@ -31,7 +31,7 @@ public class UsersServiceMockup implements UsersService {
     }
 
     // Sets the space ID
-    @Value("${spring.application.name:2021b.twins}")
+    @Value("${spring.application.name:2021b.notdef}")
     public void setSpaceId(String spaceId) {
         this.spaceId = spaceId;
     }

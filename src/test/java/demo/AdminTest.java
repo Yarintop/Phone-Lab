@@ -2,10 +2,6 @@ package demo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.annotation.PostConstruct;
 
 import app.twins.logic.ItemsService;
@@ -19,10 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.Application;
 import app.boundaries.DigitalItemBoundary;
@@ -47,7 +40,7 @@ public class AdminTest {
      *
      * @param spaceId the loaded spaceId value, default would be "2021b.twins"
      */
-    @Value("${spring.application.name:2021b.twins}")
+    @Value("${spring.application.name:2021b.notdef}")
     public void setSpaceId(String spaceId) {
         this.spaceId = spaceId;
     }

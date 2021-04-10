@@ -49,7 +49,7 @@ public class DummyData {
      *
      * @param spaceId - the value for the spaceId in the map values
      */
-    @Value("${spring.application.name:2021b.twins}")
+    @Value("${spring.application.name:2021b.notdef}")
     public void setSpaceId(String spaceId) {
         this.spaceId = spaceId;
     }
@@ -69,7 +69,8 @@ public class DummyData {
                 "Random",
                 "Name",
                 "Something",
-                "Else@else.com"
+                "Else@else.com",
+                this.spaceId
         );
 
         DigitalItemBoundary item = new DigitalItemBoundary(
@@ -134,7 +135,8 @@ public class DummyData {
                 role,
                 user[0],
                 user[0].toUpperCase().charAt(0) + "",
-                user[1]
+                user[1],
+                this.spaceId
         );
     }
 }

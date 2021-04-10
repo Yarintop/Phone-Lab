@@ -1,6 +1,7 @@
 package app.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,12 +21,23 @@ public class UserController {
 
     // New Part
     private UsersService userService;
+    private String spaceId;
 
     @Autowired
     public UserController(UsersService userService) {
         this.userService = userService;
     }
     // New Part
+
+    /**
+     * Sets the spaceId value from the application.properties file
+     *
+     * @param spaceId the loaded spaceId value, default would be "2021b.twins"
+     */
+    @Value("${spring.application.name:2021b.notdef}")
+    public void setSpaceId(String spaceId) {
+        this.spaceId = spaceId;
+    }
 
 	/**
 	 * Adds a new user to the system
@@ -37,7 +49,7 @@ public class UserController {
     public UserBoundary createNewUsers(@RequestBody NewUserDetails newUserDetails) {
 
         // Creating a new UserBoundary object from the details
-        UserBoundary userBoundary = new UserBoundary(newUserDetails);
+        UserBoundary userBoundary = new UserBoundary(newUserDetails, this.spaceId);
         
         // Saving the user to the system
         userBoundary = this.userService.createUser(userBoundary);
@@ -74,5 +86,4 @@ public class UserController {
 
        this.userService.updateUser(userSpace, userEmail, user);
     }
-
 }

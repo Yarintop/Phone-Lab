@@ -1,25 +1,19 @@
 package demo;
 
 import app.Application;
-import app.boundaries.DigitalItemBoundary;
 import app.boundaries.OperationBoundary;
-import app.boundaries.UserBoundary;
 import app.dummyData.DummyData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,18 +23,8 @@ public class OperationsTest {
     private int port;
     private String baseUrl;
     private RestTemplate restTemplate;
-    private String spaceId;
     private DummyData dataGenerator;
 
-    /**
-     * Sets the spaceId value from the application.properties file
-     *
-     * @param spaceId the loaded spaceId value, default would be "2021b.twins"
-     */
-    @Value("${spring.application.name:2021b.twins}")
-    public void setSpaceId(String spaceId) {
-        this.spaceId = spaceId;
-    }
 
     /**
      * This function will set the dummy data generator
@@ -123,7 +107,6 @@ public class OperationsTest {
         OperationBoundary operation = dataGenerator.getRandomOperation(false);
         ResponseEntity<OperationBoundary> entity = restTemplate.postForEntity(baseUrl + "async", operation, OperationBoundary.class);
         int returnCode = entity.getStatusCodeValue();
-        MediaType contentType = entity.getHeaders().getContentType();
         OperationBoundary res = entity.getBody();
 
         // THEN the server invokes the operation and return JSON result

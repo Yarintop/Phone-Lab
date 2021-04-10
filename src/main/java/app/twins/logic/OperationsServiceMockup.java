@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class OperationsServiceMockup implements OperationsService {
@@ -25,7 +24,7 @@ public class OperationsServiceMockup implements OperationsService {
      *
      * @param spaceId the loaded spaceId value, default would be "2021b.twins"
      */
-    @Value("${spring.application.name:2021b.twins}")
+    @Value("${spring.application.name:2021b.notdef}")
     public void setSpaceId(String spaceId) {
         this.spaceId = spaceId;
     }

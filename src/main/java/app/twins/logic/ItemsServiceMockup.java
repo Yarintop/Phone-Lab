@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import app.boundaries.DigitalItemBoundary;
-import app.boundaries.OperationBoundary;
-import app.boundaries.UserBoundary;
 import app.converters.ItemConverter;
-import app.converters.OperationConverter;
 import app.twins.data.ItemEntity;
 
 @Service
@@ -33,7 +30,7 @@ public class ItemsServiceMockup implements ItemsService {
      *
      * @param spaceId the loaded spaceId value, default would be "2021b.twins"
      */
-    @Value("${spring.application.name:2021b.twins}")
+    @Value("${spring.application.name:2021b.notdef}")
     public void setSpaceId(String spaceId) {
         this.spaceId = spaceId;
     }

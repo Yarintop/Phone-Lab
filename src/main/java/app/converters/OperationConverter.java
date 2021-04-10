@@ -85,7 +85,6 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
      * @return String that represent the id in the format: id&spaceId
      */
     public String convertMapKey(Map<String, String> operationIdMap) {
-        String operationIdString = "";
         String id = operationIdMap.get(idKey);
         String spaceId = operationIdMap.get(spaceIdKey);
         return id + "&" + spaceId;

@@ -2,7 +2,6 @@ package demo;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.web.client.RestTemplate;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import app.Application;
 import app.boundaries.DigitalItemBoundary;
@@ -36,7 +34,7 @@ public class DigitalItemTest {
      *
      * @param spaceId the loaded spaceId value, default would be "2021b.twins"
      */
-    @Value("${spring.application.name:2021b.twins}")
+    @Value("${spring.application.name:2021b.notdef}")
     public void setSpaceId(String spaceId) {
         this.spaceId = spaceId;
     }
@@ -157,12 +155,12 @@ public class DigitalItemTest {
 		String space = this.spaceId;
 		String email = "lol@gmail.com";
 		String theUrl = this.baseUrl + space + "/" + email;
-        ObjectMapper mapper = new ObjectMapper();
+        // ObjectMapper mapper = new ObjectMapper();
 		DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
 		
-		Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
+		// Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
 		DigitalItemBoundary actualItem = this.restTemplate
-			.postForObject(theUrl, myItem, DigitalItemBoundary.class);
+			.postForObject(theUrl, randomItem, DigitalItemBoundary.class);
 		
 		assertTwoItemsAreEqual(actualItem, randomItem);
 	}
@@ -218,12 +216,12 @@ public class DigitalItemTest {
 		String space = this.spaceId;
 		String email = "lol@gmail.com";
 		String theUrl = this.baseUrl + space + "/" + email;
-        ObjectMapper mapper = new ObjectMapper();
+        // ObjectMapper mapper = new ObjectMapper();
 		DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
 		
 		// Add an item to the existing items so that I can use get specific item
-		Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
-		DigitalItemBoundary actualItem = this.restTemplate.postForObject(theUrl, myItem, DigitalItemBoundary.class);
+		// Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
+		DigitalItemBoundary actualItem = this.restTemplate.postForObject(theUrl, randomItem, DigitalItemBoundary.class);
 		
 		
 		String itemId = actualItem.getItemId().get("id");
@@ -258,12 +256,12 @@ public class DigitalItemTest {
 		String space = this.spaceId;
 		String email = "lol@gmail.com";
 		String theUrl = this.baseUrl + space + "/" + email;
-        ObjectMapper mapper = new ObjectMapper();
+        // ObjectMapper mapper = new ObjectMapper();
 		DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
 		
 		// First add an item to the existing items so that I can update it
-		Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
-		DigitalItemBoundary actualItem = this.restTemplate.postForObject(theUrl, myItem, DigitalItemBoundary.class);
+		// Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
+		DigitalItemBoundary actualItem = this.restTemplate.postForObject(theUrl, randomItem, DigitalItemBoundary.class);
 		
 		
 		String itemId = actualItem.getItemId().get("id");
@@ -306,14 +304,14 @@ public class DigitalItemTest {
 		String email = "lol@gmail.com";
 		String theUrl = this.baseUrl + space + "/" + email;
 
-        ObjectMapper mapper = new ObjectMapper();
+        // ObjectMapper mapper = new ObjectMapper();
 		DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
-		Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
+		// Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
 		
 
 		// Add items to the existing items so that I can get all after that
-		this.restTemplate.postForObject(theUrl, myItem, DigitalItemBoundary.class);
-		this.restTemplate.postForObject(theUrl, myItem, DigitalItemBoundary.class);
+		this.restTemplate.postForObject(theUrl, randomItem, DigitalItemBoundary.class);
+		this.restTemplate.postForObject(theUrl, randomItem, DigitalItemBoundary.class);
 		
 		DigitalItemBoundary[] response = this.restTemplate
 			.getForEntity(theUrl, DigitalItemBoundary[].class).getBody();

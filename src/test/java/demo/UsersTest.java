@@ -1,12 +1,9 @@
 package demo;
 
 import app.Application;
-import app.boundaries.DigitalItemBoundary;
 import app.boundaries.NewUserDetails;
-import app.boundaries.OperationBoundary;
 import app.boundaries.UserBoundary;
 import app.dummyData.DummyData;
-import app.jsonViews.Views;
 import app.twins.logic.UsersService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,14 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,7 +34,7 @@ public class UsersTest {
      *
      * @param spaceId the loaded spaceId value, default would be "2021b.twins"
      */
-    @Value("${spring.application.name:2021b.twins}")
+    @Value("${spring.application.name:2021b.notdef}")
     public void setSpaceId(String spaceId) {
         this.spaceId = spaceId;
     }
@@ -161,7 +155,7 @@ public class UsersTest {
         // Then updating the user by using PUT
 
         // Details to update at the user (Fields with null won't be updated)
-        UserBoundary update = new UserBoundary("Admin", null, null, "new@email.com");
+        UserBoundary update = new UserBoundary("Admin", null, null, "new@email.com", this.spaceId);
 
         String url = this.baseUrl + "/" + user.getUserId().get("space") + "/" + user.getUserId().get("email");
         restTemplate.put(url, update, user.getUserId().get("space"), user.getUserId().get("email"));
