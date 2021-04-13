@@ -1,6 +1,11 @@
 package app.twins.data;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@javax.persistence.Entity
+@Table(name="USERS")
 public class UserEntity implements Entity {
 	
 	private String space;
@@ -15,8 +20,8 @@ public class UserEntity implements Entity {
 
     
     public UserEntity() { /* Default Constructor */ }
-    
-    
+
+	@Column(name="DOMAIN")
 	public String getSpace() {
 		return space;
 	}
@@ -24,7 +29,7 @@ public class UserEntity implements Entity {
 	public void setSpace(String space) {
 		this.space = space;
 	}
-
+	@Id
 	public String getEmail() {
 		return email;
 	}
