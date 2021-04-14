@@ -29,9 +29,18 @@ public class UserEntity implements Entity {
 	public void setSpace(String space) {
 		this.space = space;
 	}
-	@Id
+
 	public String getEmail() {
 		return email;
+	}
+
+	@Id
+	public String getKey() { // Creates and returns the key of the user to be used as ID
+    	return (this.getSpace() + "&" + this.getEmail());
+	}
+
+	public void setKey(String key) { // Defined a dummy setter to avoid errors
+		return;
 	}
 
 	public void setEmail(String email) {

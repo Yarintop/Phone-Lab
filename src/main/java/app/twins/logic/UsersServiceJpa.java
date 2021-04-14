@@ -3,6 +3,9 @@ package app.twins.logic;
 import app.boundaries.UserBoundary;
 import app.converters.UserConverter;
 import app.dao.UserDao;
+import app.exceptions.BadRequestException;
+import app.exceptions.NoPermissionException;
+import app.exceptions.NotFoundException;
 import app.twins.data.UserEntity;
 import app.twins.data.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,44 +13,43 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-//@Service
+@Service
 public class UsersServiceJpa implements UsersService {
-
 
     private String spaceId;
     private UserConverter converter;
     private UserDao usersDao; // Users data
 
-
-    public UsersServiceJpa() {
-
+    @Autowired
+    public void setUsersDao(UserDao usersDao) {
+        this.usersDao = usersDao;
     }
+
     @Autowired
     public void setUserConverter(UserConverter converter) {
         this.converter = converter;
     }
 
     // Sets the space ID
-    @Value("${spring.application.name:2021b.notdef}")
+    @Value("${spring.application.name:${spring.application.name:2021b.notdef}}")
     public void setSpaceId(String spaceId) {
         this.spaceId = spaceId;
     }
 
+
     @Override
+    @Transactional
     public UserBoundary createUser(UserBoundary user) throws RuntimeException {
 
         if (user == null)  // If user doesn't have email
-            throw (new RuntimeException("User can't be null")); // User can't be null
+            throw (new BadRequestException("User can't be null")); // User can't be null
 
         if (user.getUserId().get("email") == null)  // If user doesn't have email
-            throw (new RuntimeException("Can't create a user without email")); // Users must have email
+            throw (new BadRequestException("Can't create a user without an email")); // Users must have email
 
         // Making sure the user has a valid role (Player, Manager or Admin)
         try {
@@ -66,8 +68,8 @@ public class UsersServiceJpa implements UsersService {
         // Generating key
         String key = userEntity.getSpace() + "&" + userEntity.getEmail();
 
-        if (users.get(key) == null) // Making sure the user is a new user in the system
-            this.users.put(key, userEntity);
+        if (!this.usersDao.findById(key).isPresent()) // Making sure the user is a new user in the system
+            this.usersDao.save(userEntity); // Saving user to the database
         else
             throw (new RuntimeException("There is already a user with email: " + user.getUserId().get("email")));
 
@@ -76,30 +78,35 @@ public class UsersServiceJpa implements UsersService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserBoundary login(String userSpace, String userEmail) throws RuntimeException {
 
         // Getting key
         String key = userSpace + "&" + userEmail;
-        UserEntity res = users.get(key);
+        Optional<UserEntity> res = usersDao.findById(key);
 
         // Making sure the user exists
-        if (res == null)
-            throw (new RuntimeException("Could not find user with the given email and space"));
+        if (!res.isPresent())
+            throw (new NotFoundException("Could not find user with the given email and space"));
 
-        return this.converter.toBoundary(res); // Returning result
+        return this.converter.toBoundary(res.get()); // Returning result
     }
 
     @Override
+    @Transactional
     public UserBoundary updateUser(String userSpace, String userEmail, UserBoundary update) throws RuntimeException {
 
         // Getting key
         String key = userSpace + "&" + userEmail;
-        UserEntity user = users.get(key);
+        Optional<UserEntity> optionalUser = this.usersDao.findById(key);
         UserEntity updateEntity = this.converter.toEntity(update);
-        
+
         // In case user doesn't exist
-        if (user == null)
-            throw (new RuntimeException("Could not find user with the given email and space"));
+        if (!optionalUser.isPresent()) {
+            throw (new NotFoundException("Could not find user with the given email and space"));
+        }
+
+        UserEntity user = optionalUser.get(); // Getting the user itself from the response object
 
         // Updating only the desired fields
         if (updateEntity.getAvatar() != null)
@@ -111,6 +118,8 @@ public class UsersServiceJpa implements UsersService {
         if (updateEntity.getUsername() != null)
             user.setUsername(updateEntity.getUsername());
 
+        this.usersDao.save(user); // Updating the user in the database
+
         return this.converter.toBoundary(user); // Returning the boundary object of the user
     }
 
@@ -118,47 +127,51 @@ public class UsersServiceJpa implements UsersService {
     @Transactional(readOnly = true)
     public List<UserBoundary> getAllUsers(String adminSpace, String adminEmail) throws RuntimeException {
 
+        // Getting key and user to check if they are an admin
+        String key = adminSpace + "&" + adminEmail;
+        Optional<UserEntity> optionalUser = this.usersDao.findById(key);
 
-        Iterable<UserEntity>  allEntities = this.usersDao
+        // Checking if the user exists in the database
+        if (!optionalUser.isPresent())
+            throw (new NotFoundException("Could not find user with the given email and space"));
+
+        // Getting the user itself after finding out they exist
+        UserEntity user = optionalUser.get();
+
+        // If the user is not an admin
+        if (user.getRole() != UserRole.ADMIN)
+            throw (new NoPermissionException("User doesn't have permissions"));
+
+        Iterable<UserEntity> allEntities = this.usersDao
                 .findAll();
 
         return StreamSupport
                 .stream(allEntities.spliterator(), false) // get stream from iterable
                 .map(this.converter::toBoundary)
                 .collect(Collectors.toList());
-        /*// Getting key and user
-        String key = adminSpace + "&" + adminEmail;
-        UserEntity user = users.get(key);
-        
-        if (user == null)
-        throw (new RuntimeException("Could not find user with the given email and space"));
-
-        if (user.getRole() != UserRole.ADMIN)
-            throw (new RuntimeException("User doesn't have permissions"));
-
-
-        return users.values().stream().map(this.converter::toBoundary).collect(Collectors.toList());*/
     }
 
     @Override
+    @Transactional
     public void deleteAllUsers(String adminSpace, String adminEmail) throws RuntimeException {
 
-        Iterable<UserEntity>  allEntities = this.usersDao
-                .findAll();
-
-        allEntities.iterator().remove();//maybe??
-
-
-        /*// Getting key and user
+        // Getting key and user to check if they are an admin
         String key = adminSpace + "&" + adminEmail;
-        UserEntity user = users.get(key);
+        Optional<UserEntity> optionalUser = this.usersDao.findById(key);
 
-        if (user == null)
-            throw (new RuntimeException("Could not find user with the given email and space"));
+        // Checking if the user exists in the database
+        if (!optionalUser.isPresent())
+            throw (new NotFoundException("Could not find user with the given email and space"));
 
+        // Getting the user itself after finding out they exist
+        UserEntity user = optionalUser.get();
+
+        // If the user is not an admin
         if (user.getRole() != UserRole.ADMIN)
-            throw (new RuntimeException("User doesn't have permissions"));
+            throw (new NoPermissionException("User doesn't have permissions"));
 
-        this.users.clear();*/
+        // Deleting all the users from the users table
+        this.usersDao.deleteAll();
+
     }
 }
