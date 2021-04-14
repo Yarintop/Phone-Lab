@@ -265,7 +265,7 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.200</version>
-            <scope>test</scope> <!-- Not for production, will be used for testing & development only -->
+            <scope>runtime</scope> <!-- Not for production, will be used for testing & development only -->
         </dependency>
         <dependency>
             <groupId>org.hibernate.common</groupId>
