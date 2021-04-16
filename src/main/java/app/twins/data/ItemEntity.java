@@ -74,7 +74,5 @@ public class ItemEntity implements Entity {
 	public void setItemAttributes(Map<String, Object> itemAttributes) {
 		this.itemAttributes = itemAttributes;
 	}
-	
-	
 }
 
