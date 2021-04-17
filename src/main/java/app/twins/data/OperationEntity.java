@@ -3,10 +3,15 @@ package app.twins.data;
 import app.boundaries.DigitalItemBoundary;
 import app.boundaries.UserBoundary;
 
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@javax.persistence.Entity
+@Table(name = "OPERATIONS")
 public class OperationEntity implements Entity {
     private String operationId = "";
     private String operationType = "undefined";
@@ -18,6 +23,7 @@ public class OperationEntity implements Entity {
     public OperationEntity() {
     }
 
+    @Id
     public String getOperationId() {
         return operationId;
     }
@@ -38,6 +44,7 @@ public class OperationEntity implements Entity {
         this.operationType = operationType;
     }
 
+    @Transient
     public DigitalItemBoundary getItem() {
         return item;
     }
@@ -54,6 +61,7 @@ public class OperationEntity implements Entity {
         this.createdTimestamp = createdTimestamp;
     }
 
+    @Transient
     public UserBoundary getInvokedBy() {
         return invokedBy;
     }
@@ -62,6 +70,7 @@ public class OperationEntity implements Entity {
         this.invokedBy = invokedBy;
     }
 
+    @Transient
     public Map<String, Object> getOperationAttributes() {
         return operationAttributes;
     }
