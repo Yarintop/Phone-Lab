@@ -1,6 +1,5 @@
 package app.twins.logic;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import app.boundaries.DigitalItemBoundary;
 import app.converters.ItemConverter;
+import app.exceptions.NotFoundException;
 import app.twins.data.ItemEntity;
 
 @Service
@@ -131,7 +131,7 @@ public class ItemsServiceMockup implements ItemsService {
 			
 		}else {
 			// TODO have server return status 404 here
-			throw new RuntimeException("could not find message by id: " + itemKey);// NullPointerException
+			throw new NotFoundException("could not find message by id: " + itemKey);// NullPointerException
 		}
 	}
 	
@@ -157,7 +157,7 @@ public class ItemsServiceMockup implements ItemsService {
 			return boundary;
 		}else {
 			// TODO have server return status 404 here
-			throw new RuntimeException("could not find message by id: " + itemKey);// NullPointerException
+			throw new NotFoundException("could not find message by id: " + itemKey);// NullPointerException
 		}
 	}
 	@Override
