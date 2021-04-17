@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -45,11 +47,19 @@ public class UsersServiceJpa implements UsersService {
     @Transactional
     public UserBoundary createUser(UserBoundary user) throws RuntimeException {
 
+        Pattern valid_email_regex = Pattern.compile("[A-Z0-9_.]+@([A-Z0-9]+\\.)+[A-Z0-9]{2,6}$", Pattern.CASE_INSENSITIVE);
+
         if (user == null)  // If user doesn't have email
             throw (new BadRequestException("User can't be null")); // User can't be null
 
         if (user.getUserId().get("email") == null)  // If user doesn't have email
             throw (new BadRequestException("Can't create a user without an email")); // Users must have email
+
+        Matcher matcher = valid_email_regex.matcher(user.getUserId().get("email"));
+
+        if (!matcher.find()) {
+            throw (new BadRequestException("Email address is invalid " + user.getUserId().get("email")));
+        }
 
         // Making sure the user has a valid role (Player, Manager or Admin)
         try {
@@ -61,6 +71,10 @@ public class UsersServiceJpa implements UsersService {
             user.setRole("PLAYER");
         }
 
+        if (user.getAvatar() == null || user.getAvatar().isEmpty()) {
+            throw (new BadRequestException("Invalid user avatar!!"));
+        }
+
         // Adding user to the system
         UserEntity userEntity = this.converter.toEntity(user);
         userEntity.setSpace(spaceId); // Setting the user's space
@@ -68,10 +82,11 @@ public class UsersServiceJpa implements UsersService {
         // Generating key
         String key = userEntity.getSpace() + "&" + userEntity.getEmail();
 
+
         if (!this.usersDao.findById(key).isPresent()) // Making sure the user is a new user in the system
             this.usersDao.save(userEntity); // Saving user to the database
         else
-            throw (new RuntimeException("There is already a user with email: " + user.getUserId().get("email")));
+            throw (new BadRequestException("There is already a user with email: " + user.getUserId().get("email")));
 
 
         return this.converter.toBoundary(userEntity); // Just testing the converter
@@ -109,11 +124,17 @@ public class UsersServiceJpa implements UsersService {
         UserEntity user = optionalUser.get(); // Getting the user itself from the response object
 
         // Updating only the desired fields
-        if (updateEntity.getAvatar() != null)
+        if (updateEntity.getAvatar() != null) {
+            if (updateEntity.getAvatar().isEmpty())
+                throw (new BadRequestException("Invalid user avatar!!"));
+
             user.setAvatar(updateEntity.getAvatar());
+        }
+
 
         if (updateEntity.getRole() != null)
             user.setRole(updateEntity.getRole());
+
 
         if (updateEntity.getUsername() != null)
             user.setUsername(updateEntity.getUsername());

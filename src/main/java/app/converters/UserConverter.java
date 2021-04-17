@@ -1,6 +1,7 @@
 package app.converters;
 
 import app.boundaries.UserBoundary;
+import app.exceptions.BadRequestException;
 import app.twins.data.UserEntity;
 import app.twins.data.UserRole;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,11 @@ public class UserConverter implements EntityConverter<UserEntity, UserBoundary> 
             ue.setEmail(boundaryObject.getUserId().get("email"));
         }
         if (boundaryObject.getRole() != null) {
-            ue.setRole(UserRole.valueOf(boundaryObject.getRole().toUpperCase()));
+            try {
+                ue.setRole(UserRole.valueOf(boundaryObject.getRole().toUpperCase()));
+            }catch (IllegalArgumentException e){
+                throw (new BadRequestException("Invalid user Role!!"));
+            }
         }
         return ue;
     }
