@@ -9,7 +9,7 @@
             <plugin> <!--This plugin is for building a jar file for the Spring Boot Application-->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.4.3</version>
+                <version>2.4.4</version>
                 <executions>
                     <execution>
                         <goals>
@@ -265,7 +265,7 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.200</version>
-            <scope>test</scope> <!-- Not for production, will be used for testing & development only -->
+<!--            <scope>test</scope> &lt;!&ndash; Not for production, will be used for testing & development only &ndash;&gt;-->
         </dependency>
         <dependency>
             <groupId>org.hibernate.common</groupId>
