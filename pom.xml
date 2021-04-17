@@ -29,7 +29,7 @@
 
     <groupId>app.integrative</groupId>
     <artifactId>server</artifactId>
-    <version>0.0.4</version> <!--TODO: Make it a variable so it could be changed easily-->
+    <version>${revision}</version>
     <name>Server Side</name>
     <description>The server side for the PhoneRepair system</description>
     <properties>
