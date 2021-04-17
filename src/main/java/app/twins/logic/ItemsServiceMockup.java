@@ -20,7 +20,7 @@ import app.twins.data.ItemEntity;
 @Service
 public class ItemsServiceMockup implements ItemsService {
 	
-	private Map<String, Map<String, ItemEntity>> items;
+	private Map<String,ItemEntity> items;
     private String spaceId;
 	private ItemConverter entityConverter;
 	
@@ -55,26 +55,19 @@ public class ItemsServiceMockup implements ItemsService {
 	public DigitalItemBoundary createItem(String userSpace, String userEmail, DigitalItemBoundary item) {
 		userSpace = this.spaceId;
 		String newId = UUID.randomUUID().toString();
-		String primaryId = this.entityConverter.toPrimaryId(userSpace, userEmail);
-		String secondaryId = "";
+		String itemKey = this.entityConverter.toSecondaryId(userSpace, newId);
 		ItemEntity entity = this.entityConverter.toEntity(item);
 		
 		// Set space of the created item to be that of our project.
-		entity.setItemId(newId, this.spaceId);
+		entity.setItemId(newId, userSpace);
 		entity.setCreatedTimestamp(new Date());
 		
 		//Update the info of the creating user to be those in the REST API /twins/items/{userSpace}/{userEmail})
 		entity.getCreatedBy().getUserId().put("email", userEmail);
 		entity.getCreatedBy().getUserId().put("space", userSpace);
 		
-		
-		
-		secondaryId = this.entityConverter.toSecondaryId(entity);
-		if(this.items.get(primaryId) == null) // No Map for this userSpace & userEmail
-			this.items.put(primaryId, new HashMap<>()); // No need for synchronized as it happens on the wrapper Map (Maybe?)
-		
-		this.items.get(primaryId).put(secondaryId, entity);
-		
+		this.items.put(itemKey, entity);
+				
 		return this.entityConverter.toBoundary(entity);
 	}
 	
@@ -82,12 +75,11 @@ public class ItemsServiceMockup implements ItemsService {
 	@Override
 	public DigitalItemBoundary updateItem(String userSpace, String userEmail, String itemSpace, String itemId,
 			DigitalItemBoundary update) {
-		String primaryId = this.entityConverter.toPrimaryId(userSpace, userEmail);
-		String secondaryId = this.entityConverter.toSecondaryId(itemSpace, itemId);
+		String itemKey = this.entityConverter.toSecondaryId(itemSpace, itemId);
 		
 		// get existing message from mockup database
-		if (this.items.get(primaryId) != null && this.items.get(primaryId).get(secondaryId) != null) {
-			ItemEntity existing = this.items.get(primaryId).get(secondaryId);
+		if (this.items.get(itemKey) != null) {
+			ItemEntity existing = this.items.get(itemKey);
 			boolean dirty = false;
 			
 			// update collection and return update
@@ -131,7 +123,7 @@ public class ItemsServiceMockup implements ItemsService {
 			
 			// update mockup database
 			if (dirty) {
-				this.items.get(primaryId).put(secondaryId, existing);
+				this.items.put(itemKey, existing);
 			}
 			
 			DigitalItemBoundary rv = this.entityConverter.toBoundary(existing);
@@ -139,7 +131,7 @@ public class ItemsServiceMockup implements ItemsService {
 			
 		}else {
 			// TODO have server return status 404 here
-			throw new RuntimeException("could not find message by id: " + primaryId + "&" + secondaryId);// NullPointerException
+			throw new RuntimeException("could not find message by id: " + itemKey);// NullPointerException
 		}
 	}
 	
@@ -148,13 +140,8 @@ public class ItemsServiceMockup implements ItemsService {
 	 * 
 	 */
 	@Override
-	public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail) {
-		String primaryId = this.entityConverter.toPrimaryId(userSpace, userEmail);
-		
-		if(this.items.get(primaryId) == null) // If user didn't have any item he created
-			return new ArrayList<>();
-		
-		return this.items.get(primaryId)
+	public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail) {		
+		return this.items
 				.values()
 				.stream()
 				.map(this.entityConverter::toBoundary)
@@ -163,16 +150,14 @@ public class ItemsServiceMockup implements ItemsService {
 	@Override
 	public DigitalItemBoundary getSpecificItem(String userSpace, String userEmail, String itemSpace, String itemId) {
 		// MOCKUP
-		String primaryId = this.entityConverter.toPrimaryId(userSpace, userEmail);
-		String secondaryId = this.entityConverter.toSecondaryId(itemSpace, itemId);
-		if (this.items.get(primaryId) != null && this.items.get(primaryId).get(secondaryId) != null) {
-			ItemEntity entity = this.items
-					.get(primaryId).get(secondaryId);
+		String itemKey = this.entityConverter.toSecondaryId(itemSpace, itemId);
+		if (this.items.get(itemKey) != null) {
+			ItemEntity entity = this.items.get(itemKey);
 			DigitalItemBoundary boundary = entityConverter.toBoundary (entity);
 			return boundary;
 		}else {
 			// TODO have server return status 404 here
-			throw new RuntimeException("could not find message by id: " + primaryId + "&" + secondaryId);// NullPointerException
+			throw new RuntimeException("could not find message by id: " + itemKey);// NullPointerException
 		}
 	}
 	@Override

@@ -47,8 +47,8 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
     	String itemId = "";
     	if(item.getItemId() != null)
     	{
-    		itemId = item.getItemId().get("id");
-    		itemSpace = item.getItemId().get("space");
+    		itemId = item.getItemId().getId();
+    		itemSpace = item.getItemId().getSpace();
     	}
     		
     	return toSecondaryId(itemSpace, itemId);

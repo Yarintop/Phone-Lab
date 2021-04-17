@@ -34,7 +34,7 @@ public class DigitalItemController {
 		consumes = MediaType.APPLICATION_JSON_VALUE,
 		produces = MediaType.APPLICATION_JSON_VALUE
 	)
-	public DigitalItemBoundary updateUserDetails(
+	public DigitalItemBoundary createItem(
 			@PathVariable("userSpace") String userSpace,
 			@PathVariable("userEmail") String userEmail,
 			@RequestBody DigitalItemBoundary newItem)

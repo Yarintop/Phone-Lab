@@ -1,6 +1,7 @@
 package app.dummyData;
 
 import app.boundaries.DigitalItemBoundary;
+import app.boundaries.ItemIdBoundary;
 import app.boundaries.OperationBoundary;
 import app.boundaries.UserBoundary;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,10 +61,8 @@ public class DummyData {
 
 
     public OperationBoundary getRandomOperation(boolean withId) {
-        Map<String, String> itemId = new HashMap<>();
-        itemId.put(spaceIdKey, spaceId);
+        ItemIdBoundary itemId = new ItemIdBoundary(spaceId, getRandomId());
 
-        itemId.put(idKey, getRandomId());
 
         UserBoundary user = new UserBoundary(
                 "Random",
@@ -99,9 +98,7 @@ public class DummyData {
     public DigitalItemBoundary getRandomDigitalItem(String userSpace, String userEmail) {
         Random rand = new Random();
         // User ID
-        Map<String, String> itemId = new HashMap<>();
-        itemId.put("id", getRandomId());
-        itemId.put("space", userSpace);
+        ItemIdBoundary itemId = new ItemIdBoundary(userSpace, getRandomId());
 
         //Lat/Long
         Map<String, Double> latlng = new HashMap<>();

@@ -119,8 +119,8 @@ public class DigitalItemTest {
 				
 		// Must have ItemId map that is not null and have the keys id and space with correct values
 		assertThat(actualItem.getItemId()).isNotNull();
-		assertThat(actualItem.getItemId().get("id")).isNotNull();
-		assertThat(actualItem.getItemId().get("space")).isNotNull().isEqualTo(space);
+		assertThat(actualItem.getItemId().getId()).isNotNull();
+		assertThat(actualItem.getItemId().getSpace()).isNotNull().isEqualTo(space);
 		
 		// assert that the User Boundary is not null
 		assertThat(actualItem.getCreatedBy()).isNotNull();
@@ -171,8 +171,8 @@ public class DigitalItemTest {
 				
 		// Must have ItemId map that is not null and have the keys id and space with correct values
 		assertThat(resultItem.getItemId()).isNotNull();
-		assertThat(resultItem.getItemId().get("id")).isNotNull();
-		assertThat(resultItem.getItemId().get("space")).isNotNull().isEqualTo(space);
+		assertThat(resultItem.getItemId().getId()).isNotNull();
+		assertThat(resultItem.getItemId().getSpace()).isNotNull().isEqualTo(space);
 		
 		// Date time should not be null
 		assertThat(resultItem.getCreatedTimestamp()).isNotNull();
@@ -218,15 +218,18 @@ public class DigitalItemTest {
 		String theUrl = this.baseUrl + space + "/" + email;
         // ObjectMapper mapper = new ObjectMapper();
 		DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
+		System.out.println(randomItem);
 		
 		// Add an item to the existing items so that I can use get specific item
 		// Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
 		DigitalItemBoundary actualItem = this.restTemplate.postForObject(theUrl, randomItem, DigitalItemBoundary.class);
 		
 		
-		String itemId = actualItem.getItemId().get("id");
-		String itemSpace = actualItem.getItemId().get("space");
+		String itemId = actualItem.getItemId().getId();
+		String itemSpace = actualItem.getItemId().getSpace();
 		
+		System.out.println("Item Id: " + itemId + " Item Space: " + itemSpace);
+		System.out.println(actualItem);
 		
 		theUrl = theUrl + "/" + itemSpace + "/" + itemId;
 		// Use the known ID of the created Item and search it
@@ -234,8 +237,8 @@ public class DigitalItemTest {
 				.getForEntity(theUrl, DigitalItemBoundary.class).getBody();
 		
 		// Check that item id matches
-		assertThat(retrievedItem.getItemId().get("id")).isEqualTo(itemId);
-		assertThat(retrievedItem.getItemId().get("space")).isEqualTo(itemSpace);
+		assertThat(retrievedItem.getItemId().getId()).isEqualTo(itemId);
+		assertThat(retrievedItem.getItemId().getSpace()).isEqualTo(itemSpace);
 		
 		// Make sure all values are the same.
 		assertTwoItemsAreEqual(retrievedItem, actualItem);
@@ -256,16 +259,14 @@ public class DigitalItemTest {
 		String space = this.spaceId;
 		String email = "lol@gmail.com";
 		String theUrl = this.baseUrl + space + "/" + email;
-        // ObjectMapper mapper = new ObjectMapper();
 		DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
 		
 		// First add an item to the existing items so that I can update it
-		// Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
 		DigitalItemBoundary actualItem = this.restTemplate.postForObject(theUrl, randomItem, DigitalItemBoundary.class);
 		
 		
-		String itemId = actualItem.getItemId().get("id");
-		String itemSpace = actualItem.getItemId().get("space");
+		String itemId = actualItem.getItemId().getId();
+		String itemSpace = actualItem.getItemId().getSpace();
 		
 		randomItem = dataGenerator.getRandomDigitalItem(space, email);
 		theUrl = theUrl + "/" + itemSpace + "/" + itemId;
@@ -279,8 +280,8 @@ public class DigitalItemTest {
 				.getForEntity(theUrl, DigitalItemBoundary.class).getBody();
 		
 		// Check that item id matches even though was updated
-		assertThat(retrievedItem.getItemId().get("id")).isEqualTo(itemId);
-		assertThat(retrievedItem.getItemId().get("space")).isEqualTo(itemSpace);
+		assertThat(retrievedItem.getItemId().getId()).isEqualTo(itemId);
+		assertThat(retrievedItem.getItemId().getSpace()).isEqualTo(itemSpace);
 		
 		// Make sure all values are the same as new random data.
 		assertTwoItemsAreEqual(retrievedItem, randomItem);
@@ -315,7 +316,7 @@ public class DigitalItemTest {
 		
 		DigitalItemBoundary[] response = this.restTemplate
 			.getForEntity(theUrl, DigitalItemBoundary[].class).getBody();
-		
+				
 		// Make sure we got 2 items from get all as we only added 2 items
 		assertThat(response).isNotNull().hasSize(2);
 	}
