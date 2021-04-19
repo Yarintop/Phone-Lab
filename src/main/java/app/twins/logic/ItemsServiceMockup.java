@@ -68,7 +68,6 @@ public class ItemsServiceMockup implements ItemsService {
 		entity.getCreatedBy().getUserId().setSpace(userSpace);
 		
 		
-		
 		secondaryId = this.entityConverter.toSecondaryId(entity);
 		if(this.items.get(primaryId) == null) // No Map for this userSpace & userEmail
 			this.items.put(primaryId, new HashMap<>()); // No need for synchronized as it happens on the wrapper Map (Maybe?)

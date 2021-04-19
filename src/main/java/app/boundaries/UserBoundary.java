@@ -102,4 +102,7 @@ public class UserBoundary implements Boundary {
     public int hashCode() {
         return Objects.hash(userId, role, username, avatar);
     }
+
 }
+
+

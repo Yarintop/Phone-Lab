@@ -66,7 +66,7 @@ public class UsersServiceMockup implements UsersService {
         // Generating key
         String key = userEntity.getSpace() + "&" + userEntity.getEmail();
 
-        System.out.println(key);
+       // System.out.println(key);
 
 //        System.out.println("Email " + userEntity.getEmail() + " Space: " + userEntity.getSpace());
 

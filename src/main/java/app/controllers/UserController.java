@@ -51,11 +51,12 @@ public class UserController {
         // Creating a new UserBoundary object from the details
         UserBoundary userBoundary = new UserBoundary(newUserDetails, this.spaceId);
 
-//        System.out.println("Email " + userBoundary.getUserId().getEmail() + " Space: " + userBoundary.getUserId().getSpace());
-        
+
         // Saving the user to the system
         userBoundary = this.userService.createUser(userBoundary);
-        
+
+        //System.out.println("Email " + userBoundary.getUserId().getEmail() + " Space: " + userBoundary.getUserId().getSpace());
+
         // Returning the newly created user
         return userBoundary;
     }
