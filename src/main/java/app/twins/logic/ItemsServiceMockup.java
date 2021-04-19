@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import app.boundaries.DigitalItemBoundary;
+import app.boundaries.UserBoundary;
 import app.converters.ItemConverter;
 import app.exceptions.NotFoundException;
 import app.twins.data.ItemEntity;
@@ -63,8 +64,13 @@ public class ItemsServiceMockup implements ItemsService {
 		entity.setCreatedTimestamp(new Date());
 		
 		//Update the info of the creating user to be those in the REST API /twins/items/{userSpace}/{userEmail})
-		entity.getCreatedBy().getUserId().put("email", userEmail);
-		entity.getCreatedBy().getUserId().put("space", userSpace);
+		if(entity.getCreatedBy() == null)
+			entity.setCreatedBy(new UserBoundary(userEmail, userSpace));
+		else
+		{
+			entity.getCreatedBy().getUserId().put("email", userEmail);
+			entity.getCreatedBy().getUserId().put("space", userSpace);
+		}
 		
 		this.items.put(itemKey, entity);
 				
