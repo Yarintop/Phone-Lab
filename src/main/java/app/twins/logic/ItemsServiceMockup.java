@@ -106,8 +106,8 @@ public class ItemsServiceMockup implements ItemsService {
 			
 			// ignore id from update - as ids are never changed
 			
-			if (update.getItemAttributes() != null) {
-				existing.getItemAttributes().putAll(update.getItemAttributes());
+			if (update.getItemAttributes() != null && !update.getItemAttributes().equals(existing.getItemAttributes())) {
+				existing.setItemAttributes(update.getItemAttributes());
 				dirty = true;
 			}
 			
