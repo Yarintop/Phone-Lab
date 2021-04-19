@@ -86,9 +86,7 @@ public class DummyData {
         operation.setItem(item);
         operation.setInvokedBy(user);
         if (withId) {
-            Map<String, String> operationId = new HashMap<>();
-            operationId.put(spaceIdKey, spaceId);
-            operationId.put(idKey, getRandomId());
+            OperationIdBoundary operationId = new OperationIdBoundary(spaceId,  getRandomId());
             operation.setOperationId(operationId);
         }
         return operation;
