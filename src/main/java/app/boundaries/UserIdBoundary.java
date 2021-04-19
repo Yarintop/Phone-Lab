@@ -7,10 +7,8 @@ import java.util.Objects;
 
 public class UserIdBoundary {
 
-    @JsonView(Views.User.class)
     private String space;
 
-    @JsonView(Views.User.class)
     private String email;
 
     public UserIdBoundary() {

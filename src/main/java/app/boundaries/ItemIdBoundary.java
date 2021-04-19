@@ -5,9 +5,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import app.jsonViews.Views;
 
 public class ItemIdBoundary {
-    @JsonView(Views.Public.class)
+
     private String space = null;
-    @JsonView(Views.Public.class)
     private String id = null;
 
 

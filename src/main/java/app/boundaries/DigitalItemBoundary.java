@@ -11,28 +11,20 @@ import app.jsonViews.Views;
 
 public class DigitalItemBoundary implements Boundary {
 
-    @JsonView(Views.Public.class)
     private ItemIdBoundary itemId = new ItemIdBoundary();// This line might change
 
-    @JsonView(Views.Item.class)
     private String type = "no type";
 
-    @JsonView(Views.Item.class)
     private String name = "no name yet";
 
-    @JsonView(Views.Item.class)
     private Boolean active = false;
 
-    @JsonView(Views.Item.class)
     private Date createdTimestamp = new Date();
 
-    @JsonView(Views.Item.class)
     private UserBoundary createdBy = new UserBoundary(); // This line might change
 
-    @JsonView(Views.Item.class)
     private Map<String, Double> location = new HashMap<>();
 
-    @JsonView(Views.Item.class)
     private Map<String, Object> itemAttributes = new HashMap<>();
 
     public DigitalItemBoundary() { /* Default Constructor */ }

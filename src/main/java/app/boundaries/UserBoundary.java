@@ -10,16 +10,12 @@ import app.jsonViews.Views;
 
 public class UserBoundary implements Boundary {
 
-    @JsonView(Views.User.class)
     private UserIdBoundary userId;
 
-    @JsonView(Views.User.class)
     private String role;
 
-    @JsonView(Views.User.class)
     private String username;
 
-    @JsonView(Views.User.class)
     private String avatar;
 
     public UserBoundary() { /* Default Constructor */ }

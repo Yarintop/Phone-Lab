@@ -44,7 +44,6 @@ public class UserController {
 	 * @param newUserDetails - The details of the user to be created
 	 * @return A boundary object of the newly created user
 	 */
-    @JsonView(Views.User.class)
     @RequestMapping(path = "/twins/users", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserBoundary createNewUsers(@RequestBody NewUserDetails newUserDetails) {
 
@@ -68,7 +67,6 @@ public class UserController {
      * @param userEmail- Used as part of the key to retrieve the user
      * @return A boundary object of the desired user
      */
-    @JsonView(Views.User.class)
     @RequestMapping(path = "/twins/users/login/{userSpace}/{userEmail}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserBoundary getUserDetails(@PathVariable("userSpace") String userSpace,
                                        @PathVariable("userEmail") String userEmail) {
@@ -82,7 +80,6 @@ public class UserController {
      * @param userEmail- Used as part of the key to retrieve the user
      * @param user - Details to update
      */
-    @JsonView(Views.User.class)
     @RequestMapping(path = "/twins/users/{userSpace}/{userEmail}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void updateUserDetails(@PathVariable("userSpace") String userSpace,
                                   @PathVariable("userEmail") String userEmail, @RequestBody UserBoundary user) {
