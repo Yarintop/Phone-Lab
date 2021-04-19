@@ -26,7 +26,6 @@ public class OperationBoundary implements Boundary {
     @JsonView(Views.Operation.class)
     private UserBoundary invokedBy = new UserBoundary();
 
-    @JsonView(Views.Operation.class)
     private Map<String, Object> operationAttributes = new HashMap<>();
 
 
@@ -35,23 +34,8 @@ public class OperationBoundary implements Boundary {
      */
     public OperationBoundary() { /* Default Constructor */ }
 
-    /**
-     * This is constructor, will create an operation with the given parameters
-     *
-     * @param id            - an ID for the operation, it will part of the {@link HashMap} of the Boundary Item
-     * @param operationType - Operation type
-     * @param item          - The item that the operation require {@link DigitalItemBoundary}
-     * @param invokedBy     - The user whom invoked the operation {@link UserBoundary}
-     */
-    public OperationBoundary(Map<String,String> id, String operationType, DigitalItemBoundary item, UserBoundary invokedBy) {
-        this();
-        this.operationId = id;
-        this.operationType = operationType;
-        this.item = item;
-        this.invokedBy = invokedBy;
-    }
 
-    public Map<String, String> getOperationId() {
+    public OperationIdBoundary getOperationId() {
         return operationId;
     }
 

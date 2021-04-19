@@ -1,107 +1,105 @@
 package app.boundaries;
 
 import com.fasterxml.jackson.annotation.JsonView;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import app.jsonViews.Views;
 
-public class UserBoundary implements Boundary
-{
-	@JsonView(Views.Public.class)
-	private Map<String, String> userId = new HashMap<>(); 
-	
-	@JsonView(Views.User.class)
-	private String role;
+public class UserBoundary implements Boundary {
 
-	@JsonView(Views.User.class)
-	private String username;
+    @JsonView(Views.User.class)
+    private UserIdBoundary userId;
 
-	@JsonView(Views.User.class)
+    @JsonView(Views.User.class)
+    private String role;
+
+    @JsonView(Views.User.class)
+    private String username;
+
+    @JsonView(Views.User.class)
     private String avatar;
-    
+
     public UserBoundary() { /* Default Constructor */ }
 
-	// @Value("${spring.application.name:2021b.notdef}")
-    public UserBoundary(String role, String username, String avatar, String email, String space)
-    {
-        this.userId = new HashMap<>();
+    // @Value("${spring.application.name:2021b.notdef}")
+    public UserBoundary(String role, String username, String avatar, String email, String space) {
+        this.userId = new UserIdBoundary();
         this.role = role.toUpperCase();
         this.username = username;
         this.avatar = avatar;
-        
+
         // Setting userId's details
-        userId.put("space", space);
-        userId.put("email", email);
+        userId.setSpace(space);
+        userId.setEmail(email);
     }
-    
-	public UserBoundary(String email, String space)
-    {
-		this.userId = new HashMap<>();
-        
+
+    public UserBoundary(String email, String space) {
+        this.userId = new UserIdBoundary();
+
         // Setting userId's details
-        userId.put("space", space);
-        userId.put("email", email);
+        userId.setSpace(space);
+        userId.setEmail(email);
     }
 
     // Constructor to create a new user directly from a NewUserDetails object
-    public UserBoundary(NewUserDetails userDetails, String space)
-    {
-    	this(userDetails.getRole(), userDetails.getUsername(), 
-    			userDetails.getAvatar(), userDetails.getEmail(), space);
+    public UserBoundary(NewUserDetails userDetails, String space) {
+        this(userDetails.getRole(), userDetails.getUsername(),
+                userDetails.getAvatar(), userDetails.getEmail(), space);
     }
 
-	public Map<String, String> getUserId() {
-		return userId;
-	}
+    public UserIdBoundary getUserId() {
+        return userId;
+    }
 
-	public void setSpace(String userSpace) {
-		this.userId.put("space", userSpace);
-	}
-	
-	public void setEmail(String userEmail) {
-		this.userId.put("email", userEmail);
-	}
+    public void setSpace(String userSpace) {
+        this.userId.setSpace(userSpace);
+    }
 
-	public void setUserId(Map<String, String> userId) {
-		this.userId = userId;
-	}
+    public void setEmail(String userEmail) {
+        this.userId.setEmail(userEmail);
+    }
 
-	public String getRole() {
-		return role;
-	}
+    public void setUserId(UserIdBoundary userId) {
+        this.userId = userId;
+    }
 
-	public void setRole(String role) {
-		this.role = role;
-	}
+    public String getRole() {
+        return role;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public void setRole(String role) {
+        this.role = role;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public String getAvatar() {
-		return avatar;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
+    public String getAvatar() {
+        return avatar;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		UserBoundary that = (UserBoundary) o;
-		return userId.equals(that.userId) && role.equals(that.role) && username.equals(that.username) && avatar.equals(that.avatar);
-	}
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(userId, role, username, avatar);
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserBoundary that = (UserBoundary) o;
+        return userId.equals(that.userId) && role.equals(that.role) && username.equals(that.username) && avatar.equals(that.avatar);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, role, username, avatar);
+    }
 }

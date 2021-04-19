@@ -1,6 +1,8 @@
 package app.converters;
 
 import app.boundaries.UserBoundary;
+import app.boundaries.UserIdBoundary;
+import app.exceptions.BadRequestException;
 import app.twins.data.UserEntity;
 import app.twins.data.UserRole;
 import org.springframework.stereotype.Component;
@@ -24,11 +26,15 @@ public class UserConverter implements EntityConverter<UserEntity, UserBoundary> 
             ue.setUsername(boundaryObject.getUsername());
         }
         if (boundaryObject.getUserId() != null) {
-            ue.setSpace(boundaryObject.getUserId().get("space"));
-            ue.setEmail(boundaryObject.getUserId().get("email"));
+            ue.setSpace(boundaryObject.getUserId().getSpace());
+            ue.setEmail(boundaryObject.getUserId().getEmail());
         }
         if (boundaryObject.getRole() != null) {
-            ue.setRole(UserRole.valueOf(boundaryObject.getRole().toUpperCase()));
+            try {
+                ue.setRole(UserRole.valueOf(boundaryObject.getRole().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw (new BadRequestException("Invalid user Role!!"));
+            }
         }
         return ue;
     }
@@ -40,16 +46,15 @@ public class UserConverter implements EntityConverter<UserEntity, UserBoundary> 
         if (entityObject == null)
             return null;
 
+        UserBoundary ub = new UserBoundary(entityObject.getEmail(), entityObject.getSpace());
+
         ub.setAvatar(entityObject.getAvatar());
         ub.setUsername(entityObject.getUsername());
-        Map<String,String> userId = new HashMap<>();
-        userId.put("space", entityObject.getSpace());
-        userId.put("email", entityObject.getEmail());
-        ub.setUserId(userId);
+
 
         if (entityObject.getRole() != null) // Making sure the role is not null
             ub.setRole(entityObject.getRole().toString());
-        
+
         return ub;
     }
 }

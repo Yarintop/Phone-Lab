@@ -64,8 +64,8 @@ public class ItemsServiceMockup implements ItemsService {
 		entity.setCreatedTimestamp(new Date());
 		
 		//Update the info of the creating user to be those in the REST API /twins/items/{userSpace}/{userEmail})
-		entity.getCreatedBy().getUserId().put("email", userEmail);
-		entity.getCreatedBy().getUserId().put("space", userSpace);
+		entity.getCreatedBy().getUserId().setEmail(userEmail);
+		entity.getCreatedBy().getUserId().setSpace(userSpace);
 		
 		
 		

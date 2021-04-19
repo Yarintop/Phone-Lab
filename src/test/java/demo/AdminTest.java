@@ -85,9 +85,9 @@ public class AdminTest {
         user.setRole("Admin");
         user.setEmail("remove@me.com");
         usersService.createUser(user);
-        operationsService.deleteAllOperations(spaceId, user.getUserId().get("email"));
-        itemsService.deleteAllItems(spaceId, user.getUserId().get("email"));
-        usersService.deleteAllUsers(spaceId, user.getUserId().get("email"));
+        operationsService.deleteAllOperations(spaceId, user.getUserId().getEmail());
+        itemsService.deleteAllItems(spaceId, user.getUserId().getEmail());
+        usersService.deleteAllUsers(spaceId, user.getUserId().getEmail());
     }
 
 
@@ -148,10 +148,10 @@ public class AdminTest {
         // WHEN I GET all using /twins/admin/users/{userSpace}/{userEmail}
 
         UserBoundary user = dataGenerator.getRandomUser();
-        NewUserDetails userDetails = new NewUserDetails(user.getUserId().get("email"), "Admin",
+        NewUserDetails userDetails = new NewUserDetails(user.getUserId().getEmail(), "Admin",
                 user.getUsername(), user.getAvatar());
         String space = this.spaceId;
-        String email = user.getUserId().get("email");
+        String email = user.getUserId().getEmail();
         String theUrl = this.baseUrl + "admin/users/" + space + "/" + email;
 
         // First creating a user by using POST
@@ -225,14 +225,14 @@ public class AdminTest {
         // THEN delete all users
 
         UserBoundary user = dataGenerator.getRandomUser();
-        NewUserDetails userDetails1 = new NewUserDetails(user.getUserId().get("email") + "1", "Admin",
+        NewUserDetails userDetails1 = new NewUserDetails(user.getUserId().getEmail() + "1", "Admin",
                 user.getUsername(), user.getAvatar());
-        NewUserDetails userDetails2 = new NewUserDetails(user.getUserId().get("email") + "2", "Admin",
+        NewUserDetails userDetails2 = new NewUserDetails(user.getUserId().getEmail() + "2", "Admin",
                 user.getUsername(), user.getAvatar());
-        NewUserDetails userDetails3 = new NewUserDetails(user.getUserId().get("email") + "3", "Admin",
+        NewUserDetails userDetails3 = new NewUserDetails(user.getUserId().getEmail() + "3", "Admin",
                 user.getUsername(), user.getAvatar());
         String space = this.spaceId;
-        String email = user.getUserId().get("email") + "1";
+        String email = user.getUserId().getEmail() + "1";
         String theUrl = this.baseUrl + "admin/users/" + space + "/" + email;
 
         // First adding three users by using POST

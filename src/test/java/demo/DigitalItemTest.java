@@ -119,16 +119,16 @@ public class DigitalItemTest {
 				
 		// Must have ItemId map that is not null and have the keys id and space with correct values
 		assertThat(actualItem.getItemId()).isNotNull();
-		assertThat(actualItem.getItemId().get("id")).isNotNull();
-		assertThat(actualItem.getItemId().get("space")).isNotNull().isEqualTo(space);
+		assertThat(actualItem.getItemId().getId()).isNotNull();
+		assertThat(actualItem.getItemId().getSpace()).isNotNull().isEqualTo(space);
 		
 		// assert that the User Boundary is not null
 		assertThat(actualItem.getCreatedBy()).isNotNull();
 		
 		// Must have userId map that is not null and have the keys email and space with correct values
 		assertThat(actualItem.getCreatedBy().getUserId()).isNotNull();
-		assertThat(actualItem.getCreatedBy().getUserId().get("email")).isNotNull().isEqualTo(email);
-		assertThat(actualItem.getCreatedBy().getUserId().get("space")).isNotNull().isEqualTo(space);
+		assertThat(actualItem.getCreatedBy().getUserId().getEmail()).isNotNull().isEqualTo(email);
+		assertThat(actualItem.getCreatedBy().getUserId().getSpace()).isNotNull().isEqualTo(space);
 		
 		// AND initialized non null time-stamp
 		assertThat(actualItem.getCreatedTimestamp())
@@ -166,13 +166,13 @@ public class DigitalItemTest {
 	}
 	
 	private void assertTwoItemsAreEqual(DigitalItemBoundary resultItem, DigitalItemBoundary originalItem) throws Exception {
-		String email = originalItem.getCreatedBy().getUserId().get("email");
-		String space = originalItem.getCreatedBy().getUserId().get("space");
+		String email = originalItem.getCreatedBy().getUserId().getEmail();
+		String space = originalItem.getCreatedBy().getUserId().getSpace();
 				
 		// Must have ItemId map that is not null and have the keys id and space with correct values
 		assertThat(resultItem.getItemId()).isNotNull();
-		assertThat(resultItem.getItemId().get("id")).isNotNull();
-		assertThat(resultItem.getItemId().get("space")).isNotNull().isEqualTo(space);
+		assertThat(resultItem.getItemId().getId()).isNotNull();
+		assertThat(resultItem.getItemId().getSpace()).isNotNull().isEqualTo(space);
 		
 		// Date time should not be null
 		assertThat(resultItem.getCreatedTimestamp()).isNotNull();
@@ -192,8 +192,8 @@ public class DigitalItemTest {
 		// Must have userId map that is not null and have the keys email and space with correct values
 		assertThat(resultItem.getCreatedBy()).isNotNull();
 		assertThat(resultItem.getCreatedBy().getUserId()).isNotNull();
-		assertThat(resultItem.getCreatedBy().getUserId().get("email")).isEqualTo(email);
-		assertThat(resultItem.getCreatedBy().getUserId().get("space")).isEqualTo(space);
+		assertThat(resultItem.getCreatedBy().getUserId().getEmail()).isEqualTo(email);
+		assertThat(resultItem.getCreatedBy().getUserId().getSpace()).isEqualTo(space);
 		
 		// The Item attributes should exist and have the same key and values
 		assertThat(resultItem.getItemAttributes()).isNotNull();
@@ -224,8 +224,8 @@ public class DigitalItemTest {
 		DigitalItemBoundary actualItem = this.restTemplate.postForObject(theUrl, randomItem, DigitalItemBoundary.class);
 		
 		
-		String itemId = actualItem.getItemId().get("id");
-		String itemSpace = actualItem.getItemId().get("space");
+		String itemId = actualItem.getItemId().getId();
+		String itemSpace = actualItem.getItemId().getSpace();
 		
 		
 		theUrl = theUrl + "/" + itemSpace + "/" + itemId;
@@ -234,8 +234,8 @@ public class DigitalItemTest {
 				.getForEntity(theUrl, DigitalItemBoundary.class).getBody();
 		
 		// Check that item id matches
-		assertThat(retrievedItem.getItemId().get("id")).isEqualTo(itemId);
-		assertThat(retrievedItem.getItemId().get("space")).isEqualTo(itemSpace);
+		assertThat(retrievedItem.getItemId().getId()).isEqualTo(itemId);
+		assertThat(retrievedItem.getItemId().getSpace()).isEqualTo(itemSpace);
 		
 		// Make sure all values are the same.
 		assertTwoItemsAreEqual(retrievedItem, actualItem);
@@ -264,8 +264,8 @@ public class DigitalItemTest {
 		DigitalItemBoundary actualItem = this.restTemplate.postForObject(theUrl, randomItem, DigitalItemBoundary.class);
 		
 		
-		String itemId = actualItem.getItemId().get("id");
-		String itemSpace = actualItem.getItemId().get("space");
+		String itemId = actualItem.getItemId().getId();
+		String itemSpace = actualItem.getItemId().getSpace();
 		
 		randomItem = dataGenerator.getRandomDigitalItem(space, email);
 		theUrl = theUrl + "/" + itemSpace + "/" + itemId;
@@ -279,8 +279,8 @@ public class DigitalItemTest {
 				.getForEntity(theUrl, DigitalItemBoundary.class).getBody();
 		
 		// Check that item id matches even though was updated
-		assertThat(retrievedItem.getItemId().get("id")).isEqualTo(itemId);
-		assertThat(retrievedItem.getItemId().get("space")).isEqualTo(itemSpace);
+		assertThat(retrievedItem.getItemId().getId()).isEqualTo(itemId);
+		assertThat(retrievedItem.getItemId().getSpace()).isEqualTo(itemSpace);
 		
 		// Make sure all values are the same as new random data.
 		assertTwoItemsAreEqual(retrievedItem, randomItem);

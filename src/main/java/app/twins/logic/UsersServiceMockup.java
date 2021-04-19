@@ -3,6 +3,7 @@ package app.twins.logic;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import app.boundaries.UserIdBoundary;
 import app.converters.UserConverter;
 import app.twins.data.UserEntity;
 import app.twins.data.UserRole;
@@ -42,7 +43,7 @@ public class UsersServiceMockup implements UsersService {
         if (user == null)  // If user doesn't have email
             throw (new RuntimeException("User can't be null")); // User can't be null
 
-        if (user.getUserId().get("email") == null)  // If user doesn't have email
+        if (user.getUserId().getEmail() == null)  // If user doesn't have email
             throw (new RuntimeException("Can't create a user without email")); // Users must have email
 
         // Making sure the user has a valid role (Player, Manager or Admin)
@@ -55,6 +56,9 @@ public class UsersServiceMockup implements UsersService {
             user.setRole("PLAYER");
         }
 
+//        System.out.println("Email " + user.getUserId().getEmail() + " Space: " + user.getUserId().getSpace());
+
+
         // Adding user to the system
         UserEntity userEntity = this.converter.toEntity(user);
         userEntity.setSpace(spaceId); // Setting the user's space
@@ -62,13 +66,21 @@ public class UsersServiceMockup implements UsersService {
         // Generating key
         String key = userEntity.getSpace() + "&" + userEntity.getEmail();
 
+        System.out.println(key);
+
+//        System.out.println("Email " + userEntity.getEmail() + " Space: " + userEntity.getSpace());
+
+
         if (users.get(key) == null) // Making sure the user is a new user in the system
             this.users.put(key, userEntity);
         else
-            throw (new RuntimeException("There is already a user with email: " + user.getUserId().get("email")));
+            throw (new RuntimeException("There is already a user with email: " + user.getUserId().getEmail()));
 
+        UserBoundary temp =  this.converter.toBoundary(userEntity);
 
-        return this.converter.toBoundary(userEntity); // Just testing the converter
+//        System.out.println("Email " + temp.getUserId().getEmail() + " Space: " + temp.getUserId().getSpace());
+
+        return temp; // Just testing the converter
     }
 
     @Override
@@ -92,7 +104,7 @@ public class UsersServiceMockup implements UsersService {
         String key = userSpace + "&" + userEmail;
         UserEntity user = users.get(key);
         UserEntity updateEntity = this.converter.toEntity(update);
-        
+
         // In case user doesn't exist
         if (user == null)
             throw (new RuntimeException("Could not find user with the given email and space"));
@@ -116,9 +128,9 @@ public class UsersServiceMockup implements UsersService {
         // Getting key and user
         String key = adminSpace + "&" + adminEmail;
         UserEntity user = users.get(key);
-        
+
         if (user == null)
-        throw (new RuntimeException("Could not find user with the given email and space"));
+            throw (new RuntimeException("Could not find user with the given email and space"));
 
         if (user.getRole() != UserRole.ADMIN)
             throw (new RuntimeException("User doesn't have permissions"));
