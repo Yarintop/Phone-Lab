@@ -3,6 +3,7 @@ package demo;
 import app.Application;
 import app.boundaries.OperationBoundary;
 import app.dummyData.DummyData;
+import org.assertj.core.api.AbstractAssert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -126,7 +127,7 @@ public class OperationsTest {
         assertThat(res.getInvokedBy().getUserId()).isEqualTo(operation.getInvokedBy().getUserId());
 
         // assert that a new ID was generated
-        assertThat(res.getOperationId()).isNotNull().hasSize(2);
+        assertThat(res.getOperationId()).isNotNull();
     }
 
 
