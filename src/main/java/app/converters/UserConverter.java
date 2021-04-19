@@ -41,7 +41,6 @@ public class UserConverter implements EntityConverter<UserEntity, UserBoundary> 
 
     @Override
     public UserBoundary toBoundary(UserEntity entityObject) {
-        UserBoundary ub = new UserBoundary();
 
         if (entityObject == null)
             return null;
