@@ -1,36 +1,41 @@
 package app.twins.data;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-import app.boundaries.ItemIdBoundary;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
 import app.boundaries.UserBoundary;
 
+@javax.persistence.Entity
+@Table(name="ITEMS")
 public class ItemEntity implements Entity {
-	private ItemIdBoundary itemId = new ItemIdBoundary(); // This line might change
+	private String itemId = ""; // This line might change
 	private String type = "no type";
 	private String name = "no name yet";
 	private boolean active = false;
 	private Date createdTimestamp = new Date();
 	private UserBoundary createdBy = new UserBoundary(); // This line might change
-	private Map<String, Double> location = new HashMap<>();
-	private Map<String, Object> itemAttributes = new HashMap<>();
+	private String location = "{}";
+	private String itemAttributes = "{}";
 	
 	
 	
 	public ItemEntity() {
 		super();
 	}
-	
-	public ItemIdBoundary getItemId() {
+	@Id
+	public String getItemId() {
 		return itemId;
 	}
-	public void setItemId(ItemIdBoundary itemId) {
+	public void setItemId(String itemId) {
 		this.itemId = itemId;
-	}
-	public void setItemId(String itemId, String itemSpace) {
-		this.itemId = new ItemIdBoundary(itemSpace, itemId);
 	}
 	public String getType() {
 		return type;
@@ -50,28 +55,34 @@ public class ItemEntity implements Entity {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="TIMESTAMP")
 	public Date getCreatedTimestamp() {
 		return createdTimestamp;
 	}
 	public void setCreatedTimestamp(Date createdTimestamp) {
 		this.createdTimestamp = createdTimestamp;
 	}
+	@Transient
 	public UserBoundary getCreatedBy() {
 		return createdBy;
 	}
+	@Transient
 	public void setCreatedBy(UserBoundary createdBy) {
 		this.createdBy = createdBy;
 	}
-	public Map<String, Double> getLocation() {
+	@Lob
+	public String getLocation() {
 		return location;
 	}
-	public void setLocation(Map<String, Double> location) {
+	public void setLocation(String location) {
 		this.location = location;
 	}
-	public Map<String, Object> getItemAttributes() {
+	@Lob
+	public String getItemAttributes() {
 		return itemAttributes;
 	}
-	public void setItemAttributes(Map<String, Object> itemAttributes) {
+	public void setItemAttributes(String itemAttributes) {
 		this.itemAttributes = itemAttributes;
 	}
 }

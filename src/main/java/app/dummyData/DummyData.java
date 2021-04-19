@@ -101,7 +101,7 @@ public class DummyData {
         ItemIdBoundary itemId = new ItemIdBoundary(userSpace, getRandomId());
 
         //Lat/Long
-        Map<String, Double> latlng = new HashMap<>();
+        Map<String, Object> latlng = new HashMap<>();
         latlng.put("lat", rand.nextDouble() * 40);
         latlng.put("lng", rand.nextDouble() * 40);
 

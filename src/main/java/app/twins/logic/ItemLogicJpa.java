@@ -1,27 +1,28 @@
 package app.twins.logic;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import app.dao.ItemDao;
 import app.boundaries.DigitalItemBoundary;
 import app.boundaries.UserBoundary;
 import app.converters.ItemConverter;
 import app.exceptions.NotFoundException;
 import app.twins.data.ItemEntity;
 
-//@Service
-public class ItemsServiceMockup implements ItemsService {
-	
-	private Map<String,ItemEntity> items;
+@Service
+public class ItemLogicJpa implements ItemsService {
+	private ItemDao itemDao;
+	//private Map<String,ItemEntity> items;
     private String spaceId;
 	private ItemConverter entityConverter;
 	
@@ -36,9 +37,12 @@ public class ItemsServiceMockup implements ItemsService {
         this.spaceId = spaceId;
     }
 	
-	public ItemsServiceMockup() {
-		// create a thread safe collection
-		this.items = Collections.synchronizedMap(new HashMap<>());
+	public ItemLogicJpa() {
+	}
+	
+	@Autowired
+	public void setItemDao(ItemDao itemDao) {
+		this.itemDao = itemDao;
 	}
 	
     /**
@@ -53,10 +57,10 @@ public class ItemsServiceMockup implements ItemsService {
 	}
 	
 	@Override
+	@Transactional//(readOnly = false)
 	public DigitalItemBoundary createItem(String userSpace, String userEmail, DigitalItemBoundary item) {
 		userSpace = this.spaceId;
 		String newId = UUID.randomUUID().toString();
-		String itemKey = this.entityConverter.toSecondaryId(userSpace, newId);
 		
 		// Set space of the created item to be that of our project.
 		item.setItemId(newId, userSpace);
@@ -71,20 +75,21 @@ public class ItemsServiceMockup implements ItemsService {
 			item.getCreatedBy().getUserId().put("space", userSpace);
 		}
 		ItemEntity entity = this.entityConverter.toEntity(item);
-		this.items.put(itemKey, entity);
+		this.itemDao.save(entity);
 				
 		return this.entityConverter.toBoundary(entity);
 	}
 	
 	
 	@Override
+	@Transactional//(readOnly = false)
 	public DigitalItemBoundary updateItem(String userSpace, String userEmail, String itemSpace, String itemId,
 			DigitalItemBoundary update) {
 		String itemKey = this.entityConverter.toSecondaryId(itemSpace, itemId);
-		
+		Optional<ItemEntity> optionalItem = this.itemDao.findById(itemKey);
 		// get existing message from mockup database
-		if (this.items.get(itemKey) != null) {
-			DigitalItemBoundary existing = this.entityConverter.toBoundary(this.items.get(itemKey));
+		if (optionalItem.isPresent()) {
+			DigitalItemBoundary existing = this.entityConverter.toBoundary(optionalItem.get());
 			boolean dirty = false;
 			
 			// update collection and return update
@@ -128,7 +133,7 @@ public class ItemsServiceMockup implements ItemsService {
 			
 			// update mockup database
 			if (dirty) {
-				this.items.put(itemKey, this.entityConverter.toEntity(existing));
+				this.itemDao.save(this.entityConverter.toEntity(existing));
 			}
 			
 			return existing;
@@ -144,19 +149,23 @@ public class ItemsServiceMockup implements ItemsService {
 	 * 
 	 */
 	@Override
-	public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail) {		
-		return this.items
-				.values()
-				.stream()
+	@Transactional(readOnly = true)
+	public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail) {	
+		Iterable<ItemEntity>  allEntities = this.itemDao.findAll();
+		return StreamSupport
+				.stream(allEntities.spliterator(), false) // get stream from iterable
 				.map(this.entityConverter::toBoundary)
 				.collect(Collectors.toList());
 	}
 	@Override
+	@Transactional(readOnly = true)
 	public DigitalItemBoundary getSpecificItem(String userSpace, String userEmail, String itemSpace, String itemId) {
 		// MOCKUP
 		String itemKey = this.entityConverter.toSecondaryId(itemSpace, itemId);
-		if (this.items.get(itemKey) != null) {
-			ItemEntity entity = this.items.get(itemKey);
+		Optional<ItemEntity> optionalItem = this.itemDao.findById(itemKey);
+
+		if (optionalItem.isPresent()) {
+			ItemEntity entity = optionalItem.get();
 			DigitalItemBoundary boundary = entityConverter.toBoundary (entity);
 			return boundary;
 		}else {
@@ -165,8 +174,8 @@ public class ItemsServiceMockup implements ItemsService {
 		}
 	}
 	@Override
+	@Transactional//(readOnly = false)
 	public void deleteAllItems(String adminSpace, String adminEmail) {
-		this.items
-		.clear();	
+		this.itemDao.deleteAll();
 	}
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import app.jsonViews.Views;
 
@@ -29,7 +28,7 @@ public class DigitalItemBoundary implements Boundary{
 	private UserBoundary createdBy = new UserBoundary(); // This line might change
 
 	@JsonView(Views.Item.class)
-	private Map<String, Double> location = new HashMap<>();
+	private Map<String, Object> location = new HashMap<>();
 
 	@JsonView(Views.Item.class)
 	private Map<String, Object> itemAttributes = new HashMap<>();
@@ -37,7 +36,7 @@ public class DigitalItemBoundary implements Boundary{
 	public DigitalItemBoundary() { /* Default Constructor */ }
 
 	public DigitalItemBoundary(ItemIdBoundary itemId, String type, String name, Boolean active, Date createdTimestamp,
-			UserBoundary createdBy, Map<String, Double> location, Map<String, Object> itemAttributes)
+			UserBoundary createdBy, Map<String, Object> location, Map<String, Object> itemAttributes)
 	{
 		this.itemId = itemId;
 		this.type = type;
@@ -50,7 +49,7 @@ public class DigitalItemBoundary implements Boundary{
 	}
 	
 	public DigitalItemBoundary(String itemId, String itemSpace, String type, String name, Boolean active, Date createdTimestamp,
-			UserBoundary createdBy, Map<String, Double> location, Map<String, Object> itemAttributes)
+			UserBoundary createdBy, Map<String, Object> location, Map<String, Object> itemAttributes)
 	{
 		this(new ItemIdBoundary(itemSpace, itemId), type, name, active, createdTimestamp, createdBy, location, itemAttributes);
 	}
@@ -106,11 +105,11 @@ public class DigitalItemBoundary implements Boundary{
 		this.createdTimestamp = createdTimestamp;
 	}
 
-	public Map<String, Double> getLocation() {
+	public Map<String, Object> getLocation() {
 		return location;
 	}
 
-	public void setLocation(Map<String, Double> location) {
+	public void setLocation(Map<String, Object> location) {
 		this.location = location;
 	}
 
