@@ -46,7 +46,7 @@ public class ItemsServiceMockup implements ItemsService {
      * This function will set the converter that will be used to
      * convert boundary objects to entity objects and vice versa
      *
-     * @param converter - an instance of {@link ItemConverter}
+     * @param entityConverter - an instance of {@link ItemConverter}
      */
 	@Autowired
 	public void setEntityConverter(ItemConverter entityConverter) {
@@ -68,8 +68,8 @@ public class ItemsServiceMockup implements ItemsService {
 			item.setCreatedBy(new UserBoundary(userEmail, userSpace));
 		else
 		{
-			item.getCreatedBy().getUserId().put("email", userEmail);
-			item.getCreatedBy().getUserId().put("space", userSpace);
+			item.getCreatedBy().getUserId().setEmail(userEmail);
+			item.getCreatedBy().getUserId().setSpace(userSpace);
 		}
 		ItemEntity entity = this.entityConverter.toEntity(item);
 		this.items.put(itemKey, entity);
@@ -162,7 +162,7 @@ public class ItemsServiceMockup implements ItemsService {
 			return boundary;
 		}else {
 			// TODO have server return status 404 here
-			throw new NotFoundException("could not find message by id: " + itemKey);// NullPointerException
+			throw new RuntimeException("could not find message by id: " + "primaryId" + "&" + "secondaryId");// NullPointerException
 		}
 	}
 	@Override

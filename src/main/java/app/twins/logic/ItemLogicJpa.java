@@ -49,7 +49,7 @@ public class ItemLogicJpa implements ItemsService {
      * This function will set the converter that will be used to
      * convert boundary objects to entity objects and vice versa
      *
-     * @param converter - an instance of {@link ItemConverter}
+     * @param entityConverter - an instance of {@link ItemConverter}
      */
 	@Autowired
 	public void setEntityConverter(ItemConverter entityConverter) {
@@ -71,8 +71,8 @@ public class ItemLogicJpa implements ItemsService {
 			item.setCreatedBy(new UserBoundary(userEmail, userSpace));
 		else
 		{
-			item.getCreatedBy().getUserId().put("email", userEmail);
-			item.getCreatedBy().getUserId().put("space", userSpace);
+			item.getCreatedBy().getUserId().setEmail(userEmail);
+			item.getCreatedBy().getUserId().setSpace(userSpace);
 		}
 		ItemEntity entity = this.entityConverter.toEntity(item);
 		this.itemDao.save(entity);
