@@ -1,39 +1,33 @@
 package app.boundaries;
 
-import com.fasterxml.jackson.annotation.JsonView;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import app.jsonViews.Views;
-
 public class OperationBoundary implements Boundary {
 
-    @JsonView(Views.Public.class)
-    private Map<String, String> operationId = new HashMap<>();
+    private OperationIdBoundary operationId;
+//    private Map<String, String> operationId = new HashMap<>();
 
-    @JsonView(Views.Operation.class)
     private String operationType = "undefined";
 
-    @JsonView(Views.Operation.class)
     private DigitalItemBoundary item = new DigitalItemBoundary();
 
-    @JsonView(Views.Operation.class)
     private Date createdTimestamp = new Date();
 
-    @JsonView(Views.Operation.class)
     private UserBoundary invokedBy = new UserBoundary();
 
-    @JsonView(Views.Operation.class)
     private Map<String, Object> operationAttributes = new HashMap<>();
 
 
     /**
      * This is the default constructor, all the fields will be the default values
      */
-    public OperationBoundary() { /* Default Constructor */ }
+    public OperationBoundary() {
+        operationId = new OperationIdBoundary();
+        /* Default Constructor */
+    }
 
     /**
      * This is constructor, will create an operation with the given parameters
@@ -43,19 +37,21 @@ public class OperationBoundary implements Boundary {
      * @param item          - The item that the operation require {@link DigitalItemBoundary}
      * @param invokedBy     - The user whom invoked the operation {@link UserBoundary}
      */
-    public OperationBoundary(Map<String,String> id, String operationType, DigitalItemBoundary item, UserBoundary invokedBy) {
+    public OperationBoundary(String id, String space, String operationType, DigitalItemBoundary item, UserBoundary invokedBy) {
         this();
-        this.operationId = id;
+        operationId.setId(id);
+        operationId.setSpace(space);
         this.operationType = operationType;
         this.item = item;
         this.invokedBy = invokedBy;
     }
 
-    public Map<String, String> getOperationId() {
+
+    public OperationIdBoundary getOperationId() {
         return operationId;
     }
 
-    public void setOperationId(Map<String, String> operationId) {
+    public void setOperationId(OperationIdBoundary operationId) {
         this.operationId = operationId;
     }
 
@@ -115,4 +111,21 @@ public class OperationBoundary implements Boundary {
     public int hashCode() {
         return Objects.hash(operationId, operationType, item, createdTimestamp, invokedBy, operationAttributes);
     }
+
+
+//        /** OLD CONSTRUCTOR
+//     * This is constructor, will create an operation with the given parameters
+//     *
+//     * @param id            - an ID for the operation, it will part of the {@link HashMap} of the Boundary Item
+//     * @param operationType - Operation type
+//     * @param item          - The item that the operation require {@link DigitalItemBoundary}
+//     * @param invokedBy     - The user whom invoked the operation {@link UserBoundary}
+//     */
+//    public OperationBoundary(Map<String, String> id, String operationType, DigitalItemBoundary item, UserBoundary invokedBy) {
+//        this();
+//        operationId.setId(id.);
+//        this.operationType = operationType;
+//        this.item = item;
+//        this.invokedBy = invokedBy;
+//    }
 }

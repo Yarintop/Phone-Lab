@@ -127,8 +127,8 @@ public class DigitalItemTest {
 		
 		// Must have userId map that is not null and have the keys email and space with correct values
 		assertThat(actualItem.getCreatedBy().getUserId()).isNotNull();
-		assertThat(actualItem.getCreatedBy().getUserId().get("email")).isNotNull().isEqualTo(email);
-		assertThat(actualItem.getCreatedBy().getUserId().get("space")).isNotNull().isEqualTo(space);
+		assertThat(actualItem.getCreatedBy().getUserId().getEmail()).isNotNull().isEqualTo(email);
+		assertThat(actualItem.getCreatedBy().getUserId().getSpace()).isNotNull().isEqualTo(space);
 		
 		// AND initialized non null time-stamp
 		assertThat(actualItem.getCreatedTimestamp())
@@ -166,8 +166,8 @@ public class DigitalItemTest {
 	}
 	
 	private void assertTwoItemsAreEqual(DigitalItemBoundary resultItem, DigitalItemBoundary originalItem) throws Exception {
-		String email = originalItem.getCreatedBy().getUserId().get("email");
-		String space = originalItem.getCreatedBy().getUserId().get("space");
+		String email = originalItem.getCreatedBy().getUserId().getEmail();
+		String space = originalItem.getCreatedBy().getUserId().getSpace();
 				
 		// Must have ItemId map that is not null and have the keys id and space with correct values
 		assertThat(resultItem.getItemId()).isNotNull();
@@ -192,8 +192,8 @@ public class DigitalItemTest {
 		// Must have userId map that is not null and have the keys email and space with correct values
 		assertThat(resultItem.getCreatedBy()).isNotNull();
 		assertThat(resultItem.getCreatedBy().getUserId()).isNotNull();
-		assertThat(resultItem.getCreatedBy().getUserId().get("email")).isEqualTo(email);
-		assertThat(resultItem.getCreatedBy().getUserId().get("space")).isEqualTo(space);
+		assertThat(resultItem.getCreatedBy().getUserId().getEmail()).isEqualTo(email);
+		assertThat(resultItem.getCreatedBy().getUserId().getSpace()).isEqualTo(space);
 		
 		// The Item attributes should exist and have the same key and values
 		assertThat(resultItem.getItemAttributes()).isNotNull();

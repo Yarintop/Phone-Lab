@@ -1,6 +1,7 @@
 package app.converters;
 
 import app.boundaries.OperationBoundary;
+import app.boundaries.OperationIdBoundary;
 import app.twins.data.OperationEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -84,9 +85,9 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
      * @param operationIdMap - ID Map from a boundary object
      * @return String that represent the id in the format: id&spaceId
      */
-    public String convertMapKey(Map<String, String> operationIdMap) {
-        String id = operationIdMap.get(idKey);
-        String spaceId = operationIdMap.get(spaceIdKey);
+    public String convertMapKey(OperationIdBoundary operationIdMap) {
+        String id = operationIdMap.getId();
+        String spaceId = operationIdMap.getSpace();
         return id + "&" + spaceId;
     }
 
@@ -97,11 +98,8 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
      * @param operationIdString - ID string in format: id&spaceId
      * @return {@link HashMap} that represent the id for a boundary object
      */
-    public Map<String, String> convertStringKey(String operationIdString) {
-        Map<String, String> operationIdMap = new HashMap<>();
+    public OperationIdBoundary convertStringKey(String operationIdString) {
         String[] idParts = operationIdString.split("&");
-        operationIdMap.put(idKey, idParts[0]);
-        operationIdMap.put(spaceIdKey, idParts[1]);
-        return operationIdMap;
+        return new OperationIdBoundary(idParts[0], idParts[1]);
     }
 }

@@ -1,5 +1,6 @@
 package app.twins.logic;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,7 +73,7 @@ public class ItemsServiceMockup implements ItemsService {
 		}
 		ItemEntity entity = this.entityConverter.toEntity(item);
 		this.items.put(itemKey, entity);
-				
+
 		return this.entityConverter.toBoundary(entity);
 	}
 	
@@ -144,7 +145,7 @@ public class ItemsServiceMockup implements ItemsService {
 	 * 
 	 */
 	@Override
-	public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail) {		
+	public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail) {
 		return this.items
 				.values()
 				.stream()
