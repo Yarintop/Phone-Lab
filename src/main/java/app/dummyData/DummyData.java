@@ -36,10 +36,12 @@ public class DummyData {
 
 
     public OperationBoundary getRandomOperation(boolean withId) {
-        ItemIdBoundary itemId = new ItemIdBoundary(spaceId, getRandomId());
-        UserIdBoundary userId = new UserIdBoundary(spaceId, "Else@else.com");
+//        ItemIdBoundary itemId = new ItemIdBoundary(spaceId, getRandomId());
+//        UserIdBoundary userId = new UserIdBoundary(spaceId, "Else@else.com");
+        DigitalItemBoundary item = getRandomDigitalItem(spaceId, "else@aaa.com");
+        UserBoundary user = getRandomUser();
 
-        OperationBoundary operation = new OperationBoundary(getRandomId(), spaceId, "random type", itemId, userId);
+        OperationBoundary operation = new OperationBoundary(getRandomId(), spaceId, "random type", item, user);
         if (!withId)
             operation.setOperationId(null);
 

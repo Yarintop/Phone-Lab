@@ -119,7 +119,7 @@ public class OperationsTest {
 
         // assert all the fields that are not ID, equal to the original
         assertThat(res.getCreatedTimestamp()).isEqualTo(operation.getCreatedTimestamp());
-        assertThat(res.getOperationType()).isEqualTo(operation.getOperationType());
+        assertThat(res.getType()).isEqualTo(operation.getType());
         assertThat(res.getOperationAttributes()).isEqualTo(operation.getOperationAttributes());
 
         assertThat(res.getItem()).isEqualTo(operation.getItem());

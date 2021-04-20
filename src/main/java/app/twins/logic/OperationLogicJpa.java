@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -38,6 +39,7 @@ public class OperationLogicJpa implements OperationsService {
     @Override
     public Object invokeOperation(OperationBoundary operation) {
         OperationEntity entity = converter.toEntity(operation);
+        entity.setCreatedTimestamp(new Date());
         operationsDao.save(entity);
         return operation;
     }
@@ -46,6 +48,7 @@ public class OperationLogicJpa implements OperationsService {
     public OperationBoundary invokeAsynchronous(OperationBoundary operation) {
         OperationEntity entity = converter.toEntity(operation);
         entity.setOperationId(UUID.randomUUID().toString(), spaceId);
+        entity.setCreatedTimestamp(new Date());
         operationsDao.save(entity);
         return converter.toBoundary(entity);
     }

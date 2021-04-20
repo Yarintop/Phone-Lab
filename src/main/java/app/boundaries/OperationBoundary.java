@@ -1,5 +1,8 @@
 package app.boundaries;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,9 +13,9 @@ public class OperationBoundary implements Boundary {
     //    private Map<String, String> operationId = new HashMap<>();
     private OperationIdBoundary operationId;
     private String type = "undefined";
-    private ItemIdBoundary item;
+    private DigitalItemBoundary item;
     private Date createdTimestamp = new Date();
-    private UserIdBoundary invokedBy;
+    private UserBoundary invokedBy;
     private Map<String, Object> operationAttributes = new HashMap<>();
 
 
@@ -27,12 +30,12 @@ public class OperationBoundary implements Boundary {
     /**
      * This is constructor, will create an operation with the given parameters
      *
-     * @param id        - an ID for the operation, it will part of the {@link HashMap} of the Boundary Item
-     * @param type      - Operation type
-     * @param itemId      - The item that the operation require {@link DigitalItemBoundary}
+     * @param id     - an ID for the operation, it will part of the {@link HashMap} of the Boundary Item
+     * @param type   - Operation type
+     * @param itemId - The item that the operation require {@link DigitalItemBoundary}
      * @param userId - The user whom invoked the operation {@link UserBoundary}
      */
-    public OperationBoundary(String id, String space, String type, ItemIdBoundary itemId, UserIdBoundary userId) {
+    public OperationBoundary(String id, String space, String type, DigitalItemBoundary itemId, UserBoundary userId) {
         this();
         operationId.setId(id);
         operationId.setSpace(space);
@@ -50,21 +53,29 @@ public class OperationBoundary implements Boundary {
         this.operationId = operationId;
     }
 
-    public String getOperationType() {
+    public String getType() {
         return type;
     }
 
-    public void setOperationType(String type) {
+    public void setType(String type) {
         this.type = type;
     }
 
-    public ItemIdBoundary getItem() {
+    @JsonIgnore
+    public DigitalItemBoundary getItem() {
         return item;
     }
 
-    public void setItem(ItemIdBoundary item) {
+    @JsonProperty("item")
+    public void setItem(DigitalItemBoundary item) {
         this.item = item;
     }
+
+    @JsonProperty("item")
+    public ItemIdBoundary getItemId() {
+        return item == null ? null : item.getItemId();
+    }
+
 
     public Date getCreatedTimestamp() {
         return createdTimestamp;
@@ -74,12 +85,19 @@ public class OperationBoundary implements Boundary {
         this.createdTimestamp = createdTimestamp;
     }
 
-    public UserIdBoundary getInvokedBy() {
+    @JsonIgnore
+    public UserBoundary getInvokedBy() {
         return invokedBy;
     }
 
-    public void setInvokedBy(UserIdBoundary invokedBy) {
+    @JsonProperty("invokedBy")
+    public void setInvokedBy(UserBoundary invokedBy) {
         this.invokedBy = invokedBy;
+    }
+
+    @JsonProperty("invokedBy")
+    public UserIdBoundary getInvokedById() {
+        return invokedBy == null ? null : invokedBy.getUserId();
     }
 
     public Map<String, Object> getOperationAttributes() {

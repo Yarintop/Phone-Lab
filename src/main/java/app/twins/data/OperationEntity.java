@@ -3,9 +3,7 @@ package app.twins.data;
 import app.boundaries.ItemIdBoundary;
 import app.boundaries.UserIdBoundary;
 
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,13 +13,12 @@ import java.util.Map;
 public class OperationEntity implements Entity {
     private String operationId = "";
     private String operationType = "undefined";
-    private ItemIdBoundary item;
+    private ItemEntity item;
     private Date createdTimestamp = new Date();
-    private UserIdBoundary invokedBy ;
+    private UserEntity invokedBy ;
     private Map<String, Object> operationAttributes = new HashMap<>();
 
-    public OperationEntity() {
-    }
+    public OperationEntity() {    }
 
     @Id
     public String getOperationId() {
@@ -45,14 +42,16 @@ public class OperationEntity implements Entity {
     }
 
     @Transient
-    public ItemIdBoundary getItem() {
+//    @ManyToOne(fetch = FetchType.LAZY)
+    public ItemEntity getItem() {
         return item;
     }
 
-    public void setItem(ItemIdBoundary item) {
+    public void setItem(ItemEntity item) {
         this.item = item;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getCreatedTimestamp() {
         return createdTimestamp;
     }
@@ -62,11 +61,12 @@ public class OperationEntity implements Entity {
     }
 
     @Transient
-    public UserIdBoundary getInvokedBy() {
+//    @ManyToOne(fetch = FetchType.LAZY)
+    public UserEntity getInvokedBy() {
         return invokedBy;
     }
 
-    public void setInvokedBy(UserIdBoundary invokedBy) {
+    public void setInvokedBy(UserEntity invokedBy) {
         this.invokedBy = invokedBy;
     }
 

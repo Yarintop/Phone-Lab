@@ -3,12 +3,23 @@ package app.converters;
 import app.boundaries.OperationBoundary;
 import app.boundaries.OperationIdBoundary;
 import app.twins.data.OperationEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 
 @Component
 public class OperationConverter implements EntityConverter<OperationEntity, OperationBoundary> {
+
+    private UserConverter userConverter;
+    private ItemConverter itemConverter;
+
+    @Autowired
+    public void setConverters(ItemConverter itemConverter, UserConverter userConverter) {
+        this.itemConverter = itemConverter;
+        this.userConverter = userConverter;
+    }
+
 
     /**
      * This function will convert a boundary object to entity for all operations
@@ -24,10 +35,12 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
             entity.setOperationId(convertMapKey(boundary.getOperationId()));
         else
             entity.setOperationId(""); // Empty ID string if the ID is missing
-        entity.setOperationType(boundary.getOperationType());
+        entity.setOperationType(boundary.getType());
         entity.setCreatedTimestamp(boundary.getCreatedTimestamp());
-        entity.setInvokedBy(boundary.getInvokedBy());
-        entity.setItem(boundary.getItem());
+//        entity.setInvokedBy(boundary.getInvokedBy());
+//        entity.setItem(boundary.getItem());
+        entity.setInvokedBy(userConverter.toEntity(boundary.getInvokedBy()));
+        entity.setItem(itemConverter.toEntity(boundary.getItem()));
         entity.setOperationAttributes(boundary.getOperationAttributes());
         return entity;
     }
@@ -45,10 +58,13 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
         if (entity.getOperationId() != null && entity.getOperationId().length() > 0)
             // If there is a valid ID, convert it into map value for the boundary
             boundary.setOperationId(convertStringKey(entity.getOperationId()));
-        boundary.setOperationType(entity.getOperationType());
+        boundary.setType(entity.getOperationType());
         boundary.setCreatedTimestamp(entity.getCreatedTimestamp());
-        boundary.setInvokedBy(entity.getInvokedBy());
-        boundary.setItem(entity.getItem());
+        if (entity.getInvokedBy() != null)
+            boundary.setInvokedBy(userConverter.toBoundary(entity.getInvokedBy()));
+        if (entity.getItem() != null)
+            boundary.setItem(itemConverter.toBoundary(entity.getItem()));
+
         boundary.setOperationAttributes(entity.getOperationAttributes());
         return boundary;
     }
