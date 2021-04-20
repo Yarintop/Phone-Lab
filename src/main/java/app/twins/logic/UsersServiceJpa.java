@@ -52,13 +52,13 @@ public class UsersServiceJpa implements UsersService {
         if (user == null)  // If user doesn't have email
             throw (new BadRequestException("User can't be null")); // User can't be null
 
-        if (user.getUserId().get("email") == null)  // If user doesn't have email
+        if (user.getUserId().getEmail() == null)  // If user doesn't have email
             throw (new BadRequestException("Can't create a user without an email")); // Users must have email
 
-        Matcher matcher = valid_email_regex.matcher(user.getUserId().get("email"));
+        Matcher matcher = valid_email_regex.matcher(user.getUserId().getEmail());
 
         if (!matcher.find()) {
-            throw (new BadRequestException("Email address is invalid " + user.getUserId().get("email")));
+            throw (new BadRequestException("Email address is invalid " + user.getUserId().getEmail()));
         }
 
         // Making sure the user has a valid role (Player, Manager or Admin)
@@ -86,7 +86,7 @@ public class UsersServiceJpa implements UsersService {
         if (!this.usersDao.findById(key).isPresent()) // Making sure the user is a new user in the system
             this.usersDao.save(userEntity); // Saving user to the database
         else
-            throw (new BadRequestException("There is already a user with email: " + user.getUserId().get("email")));
+            throw (new BadRequestException("There is already a user with email: " + user.getUserId().getEmail()));
 
 
         return this.converter.toBoundary(userEntity); // Just testing the converter
