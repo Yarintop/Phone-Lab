@@ -27,7 +27,6 @@ public class DigitalItemController {
 		this.itemLogic = itemLogic;
 	}
 	
-    @JsonView(Views.Item.class)
 	@RequestMapping(
 		path = "/twins/items/{userSpace}/{userEmail}",
 		method = RequestMethod.POST,
@@ -60,7 +59,6 @@ public class DigitalItemController {
 		.updateItem(userSpace, userEmail, itemSpace, itemId, update);
 	}
 	
-    @JsonView(Views.Item.class)
 	@RequestMapping(
 		path = "/twins/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}",
 		method = RequestMethod.GET,
@@ -76,7 +74,6 @@ public class DigitalItemController {
 				.getSpecificItem(userSpace, userEmail, itemSpace, itemId);
 	}
 	
-    @JsonView(Views.Item.class)
 	@RequestMapping(
 		path = "/twins/items/{userSpace}/{userEmail}",
 		method = RequestMethod.GET,

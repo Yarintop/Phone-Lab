@@ -3,10 +3,12 @@ package app.twins.data;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import app.boundaries.ItemIdBoundary;
 import app.boundaries.UserBoundary;
 
 public class ItemEntity implements Entity {
-	private Map<String, String> itemId = new HashMap<>(); // This line might change
+	private ItemIdBoundary itemId = new ItemIdBoundary(); // This line might change
 	private String type = "no type";
 	private String name = "no name yet";
 	private boolean active = false;
@@ -14,23 +16,21 @@ public class ItemEntity implements Entity {
 	private UserBoundary createdBy = new UserBoundary(); // This line might change
 	private Map<String, Double> location = new HashMap<>();
 	private Map<String, Object> itemAttributes = new HashMap<>();
-	
-	
-	
+
+
+
 	public ItemEntity() {
 		super();
 	}
-	
-	public Map<String, String> getItemId() {
+
+	public ItemIdBoundary getItemId() {
 		return itemId;
 	}
-	public void setItemId(Map<String, String> itemId) {
+	public void setItemId(ItemIdBoundary itemId) {
 		this.itemId = itemId;
 	}
 	public void setItemId(String itemId, String itemSpace) {
-		this.itemId = new HashMap<>();
-		this.itemId.put("id", itemId);
-		this.itemId.put("space", itemSpace);
+		this.itemId = new ItemIdBoundary(itemSpace, itemId);
 	}
 	public String getType() {
 		return type;
@@ -74,7 +74,5 @@ public class ItemEntity implements Entity {
 	public void setItemAttributes(Map<String, Object> itemAttributes) {
 		this.itemAttributes = itemAttributes;
 	}
-	
-	
 }
 
