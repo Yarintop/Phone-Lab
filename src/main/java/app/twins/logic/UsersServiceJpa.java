@@ -75,6 +75,10 @@ public class UsersServiceJpa implements UsersService {
             throw (new BadRequestException("Invalid user avatar!!"));
         }
 
+        if (user.getUsername() == null || user.getUsername().isEmpty()) {
+            throw (new BadRequestException("Invalid username!!"));
+        }
+
         // Adding user to the system
         UserEntity userEntity = this.converter.toEntity(user);
         userEntity.setSpace(spaceId); // Setting the user's space
