@@ -6,3 +6,4 @@
 !bitbucket-pipelines.yml
 !*.md
 !Dockerfile
+!mvn*
