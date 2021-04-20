@@ -1,8 +1,6 @@
 package app.dummyData;
 
-import app.boundaries.DigitalItemBoundary;
-import app.boundaries.OperationBoundary;
-import app.boundaries.UserBoundary;
+import app.boundaries.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +14,7 @@ public class DummyData {
     private final String[] roles = {"Manager", "Player", "Admin"};
     private final String[][] users = {
             {"dima", "dima@guy.com"},
-            {"yarin.mizrahiTfahot " , "yarin@guy.com"},
+            {"yarin.mizrahiTfahot ", "yarin@guy.com"},
             {"rafi", "rafi@guy.com"}
     };
 
@@ -60,10 +58,9 @@ public class DummyData {
 
 
     public OperationBoundary getRandomOperation(boolean withId) {
-        Map<String, String> itemId = new HashMap<>();
-        itemId.put(spaceIdKey, spaceId);
+        ItemIdBoundary itemId = new ItemIdBoundary(spaceId, getRandomId());
 
-        itemId.put(idKey, getRandomId());
+        itemId.setId(getRandomId());
 
         UserBoundary user = new UserBoundary(
                 "Random",
@@ -89,19 +86,16 @@ public class DummyData {
         operation.setItem(item);
         operation.setInvokedBy(user);
         if (withId) {
-            Map<String, String> operationId = new HashMap<>();
-            operationId.put(spaceIdKey, spaceId);
-            operationId.put(idKey, getRandomId());
+            OperationIdBoundary operationId = new OperationIdBoundary(spaceId,  getRandomId());
             operation.setOperationId(operationId);
         }
         return operation;
     }
+
     public DigitalItemBoundary getRandomDigitalItem(String userSpace, String userEmail) {
         Random rand = new Random();
         // User ID
-        Map<String, String> itemId = new HashMap<>();
-        itemId.put("id", getRandomId());
-        itemId.put("space", userSpace);
+        ItemIdBoundary itemId = new ItemIdBoundary(spaceId, getRandomId());
 
         //Lat/Long
         Map<String, Double> latlng = new HashMap<>();

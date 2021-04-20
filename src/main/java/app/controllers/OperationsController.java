@@ -35,7 +35,6 @@ public class OperationsController {
         return operationService.invokeOperation(operationBoundary);
     }
 
-    @JsonView(Views.Operation.class)
     @RequestMapping(
             path = "/twins/operations/async",
             method = RequestMethod.POST,
