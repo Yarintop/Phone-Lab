@@ -1,7 +1,6 @@
 package app.controllers;
 
 import app.twins.logic.OperationsService;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,9 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.boundaries.OperationBoundary;
-// import app.boundaries.DigitalItemBoundary;
-// import app.boundaries.UserBoundary;
-import app.jsonViews.Views;
 
 
 @RestController

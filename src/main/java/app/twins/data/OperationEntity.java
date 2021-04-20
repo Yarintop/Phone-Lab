@@ -1,7 +1,6 @@
 package app.twins.data;
 
-import app.boundaries.DigitalItemBoundary;
-import app.boundaries.UserBoundary;
+import app.boundaries.ItemIdBoundary;
 import app.boundaries.UserIdBoundary;
 
 import javax.persistence.Id;
@@ -16,7 +15,7 @@ import java.util.Map;
 public class OperationEntity implements Entity {
     private String operationId = "";
     private String operationType = "undefined";
-    private DigitalItemBoundary item = new DigitalItemBoundary();
+    private ItemIdBoundary item;
     private Date createdTimestamp = new Date();
     private UserIdBoundary invokedBy ;
     private Map<String, Object> operationAttributes = new HashMap<>();
@@ -46,11 +45,11 @@ public class OperationEntity implements Entity {
     }
 
     @Transient
-    public DigitalItemBoundary getItem() {
+    public ItemIdBoundary getItem() {
         return item;
     }
 
-    public void setItem(DigitalItemBoundary item) {
+    public void setItem(ItemIdBoundary item) {
         this.item = item;
     }
 

@@ -3,37 +3,12 @@ package app.converters;
 import app.boundaries.OperationBoundary;
 import app.boundaries.OperationIdBoundary;
 import app.twins.data.OperationEntity;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class OperationConverter implements EntityConverter<OperationEntity, OperationBoundary> {
-
-    private String spaceIdKey;
-    private String idKey;
-
-    /**
-     * Sets the spaceIdKey value from the application.properties file, future proofing for future use.
-     *
-     * @param spaceIdKey the loaded spaceId value, default would be "spaceId"
-     */
-    @Value("${key.space:spaceId}")
-    public void setSpaceIdKey(String spaceIdKey) {
-        this.spaceIdKey = spaceIdKey;
-    }
-
-    /**
-     * Sets the idKey value from the application.properties file, future proofing for future use.
-     *
-     * @param idKey the loaded spaceId value, default would be "id"
-     */
-    @Value("${key.id:id}")
-    public void setIdKey(String idKey) {
-        this.idKey = idKey;
-    }
 
     /**
      * This function will convert a boundary object to entity for all operations

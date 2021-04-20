@@ -10,7 +10,7 @@ public class OperationBoundary implements Boundary {
     //    private Map<String, String> operationId = new HashMap<>();
     private OperationIdBoundary operationId;
     private String type = "undefined";
-    private DigitalItemBoundary item = new DigitalItemBoundary();
+    private ItemIdBoundary item;
     private Date createdTimestamp = new Date();
     private UserIdBoundary invokedBy;
     private Map<String, Object> operationAttributes = new HashMap<>();
@@ -29,16 +29,16 @@ public class OperationBoundary implements Boundary {
      *
      * @param id        - an ID for the operation, it will part of the {@link HashMap} of the Boundary Item
      * @param type      - Operation type
-     * @param item      - The item that the operation require {@link DigitalItemBoundary}
-     * @param invokedBy - The user whom invoked the operation {@link UserBoundary}
+     * @param itemId      - The item that the operation require {@link DigitalItemBoundary}
+     * @param userId - The user whom invoked the operation {@link UserBoundary}
      */
-    public OperationBoundary(String id, String space, String type, DigitalItemBoundary item, UserIdBoundary invokedBy) {
+    public OperationBoundary(String id, String space, String type, ItemIdBoundary itemId, UserIdBoundary userId) {
         this();
         operationId.setId(id);
         operationId.setSpace(space);
         this.type = type;
-        this.item = item;
-        this.invokedBy = invokedBy;
+        this.item = itemId;
+        this.invokedBy = userId;
     }
 
 
@@ -58,11 +58,11 @@ public class OperationBoundary implements Boundary {
         this.type = type;
     }
 
-    public DigitalItemBoundary getItem() {
+    public ItemIdBoundary getItem() {
         return item;
     }
 
-    public void setItem(DigitalItemBoundary item) {
+    public void setItem(ItemIdBoundary item) {
         this.item = item;
     }
 
