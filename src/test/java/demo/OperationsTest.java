@@ -124,7 +124,7 @@ public class OperationsTest {
         assertThat(res.getOperationAttributes()).isEqualTo(operation.getOperationAttributes());
 
         assertThat(res.getItem().getItemId()).isEqualTo(operation.getItem().getItemId());
-        assertThat(res.getInvokedBy().getUserId()).isEqualTo(operation.getInvokedBy().getUserId());
+        assertThat(res.getInvokedBy()).isEqualTo(operation.getInvokedBy());
 
         // assert that a new ID was generated
         assertThat(res.getOperationId()).isNotNull();
