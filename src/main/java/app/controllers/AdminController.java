@@ -3,7 +3,6 @@ package app.controllers;
 import app.twins.logic.ItemsService;
 import app.twins.logic.OperationsService;
 import app.twins.logic.UsersService;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import app.boundaries.OperationBoundary;
 import app.boundaries.UserBoundary;
-import app.jsonViews.Views;
 
 @RestController
 public class AdminController {
@@ -48,7 +46,6 @@ public class AdminController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @JsonView(Views.User.class)
     public UserBoundary[] exportAllUsers(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail) {
         return usersService.getAllUsers(id, userEmail).toArray(new UserBoundary[0]);
     }
@@ -65,7 +62,6 @@ public class AdminController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @JsonView(Views.Operation.class)
     public OperationBoundary[] exportAllOperations(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail) {
         return operationsService.getAllOperations(id, userEmail).toArray(new OperationBoundary[0]);
     }
