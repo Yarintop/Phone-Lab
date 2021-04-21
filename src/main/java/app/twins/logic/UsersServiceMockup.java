@@ -1,9 +1,6 @@
 package app.twins.logic;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import app.boundaries.UserIdBoundary;
+import app.boundaries.UserBoundary;
 import app.converters.UserConverter;
 import app.twins.data.UserEntity;
 import app.twins.data.UserRole;
@@ -11,9 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import app.boundaries.UserBoundary;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-@Service
+//@Service
 public class UsersServiceMockup { //implements UsersService {
 
 
@@ -61,12 +62,11 @@ public class UsersServiceMockup { //implements UsersService {
 
         // Adding user to the system
         UserEntity userEntity = this.converter.toEntity(user);
-        userEntity.setSpace(spaceId); // Setting the user's space
 
         // Generating key
-        String key = userEntity.getSpace() + "&" + userEntity.getEmail();
+        String key = userEntity.getUserId();
 
-       // System.out.println(key);
+        // System.out.println(key);
 
 //        System.out.println("Email " + userEntity.getEmail() + " Space: " + userEntity.getSpace());
 
@@ -76,7 +76,7 @@ public class UsersServiceMockup { //implements UsersService {
         else
             throw (new RuntimeException("There is already a user with email: " + user.getUserId().getEmail()));
 
-        UserBoundary temp =  this.converter.toBoundary(userEntity);
+        UserBoundary temp = this.converter.toBoundary(userEntity);
 
 //        System.out.println("Email " + temp.getUserId().getEmail() + " Space: " + temp.getUserId().getSpace());
 
