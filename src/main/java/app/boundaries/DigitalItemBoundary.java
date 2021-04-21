@@ -1,5 +1,8 @@
 package app.boundaries;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.Date;
@@ -58,6 +61,17 @@ public class DigitalItemBoundary implements Boundary {
     public void setCreatedBy(UserBoundary createdBy) {
         this.createdBy = createdBy;
     }
+
+    @JsonProperty("createdBy")
+//    @JsonIgnore
+    public Map<String, UserIdBoundary> getCreatedById() {
+        if (createdBy == null) return null;
+        HashMap<String, UserIdBoundary> temp = new HashMap<>();
+        temp.put("userId", createdBy.getUserId());
+        return temp;
+//        return createdBy == null ? null : createdBy.getUserId();
+    }
+
 
     public ItemIdBoundary getItemId() {
         return itemId;
@@ -195,7 +209,7 @@ public class DigitalItemBoundary implements Boundary {
                 + "name=" + name + "\n"
                 + "active=" + active + "\n"
                 + "createdTimestamp=" + createdTimestamp + "\n"
-                + "createdBy=" + createdBy.getUserId() + "\n"
+                + "createdBy=" + createdBy + "\n"
                 + "location=" + location + "\n"
                 + "itemAttributes=" + itemAttributes;
     }

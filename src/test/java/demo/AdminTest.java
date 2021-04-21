@@ -112,7 +112,7 @@ public class AdminTest {
 
         // WHEN I GET all using /twins/admin/operations/{userSpace}/{userEmail}
         String space = this.spaceId;
-        String email = "admin@email.com";
+        String email = "admin@gmail.com";
         String theUrl = this.baseUrl + "admin/operations/" + space + "/" + email;
 
         OperationBoundary operation = dataGenerator.getRandomOperation(false);
@@ -182,7 +182,7 @@ public class AdminTest {
         // THEN delete all operations
 
         String space = this.spaceId;
-        String email = "admin@email.com";
+        String email = "admin@gmail.com";
         String theUrl = this.baseUrl + "admin/operations/" + space + "/" + email;
 
         OperationBoundary operation = dataGenerator.getRandomOperation(false);
@@ -277,7 +277,7 @@ public class AdminTest {
         // THEN delete all items
 
         String space = this.spaceId;
-        String email = "admin@email.com";
+        String email = "admin@gmail.com";
         String theUrl = this.baseUrl + "admin/items/" + space + "/" + email;
         String itemUrl = this.baseUrl + "items/" + this.spaceId + "/" + email;
 

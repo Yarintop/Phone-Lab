@@ -40,8 +40,7 @@ public class DigitalItemController {
             @PathVariable("userSpace") String userSpace,
             @PathVariable("userEmail") String userEmail,
             @RequestBody DigitalItemBoundary newItem) {
-        return itemLogic
-                .createItem(userSpace, userEmail, newItem);
+        return itemLogic.createItem(userSpace, userEmail, newItem);
     }
 
     @RequestMapping(

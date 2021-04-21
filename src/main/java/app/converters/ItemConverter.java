@@ -16,6 +16,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBoundary> {
     private ObjectMapper jackson;
 
+    private UserConverter userConverter;
+
+    @Autowired
+    public void setConverters(UserConverter userConverter) {
+        this.userConverter = userConverter;
+    }
+
     public ItemConverter() {
         this.jackson = new ObjectMapper();
     }
@@ -31,7 +38,7 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
         if (boundaryObject.getActive() != null)
             rv.setActive(boundaryObject.getActive());
         rv.setCreatedTimestamp(boundaryObject.getCreatedTimestamp());
-        rv.setCreatedBy(boundaryObject.getCreatedBy());
+        rv.setCreatedBy(userConverter.toEntity(boundaryObject.getCreatedBy()));
         rv.setLocation(this.fromMapToJson(boundaryObject.getLocation()));
         rv.setItemAttributes(this.fromMapToJson(boundaryObject.getItemAttributes()));
 
@@ -47,7 +54,7 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
         rv.setName(entityObject.getName());
         rv.setActive(entityObject.isActive());
         rv.setCreatedTimestamp(entityObject.getCreatedTimestamp());
-        rv.setCreatedBy(entityObject.getCreatedBy()); // This line might change
+        rv.setCreatedBy(userConverter.toBoundary(entityObject.getCreatedBy())); // This line might change
         rv.setLocation((LocationBoundary) this.fromJsonToMap(entityObject.getLocation(), LocationBoundary.class));
         rv.setItemAttributes((Map<String, Object>) this.fromJsonToMap(entityObject.getItemAttributes(), Map.class));
 

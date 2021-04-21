@@ -144,6 +144,7 @@ public class DigitalItemTest {
 		assertThat(actualItem.getCreatedBy()).isNotNull();
 		
 		// Must have userId map that is not null and have the keys email and space with correct values
+		assertThat(actualItem.getCreatedBy()).isNotNull();
 		assertThat(actualItem.getCreatedBy().getUserId()).isNotNull();
 		assertThat(actualItem.getCreatedBy().getUserId().getEmail()).isNotNull().isEqualTo(email);
 		assertThat(actualItem.getCreatedBy().getUserId().getSpace()).isNotNull().isEqualTo(space);

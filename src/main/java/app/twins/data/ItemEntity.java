@@ -77,13 +77,12 @@ public class ItemEntity implements Entity {
         this.createdTimestamp = createdTimestamp;
     }
 
-    @Transient
-    public UserBoundary getCreatedBy() {
+    @ManyToOne
+    public UserEntity getCreatedBy() {
         return createdBy;
     }
 
-    @Transient
-    public void setCreatedBy(UserBoundary createdBy) {
+    public void setCreatedBy(UserEntity createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -105,7 +104,7 @@ public class ItemEntity implements Entity {
         this.itemAttributes = itemAttributes;
     }
 
-    @ManyToMany
+    @ManyToMany()
     public Set<ItemEntity> getChildren() {
         return children;
     }

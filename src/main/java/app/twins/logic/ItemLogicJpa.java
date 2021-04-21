@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import app.boundaries.ItemIdBoundary;
+import app.boundaries.UserIdBoundary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -67,12 +68,9 @@ public class ItemLogicJpa implements UpdatedItemsService {
         item.setCreatedTimestamp(new Date());
 
         //Update the info of the creating user to be those in the REST API /twins/items/{userSpace}/{userEmail})
-        if (item.getCreatedBy() == null)
-            item.setCreatedBy(new UserBoundary(userEmail, userSpace));
-        else {
-            item.getCreatedBy().getUserId().setEmail(userEmail);
-            item.getCreatedBy().getUserId().setSpace(userSpace);
-        }
+
+        item.setCreatedBy(new UserBoundary(userEmail, userSpace));
+
         ItemEntity entity = this.entityConverter.toEntity(item);
         this.itemDao.save(entity);
 
