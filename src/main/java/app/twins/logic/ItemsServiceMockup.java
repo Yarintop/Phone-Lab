@@ -116,15 +116,8 @@ public class ItemsServiceMockup implements ItemsService {
 			// ignore createdBy as created user is never changed
 
 			if (update.getLocation() != null) {
-				if (update.getLocation().get("lat") != null) {
-					existing.getLocation().put("lat", update.getLocation().get("lat"));
-					dirty = true;
-				}
-				
-				if (update.getLocation().get("lng") != null) {
-					existing.getLocation().put("lng", update.getLocation().get("lng"));
-					dirty = true;
-				}
+				existing.setLocation(update.getLocation());
+				dirty = true;
 			}
 			
 			// update mockup database

@@ -98,9 +98,7 @@ public class DummyData {
         ItemIdBoundary itemId = new ItemIdBoundary(userSpace, getRandomId());
 
         //Lat/Long
-        Map<String, Object> latlng = new HashMap<>();
-        latlng.put("lat", rand.nextDouble() * 40);
-        latlng.put("lng", rand.nextDouble() * 40);
+        LocationBoundary latLng = new LocationBoundary(rand.nextDouble() * 40, rand.nextDouble() * 40);
 
         //Attrs
         Map<String, Object> attrs = new HashMap<>();
@@ -115,7 +113,7 @@ public class DummyData {
                 (rand.nextInt() % 2 == 0),
                 new Date(),
                 new UserBoundary(userEmail, userSpace),
-                latlng,
+                latLng,
                 attrs
         );
     }
