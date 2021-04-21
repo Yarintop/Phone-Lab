@@ -60,8 +60,8 @@ public class OperationEntity implements Entity {
         this.createdTimestamp = createdTimestamp;
     }
 
-    @Transient
-//    @ManyToOne(fetch = FetchType.LAZY)
+//    @Transient
+    @ManyToOne(fetch = FetchType.LAZY)
     public UserEntity getInvokedBy() {
         return invokedBy;
     }
