@@ -9,6 +9,7 @@ import app.twins.logic.OperationsService;
 import app.twins.logic.UsersService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -83,18 +84,20 @@ public class AdminTest {
     public void setup() {
         UserBoundary user = dataGenerator.getRandomUser();
         user.setRole("Admin");
-        user.setEmail("remove@me.com");
+        user.setEmail("admin@gmail.com");
         usersService.createUser(user);
-        operationsService.deleteAllOperations(spaceId, user.getUserId().getEmail());
-        itemsService.deleteAllItems(spaceId, user.getUserId().getEmail());
-        usersService.deleteAllUsers(spaceId, user.getUserId().getEmail());
+
     }
 
 
     @AfterEach
     public void teardown() {
         System.err.println("After test..");
-
+        if (usersService.getAllUsers(spaceId, "admin@gmail.com").size() > 0) {
+            operationsService.deleteAllOperations(spaceId, "admin@gmail.com");
+            usersService.deleteAllUsers(spaceId, "admin@gmail.com");
+            itemsService.deleteAllItems(spaceId, "admin@gmail.com");
+        }
     }
 
     /**
@@ -256,6 +259,8 @@ public class AdminTest {
 
         // Check that size is one meaning only the newly added admin user
         assertThat(response).isNotNull().hasSize(1);
+
+        setup();
     }
 
 

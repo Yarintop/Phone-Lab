@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.persistence.*;
 
 import app.boundaries.UserBoundary;
+import app.boundaries.UserIdBoundary;
 
 @javax.persistence.Entity
 @Table(name = "ITEMS")
@@ -17,7 +18,8 @@ public class ItemEntity implements Entity {
     private String name = "no name yet";
     private boolean active = false;
     private Date createdTimestamp = new Date();
-    private UserBoundary createdBy = new UserBoundary(); // This line might change
+//    private UserIdBoundary createdBy = new UserIdBoundary(); // This line might change
+    private UserEntity createdBy;
     private String location = "{}";
     private String itemAttributes = "{}";
 

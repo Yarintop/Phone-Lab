@@ -76,6 +76,8 @@ public class ItemLogicJpa implements UpdatedItemsService {
         ItemEntity entity = this.entityConverter.toEntity(item);
         this.itemDao.save(entity);
 
+        DigitalItemBoundary temp = this.entityConverter.toBoundary(entity);
+
         return this.entityConverter.toBoundary(entity);
     }
 
@@ -157,8 +159,7 @@ public class ItemLogicJpa implements UpdatedItemsService {
 
         if (optionalItem.isPresent()) {
             ItemEntity entity = optionalItem.get();
-            DigitalItemBoundary boundary = entityConverter.toBoundary(entity);
-            return boundary;
+            return entityConverter.toBoundary(entity);
         } else {
             // TODO have server return status 404 here
             throw new NotFoundException("could not find message by id: " + itemKey);// NullPointerException

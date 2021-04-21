@@ -21,6 +21,7 @@ public class DigitalItemBoundary implements Boundary {
     private Date createdTimestamp = new Date();
 
     private UserBoundary createdBy = new UserBoundary(); // This line might change
+//    private UserIdBoundary createdBy = new UserIdBoundary(); // This line might change
 
     //    private Map<String, Object> location = new HashMap<>();
     private LocationBoundary location = new LocationBoundary();
@@ -46,10 +47,14 @@ public class DigitalItemBoundary implements Boundary {
         this(new ItemIdBoundary(itemSpace, itemId), type, name, active, createdTimestamp, createdBy, location, itemAttributes);
     }
 
+    @JsonIgnore
     public UserBoundary getCreatedBy() {
         return createdBy;
     }
 
+    @JsonProperty("createdBy")
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
+//    @JsonIgnore
     public void setCreatedBy(UserBoundary createdBy) {
         this.createdBy = createdBy;
     }
@@ -163,11 +168,8 @@ public class DigitalItemBoundary implements Boundary {
         } else if (!name.equals(other.name))
             return false;
         if (type == null) {
-            if (other.type != null)
-                return false;
-        } else if (!type.equals(other.type))
-            return false;
-        return true;
+            return other.type == null;
+        } else return type.equals(other.type);
     }
 
     @Override

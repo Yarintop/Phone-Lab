@@ -7,6 +7,13 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import app.boundaries.UserBoundary;
+import app.twins.data.UserEntity;
+import app.twins.data.UserRole;
+import app.twins.logic.ItemsService;
+import app.twins.logic.OperationsService;
+import app.twins.logic.UpdatedItemsService;
+import app.twins.logic.UsersService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +35,9 @@ public class DigitalItemTest {
 	private String baseUrl;
 	private String spaceId;
 	private DummyData dataGenerator;
-	
+	private UsersService usersService;
+	private UpdatedItemsService itemsService;
+
     /**
      * Sets the spaceId value from the application.properties file
      *
@@ -58,6 +67,12 @@ public class DigitalItemTest {
 	public void setPort(int port) {
 		this.port = port;
 	}
+
+	@Autowired
+	public void setServices(UsersService usersService, UpdatedItemsService itemsService) {
+		this.usersService = usersService;
+		this.itemsService = itemsService;
+	}
 	
 	@PostConstruct
 	public void init (){
@@ -70,6 +85,7 @@ public class DigitalItemTest {
 	public void setup() {
 		// init operations before each test
 		System.err.println("init before test..");
+		this.usersService.createUser(new UserBoundary(UserRole.ADMIN.toString(), "tests", "yup", "lol@gmail.com", spaceId));
 	}
 
 	
@@ -78,6 +94,8 @@ public class DigitalItemTest {
 //		this.restTemplate
 //			.delete(this.baseUrl);
 		System.err.println("After test..");
+		this.itemsService.deleteAllItems(spaceId, "lol@gmail.com");
+		this.usersService.deleteAllUsers(spaceId, "lol@gmail.com");
 	}
 	
 	@Test
@@ -239,7 +257,7 @@ public class DigitalItemTest {
 		// Check that item id matches
 		assertThat(retrievedItem.getItemId().getId()).isEqualTo(itemId);
 		assertThat(retrievedItem.getItemId().getSpace()).isEqualTo(itemSpace);
-		
+		System.out.println("dasdasdsad afasfsaf \n\n" + retrievedItem);
 		// Make sure all values are the same.
 		assertTwoItemsAreEqual(retrievedItem, actualItem);
 	}
