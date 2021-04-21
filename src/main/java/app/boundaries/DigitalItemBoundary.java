@@ -13,23 +13,23 @@ import app.jsonViews.Views;
 
 public class DigitalItemBoundary implements Boundary {
 
-    private ItemIdBoundary itemId = new ItemIdBoundary();// This line might change
+    private ItemIdBoundary itemId;
 
-    private String type = "no type";
+    private String type;
 
-    private String name = "no name yet";
+    private String name;
 
-    private Boolean active = false;
+    private Boolean active;
 
-    private Date createdTimestamp = new Date();
+    private Date createdTimestamp;
 
-    private UserBoundary createdBy = new UserBoundary(); // This line might change
+    private UserBoundary createdBy;
 //    private UserIdBoundary createdBy = new UserIdBoundary(); // This line might change
 
     //    private Map<String, Object> location = new HashMap<>();
-    private LocationBoundary location = new LocationBoundary();
+    private LocationBoundary location;
 
-    private Map<String, Object> itemAttributes = new HashMap<>();
+    private Map<String, Object> itemAttributes;
 
     public DigitalItemBoundary() { /* Default Constructor */ }
 

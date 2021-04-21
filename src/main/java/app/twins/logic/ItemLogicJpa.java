@@ -71,6 +71,11 @@ public class ItemLogicJpa implements UpdatedItemsService {
 
         item.setCreatedBy(new UserBoundary(userEmail, userSpace));
 
+        if (item.getLocation() == null)
+            item.setLocation(-1, -1);
+        if (item.getItemAttributes() == null)
+            item.setItemAttributes(new HashMap<>());
+
         ItemEntity entity = this.entityConverter.toEntity(item);
         this.itemDao.save(entity);
 
