@@ -1,12 +1,10 @@
 package app.twins.logic;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import app.boundaries.ItemIdBoundary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -118,7 +116,7 @@ public class ItemLogicJpa implements UpdatedItemsService {
 
             // ignore timestamp as creation timestamp is never changed
 
-			// ignore createdBy as created user is never changed
+            // ignore createdBy as created user is never changed
 
             if (update.getLocation() != null) {
                 existing.setLocation(update.getLocation());
@@ -157,18 +155,58 @@ public class ItemLogicJpa implements UpdatedItemsService {
         String itemKey = this.entityConverter.toSecondaryId(itemSpace, itemId);
         Optional<ItemEntity> optionalItem = this.itemDao.findById(itemKey);
 
-		if (optionalItem.isPresent()) {
-			ItemEntity entity = optionalItem.get();
-			DigitalItemBoundary boundary = entityConverter.toBoundary (entity);
-			return boundary;
-		}else {
-			// TODO have server return status 404 here
-			throw new NotFoundException("could not find message by id: " + itemKey);// NullPointerException
-		}
-	}
-	@Override
-	@Transactional//(readOnly = false)
-	public void deleteAllItems(String adminSpace, String adminEmail) {
-		this.itemDao.deleteAll();
-	}
+        if (optionalItem.isPresent()) {
+            ItemEntity entity = optionalItem.get();
+            DigitalItemBoundary boundary = entityConverter.toBoundary(entity);
+            return boundary;
+        } else {
+            // TODO have server return status 404 here
+            throw new NotFoundException("could not find message by id: " + itemKey);// NullPointerException
+        }
+    }
+
+    @Override
+    @Transactional//(readOnly = false)
+    public void deleteAllItems(String adminSpace, String adminEmail) {
+        this.itemDao.deleteAll();
+    }
+
+    @Override
+    @Transactional
+    public void bindChild(String userSpace, String userEmail, String itemSpace, String itemId, ItemIdBoundary childId) {
+        String parentId = this.entityConverter.toSecondaryId(itemSpace, itemId);
+
+        ItemEntity parentItem = this.itemDao.findById(parentId)
+                .orElseThrow(() -> new NotFoundException("Item with ID:" + parentId + "not found"));
+
+        ItemEntity childItem = this.itemDao.findById(childId.toString())
+                .orElseThrow(() -> new NotFoundException("Item with ID:" + childId + "not found"));
+
+
+        parentItem.addChild(childItem, true);
+
+        this.itemDao.save(parentItem);
+        this.itemDao.save(childItem);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DigitalItemBoundary> getAllChildren(String userSpace, String userEmail, String itemSpace, String itemId) {
+        String parentId = this.entityConverter.toSecondaryId(itemSpace, itemId);
+        ItemEntity parentItem = this.itemDao.findById(parentId)
+                .orElseThrow(() -> new NotFoundException("Item with ID:" + parentId + "not found"));
+
+        return parentItem.getChildren().stream().map(entityConverter::toBoundary).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DigitalItemBoundary> getParents(String userSpace, String userEmail, String itemSpace, String itemId) {
+        String itemKey = this.entityConverter.toSecondaryId(itemSpace, itemId);
+
+        ItemEntity item = this.itemDao.findById(itemKey)
+                .orElseThrow(() -> new NotFoundException("Item with ID:" + itemKey + "not found"));
+
+        return item.getParents().stream().map(this.entityConverter::toBoundary).collect(Collectors.toList());
+    }
 }

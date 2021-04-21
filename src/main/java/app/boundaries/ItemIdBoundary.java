@@ -43,16 +43,15 @@ public class ItemIdBoundary {
         this.id = id;
     }
 
-
     @Override
     public String toString() {
-        String space = this.space;
-        String id = this.id;
-        if (space == null)
-            space = "";
-        if (id == null)
-            id = "";
-        return "Item Space: " + space + ", Item Id: " + id;
+//        String space = this.space;
+//        String id = this.id;
+//        if (space == null)
+//            space = "";
+//        if (id == null)
+//            id = "";
+        return this.id + "&" + this.space;
     }
 
     @Override

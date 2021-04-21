@@ -22,34 +22,33 @@ public class DigitalItemBoundary implements Boundary {
 
     private UserBoundary createdBy = new UserBoundary(); // This line might change
 
-	private Map<String, Object> location = new HashMap<>();
+    //    private Map<String, Object> location = new HashMap<>();
+    private LocationBoundary location = new LocationBoundary();
 
     private Map<String, Object> itemAttributes = new HashMap<>();
 
     public DigitalItemBoundary() { /* Default Constructor */ }
 
-	public DigitalItemBoundary(ItemIdBoundary itemId, String type, String name, Boolean active, Date createdTimestamp,
-			UserBoundary createdBy, Map<String, Object> location, Map<String, Object> itemAttributes)
-	{
-		this.itemId = itemId;
-		this.type = type;
-		this.name = name;
-		this.active = active;
-		this.createdTimestamp = createdTimestamp;
-		this.createdBy = createdBy;
-		this.location = location;
-		this.itemAttributes = itemAttributes;
-	}
+    public DigitalItemBoundary(ItemIdBoundary itemId, String type, String name, Boolean active, Date createdTimestamp,
+                               UserBoundary createdBy, LocationBoundary location, Map<String, Object> itemAttributes) {
+        this.itemId = itemId;
+        this.type = type;
+        this.name = name;
+        this.active = active;
+        this.createdTimestamp = createdTimestamp;
+        this.createdBy = createdBy;
+        this.location = location;
+        this.itemAttributes = itemAttributes;
+    }
 
-	public DigitalItemBoundary(String itemId, String itemSpace, String type, String name, Boolean active, Date createdTimestamp,
-							   UserBoundary createdBy, Map<String, Object> location, Map<String, Object> itemAttributes)
-	{
-		this(new ItemIdBoundary(itemSpace, itemId), type, name, active, createdTimestamp, createdBy, location, itemAttributes);
-	}
+    public DigitalItemBoundary(String itemId, String itemSpace, String type, String name, Boolean active, Date createdTimestamp,
+                               UserBoundary createdBy, LocationBoundary location, Map<String, Object> itemAttributes) {
+        this(new ItemIdBoundary(itemSpace, itemId), type, name, active, createdTimestamp, createdBy, location, itemAttributes);
+    }
 
-	public UserBoundary getCreatedBy() {
-		return createdBy;
-	}
+    public UserBoundary getCreatedBy() {
+        return createdBy;
+    }
 
     public void setCreatedBy(UserBoundary createdBy) {
         this.createdBy = createdBy;
@@ -99,13 +98,17 @@ public class DigitalItemBoundary implements Boundary {
         this.createdTimestamp = createdTimestamp;
     }
 
-	public Map<String, Object> getLocation() {
-		return location;
-	}
+    public LocationBoundary getLocation() {
+        return location;
+    }
 
-	public void setLocation(Map<String, Object> location) {
-		this.location = location;
-	}
+    public void setLocation(double lat, double lng) {
+        this.location = new LocationBoundary(lat, lng);
+    }
+
+    public void setLocation(LocationBoundary location) {
+        this.location = location;
+    }
 
     public Map<String, Object> getItemAttributes() {
         return itemAttributes;

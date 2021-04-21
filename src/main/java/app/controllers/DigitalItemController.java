@@ -2,6 +2,9 @@ package app.controllers;
 
 import java.util.List;
 
+import app.boundaries.ItemIdBoundary;
+import app.twins.logic.UpdatedItemsService;
+import com.oracle.webservices.internal.api.message.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +21,8 @@ import app.boundaries.DigitalItemBoundary;
 
 @RestController
 public class DigitalItemController {
-	private ItemsService itemLogic;
-	
+    private UpdatedItemsService itemLogic;
+
 
     @Autowired
     public DigitalItemController(UpdatedItemsService itemLogic) {

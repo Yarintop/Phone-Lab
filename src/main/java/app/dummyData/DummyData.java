@@ -14,7 +14,7 @@ public class DummyData {
     private final String[] roles = {"Manager", "Player", "Admin"};
     private final String[][] users = {
             {"dima", "dima@guy.com"},
-            {"yarin.mizrahiTfahot " , "yarin@guy.com"},
+            {"yarin.mizrahiTfahot ", "yarin@guy.com"},
             {"rafi", "rafi@guy.com"}
     };
 
@@ -77,16 +77,15 @@ public class DummyData {
                 false,
                 new Date(),
                 user,
-                new HashMap<>(),
-                new HashMap<>()
-        );
+                new LocationBoundary(),
+                new HashMap<>());
 
         OperationBoundary operation = new OperationBoundary();
         operation.setOperationType("RandomOperation");
         operation.setItem(item);
         operation.setInvokedBy(user);
         if (withId) {
-            OperationIdBoundary operationId = new OperationIdBoundary(spaceId,  getRandomId());
+            OperationIdBoundary operationId = new OperationIdBoundary(spaceId, getRandomId());
             operation.setOperationId(operationId);
         }
         return operation;
