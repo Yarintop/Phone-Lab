@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import app.boundaries.UserBoundary;
 
 @Service
-public class UsersServiceMockup implements UsersService {
+public class UsersServiceMockup { //implements UsersService {
 
 
     private String spaceId;
@@ -37,7 +37,7 @@ public class UsersServiceMockup implements UsersService {
         this.spaceId = spaceId;
     }
 
-    @Override
+    //@Override
     public UserBoundary createUser(UserBoundary user) throws RuntimeException {
 
         if (user == null)  // If user doesn't have email
@@ -83,7 +83,7 @@ public class UsersServiceMockup implements UsersService {
         return temp; // Just testing the converter
     }
 
-    @Override
+    //@Override
     public UserBoundary login(String userSpace, String userEmail) throws RuntimeException {
 
         // Getting key
@@ -97,7 +97,7 @@ public class UsersServiceMockup implements UsersService {
         return this.converter.toBoundary(res); // Returning result
     }
 
-    @Override
+    //@Override
     public UserBoundary updateUser(String userSpace, String userEmail, UserBoundary update) throws RuntimeException {
 
         // Getting key
@@ -122,7 +122,7 @@ public class UsersServiceMockup implements UsersService {
         return this.converter.toBoundary(user); // Returning the boundary object of the user
     }
 
-    @Override
+    //@Override
     public List<UserBoundary> getAllUsers(String adminSpace, String adminEmail) throws RuntimeException {
 
         // Getting key and user
@@ -139,7 +139,7 @@ public class UsersServiceMockup implements UsersService {
         return users.values().stream().map(this.converter::toBoundary).collect(Collectors.toList());
     }
 
-    @Override
+    //@Override
     public void deleteAllUsers(String adminSpace, String adminEmail) throws RuntimeException {
 
         // Getting key and user
