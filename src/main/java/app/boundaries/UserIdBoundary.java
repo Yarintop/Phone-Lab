@@ -1,8 +1,5 @@
 package app.boundaries;
 
-import app.jsonViews.Views;
-import com.fasterxml.jackson.annotation.JsonView;
-
 import java.util.Objects;
 
 public class UserIdBoundary {
@@ -37,6 +34,11 @@ public class UserIdBoundary {
         this.email = email;
     }
 
+
+    @Override
+    public String toString() {
+        return email + "&" + space;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -4,8 +4,8 @@ public class NewUserDetails {
 	
 	private String email;
 	private String role = "PLAYER";
-	private String username = "undefined";
-	private String avatar = "undefined";
+	private String username;
+	private String avatar;
 	
 	public NewUserDetails() { /* Default Constructor */}
 

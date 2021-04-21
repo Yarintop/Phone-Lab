@@ -1,14 +1,10 @@
 package app.converters;
 
 import app.boundaries.UserBoundary;
-import app.boundaries.UserIdBoundary;
 import app.exceptions.BadRequestException;
 import app.twins.data.UserEntity;
 import app.twins.data.UserRole;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class UserConverter implements EntityConverter<UserEntity, UserBoundary> {
@@ -26,7 +22,7 @@ public class UserConverter implements EntityConverter<UserEntity, UserBoundary> 
             ue.setUsername(boundaryObject.getUsername());
         }
         if (boundaryObject.getUserId() != null) {
-            ue.setSpace(boundaryObject.getUserId().getSpace());
+            ue.setUserId(boundaryObject.getUserId().toString());
             ue.setEmail(boundaryObject.getUserId().getEmail());
         }
         if (boundaryObject.getRole() != null) {
@@ -45,7 +41,12 @@ public class UserConverter implements EntityConverter<UserEntity, UserBoundary> 
         if (entityObject == null)
             return null;
 
-        UserBoundary ub = new UserBoundary(entityObject.getEmail(), entityObject.getSpace());
+        String[] idParts = entityObject.getUserId().split("&");
+        if (idParts.length != 2)
+            throw new BadRequestException("User with ID: " + entityObject.getUserId() + " not formatted correctly");
+        String email = idParts[0];
+        String space = idParts[1];
+        UserBoundary ub = new UserBoundary(email, space);
 
         ub.setAvatar(entityObject.getAvatar());
         ub.setUsername(entityObject.getUsername());
