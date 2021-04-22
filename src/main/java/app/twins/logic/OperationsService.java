@@ -5,11 +5,8 @@ import app.boundaries.OperationBoundary;
 import java.util.List;
 
 public interface OperationsService {
-    Object invokeOperation(OperationBoundary operation);
-
-    OperationBoundary invokeAsynchronous(OperationBoundary operation);
-
-    List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail);
-
-    void deleteAllOperations(String adminSpace, String adminEmail);
+    public Object invokeOperation(OperationBoundary operation);
+    public OperationBoundary invokeAsynchronous(OperationBoundary operation);
+    public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail);
+    public void deleteAllOperations(String adminSpace, String adminEmail);
 }
