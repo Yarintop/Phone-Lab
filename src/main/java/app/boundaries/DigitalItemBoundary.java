@@ -1,36 +1,40 @@
 package app.boundaries;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import app.jsonViews.Views;
 
 public class DigitalItemBoundary implements Boundary {
 
-    private ItemIdBoundary itemId = new ItemIdBoundary();// This line might change
+    private ItemIdBoundary itemId;
 
-    private String type = "no type";
+    private String type;
 
-    private String name = "no name yet";
+    private String name;
 
-    private Boolean active = false;
+    private Boolean active;
 
-    private Date createdTimestamp = new Date();
+    private Date createdTimestamp;
 
-    private UserBoundary createdBy = new UserBoundary(); // This line might change
+    private UserBoundary createdBy;
+//    private UserIdBoundary createdBy = new UserIdBoundary(); // This line might change
 
-    private Map<String, Double> location = new HashMap<>();
+    //    private Map<String, Object> location = new HashMap<>();
+    private LocationBoundary location;
 
-    private Map<String, Object> itemAttributes = new HashMap<>();
+    private Map<String, Object> itemAttributes;
 
     public DigitalItemBoundary() { /* Default Constructor */ }
 
     public DigitalItemBoundary(ItemIdBoundary itemId, String type, String name, Boolean active, Date createdTimestamp,
-                               UserBoundary createdBy, Map<String, Double> location, Map<String, Object> itemAttributes) {
+                               UserBoundary createdBy, LocationBoundary location, Map<String, Object> itemAttributes) {
         this.itemId = itemId;
         this.type = type;
         this.name = name;
@@ -42,17 +46,32 @@ public class DigitalItemBoundary implements Boundary {
     }
 
     public DigitalItemBoundary(String itemId, String itemSpace, String type, String name, Boolean active, Date createdTimestamp,
-                               UserBoundary createdBy, Map<String, Double> location, Map<String, Object> itemAttributes) {
+                               UserBoundary createdBy, LocationBoundary location, Map<String, Object> itemAttributes) {
         this(new ItemIdBoundary(itemSpace, itemId), type, name, active, createdTimestamp, createdBy, location, itemAttributes);
     }
 
+    @JsonIgnore
     public UserBoundary getCreatedBy() {
         return createdBy;
     }
 
+    @JsonProperty("createdBy")
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
+//    @JsonIgnore
     public void setCreatedBy(UserBoundary createdBy) {
         this.createdBy = createdBy;
     }
+
+    @JsonProperty("createdBy")
+//    @JsonIgnore
+    public Map<String, UserIdBoundary> getCreatedById() {
+        if (createdBy == null) return null;
+        HashMap<String, UserIdBoundary> temp = new HashMap<>();
+        temp.put("userId", createdBy.getUserId());
+        return temp;
+//        return createdBy == null ? null : createdBy.getUserId();
+    }
+
 
     public ItemIdBoundary getItemId() {
         return itemId;
@@ -98,11 +117,15 @@ public class DigitalItemBoundary implements Boundary {
         this.createdTimestamp = createdTimestamp;
     }
 
-    public Map<String, Double> getLocation() {
+    public LocationBoundary getLocation() {
         return location;
     }
 
-    public void setLocation(Map<String, Double> location) {
+    public void setLocation(double lat, double lng) {
+        this.location = new LocationBoundary(lat, lng);
+    }
+
+    public void setLocation(LocationBoundary location) {
         this.location = location;
     }
 
@@ -159,11 +182,8 @@ public class DigitalItemBoundary implements Boundary {
         } else if (!name.equals(other.name))
             return false;
         if (type == null) {
-            if (other.type != null)
-                return false;
-        } else if (!type.equals(other.type))
-            return false;
-        return true;
+            return other.type == null;
+        } else return type.equals(other.type);
     }
 
     @Override
@@ -189,7 +209,7 @@ public class DigitalItemBoundary implements Boundary {
                 + "name=" + name + "\n"
                 + "active=" + active + "\n"
                 + "createdTimestamp=" + createdTimestamp + "\n"
-                + "createdBy=" + createdBy.getUserId() + "\n"
+                + "createdBy=" + createdBy + "\n"
                 + "location=" + location + "\n"
                 + "itemAttributes=" + itemAttributes;
     }

@@ -77,16 +77,15 @@ public class DummyData {
                 false,
                 new Date(),
                 user,
-                new HashMap<>(),
-                new HashMap<>()
-        );
+                new LocationBoundary(),
+                new HashMap<>());
 
         OperationBoundary operation = new OperationBoundary();
         operation.setOperationType("RandomOperation");
         operation.setItem(item);
         operation.setInvokedBy(user);
         if (withId) {
-            OperationIdBoundary operationId = new OperationIdBoundary(spaceId,  getRandomId());
+            OperationIdBoundary operationId = new OperationIdBoundary(spaceId, getRandomId());
             operation.setOperationId(operationId);
         }
         return operation;
@@ -95,12 +94,10 @@ public class DummyData {
     public DigitalItemBoundary getRandomDigitalItem(String userSpace, String userEmail) {
         Random rand = new Random();
         // User ID
-        ItemIdBoundary itemId = new ItemIdBoundary(spaceId, getRandomId());
+        ItemIdBoundary itemId = new ItemIdBoundary(userSpace, getRandomId());
 
         //Lat/Long
-        Map<String, Double> latlng = new HashMap<>();
-        latlng.put("lat", rand.nextDouble() * 40);
-        latlng.put("lng", rand.nextDouble() * 40);
+        LocationBoundary latLng = new LocationBoundary(rand.nextDouble() * 40, rand.nextDouble() * 40);
 
         //Attrs
         Map<String, Object> attrs = new HashMap<>();
@@ -115,7 +112,7 @@ public class DummyData {
                 (rand.nextInt() % 2 == 0),
                 new Date(),
                 new UserBoundary(userEmail, userSpace),
-                latlng,
+                latLng,
                 attrs
         );
     }
