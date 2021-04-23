@@ -1,10 +1,10 @@
 package demo;
 
-import app.Application;
-import app.boundaries.NewUserDetails;
-import app.boundaries.UserBoundary;
-import app.dummyData.DummyData;
-import app.twins.logic.UsersService;
+import twins.Application;
+import twins.boundaries.NewUserDetails;
+import twins.boundaries.UserBoundary;
+import twins.dummyData.DummyData;
+import twins.logic.UsersService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,9 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

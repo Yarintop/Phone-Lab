@@ -1,16 +1,16 @@
 package demo;
 
-import app.Application;
-import app.boundaries.DigitalItemBoundary;
-import app.boundaries.OperationBoundary;
-import app.boundaries.UserBoundary;
-import app.converters.OperationConverter;
-import app.dao.OperationDao;
-import app.dummyData.DummyData;
-import app.twins.data.OperationEntity;
-import app.twins.logic.ItemsService;
-import app.twins.logic.OperationsService;
-import app.twins.logic.UsersService;
+import twins.Application;
+import twins.boundaries.DigitalItemBoundary;
+import twins.boundaries.OperationBoundary;
+import twins.boundaries.UserBoundary;
+import twins.converters.OperationConverter;
+import twins.dao.OperationDao;
+import twins.dummyData.DummyData;
+import twins.data.OperationEntity;
+import twins.logic.ItemsService;
+import twins.logic.OperationsService;
+import twins.logic.UsersService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

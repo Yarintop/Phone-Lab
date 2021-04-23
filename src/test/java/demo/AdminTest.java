@@ -1,14 +1,14 @@
 package demo;
 
-import app.Application;
-import app.boundaries.DigitalItemBoundary;
-import app.boundaries.NewUserDetails;
-import app.boundaries.OperationBoundary;
-import app.boundaries.UserBoundary;
-import app.dummyData.DummyData;
-import app.twins.logic.ItemsService;
-import app.twins.logic.OperationsService;
-import app.twins.logic.UsersService;
+import twins.Application;
+import twins.boundaries.DigitalItemBoundary;
+import twins.boundaries.NewUserDetails;
+import twins.boundaries.OperationBoundary;
+import twins.boundaries.UserBoundary;
+import twins.dummyData.DummyData;
+import twins.logic.ItemsService;
+import twins.logic.OperationsService;
+import twins.logic.UsersService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

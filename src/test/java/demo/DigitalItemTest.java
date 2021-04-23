@@ -7,13 +7,10 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import app.boundaries.UserBoundary;
-import app.twins.data.UserEntity;
-import app.twins.data.UserRole;
-import app.twins.logic.ItemsService;
-import app.twins.logic.OperationsService;
-import app.twins.logic.UpdatedItemsService;
-import app.twins.logic.UsersService;
+import twins.boundaries.UserBoundary;
+import twins.data.UserRole;
+import twins.logic.UpdatedItemsService;
+import twins.logic.UsersService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,9 +21,9 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.web.client.RestTemplate;
 
-import app.Application;
-import app.boundaries.DigitalItemBoundary;
-import app.dummyData.DummyData;
+import twins.Application;
+import twins.boundaries.DigitalItemBoundary;
+import twins.dummyData.DummyData;
 
 @SpringBootTest(classes= Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class DigitalItemTest {
