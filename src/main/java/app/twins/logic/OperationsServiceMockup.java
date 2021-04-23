@@ -6,12 +6,11 @@ import app.dummyData.DummyData;
 import app.twins.data.OperationEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
+//@Service
 public class OperationsServiceMockup implements OperationsService {
 
     private Map<String, OperationEntity> operations = Collections.synchronizedMap(new HashMap<>());

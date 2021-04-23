@@ -1,23 +1,22 @@
 package app.twins.data;
 
-import app.boundaries.DigitalItemBoundary;
-import app.boundaries.UserBoundary;
-
+import javax.persistence.*;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
+@javax.persistence.Entity
+@Table(name = "OPERATIONS")
 public class OperationEntity implements Entity {
     private String operationId = "";
     private String operationType = "undefined";
-    private DigitalItemBoundary item = new DigitalItemBoundary();
+    private ItemEntity item;
     private Date createdTimestamp = new Date();
-    private UserBoundary invokedBy = new UserBoundary();
-    private Map<String, Object> operationAttributes = new HashMap<>();
+    private UserEntity invokedBy;
+    private String operationAttributes;
 
     public OperationEntity() {
     }
 
+    @Id
     public String getOperationId() {
         return operationId;
     }
@@ -38,14 +37,17 @@ public class OperationEntity implements Entity {
         this.operationType = operationType;
     }
 
-    public DigitalItemBoundary getItem() {
+    //    @Transient
+    @ManyToOne(fetch = FetchType.LAZY)
+    public ItemEntity getItem() {
         return item;
     }
 
-    public void setItem(DigitalItemBoundary item) {
+    public void setItem(ItemEntity item) {
         this.item = item;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getCreatedTimestamp() {
         return createdTimestamp;
     }
@@ -54,19 +56,22 @@ public class OperationEntity implements Entity {
         this.createdTimestamp = createdTimestamp;
     }
 
-    public UserBoundary getInvokedBy() {
+    //    @Transient
+    @ManyToOne(fetch = FetchType.LAZY)
+    public UserEntity getInvokedBy() {
         return invokedBy;
     }
 
-    public void setInvokedBy(UserBoundary invokedBy) {
+    public void setInvokedBy(UserEntity invokedBy) {
         this.invokedBy = invokedBy;
     }
 
-    public Map<String, Object> getOperationAttributes() {
+    @Lob
+    public String getOperationAttributes() {
         return operationAttributes;
     }
 
-    public void setOperationAttributes(Map<String, Object> operationAttributes) {
+    public void setOperationAttributes(String operationAttributes) {
         this.operationAttributes = operationAttributes;
     }
 

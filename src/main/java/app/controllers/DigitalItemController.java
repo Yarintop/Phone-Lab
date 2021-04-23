@@ -4,19 +4,14 @@ import java.util.List;
 
 import app.boundaries.ItemIdBoundary;
 import app.twins.logic.UpdatedItemsService;
-import com.oracle.webservices.internal.api.message.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-// import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import com.fasterxml.jackson.annotation.JsonView;
 
-import app.jsonViews.Views;
-import app.twins.logic.ItemsService;
 import app.boundaries.DigitalItemBoundary;
 
 @RestController

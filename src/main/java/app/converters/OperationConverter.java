@@ -3,7 +3,8 @@ package app.converters;
 import app.boundaries.OperationBoundary;
 import app.boundaries.OperationIdBoundary;
 import app.twins.data.OperationEntity;
-import org.springframework.beans.factory.annotation.Value;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -12,28 +13,21 @@ import java.util.Map;
 @Component
 public class OperationConverter implements EntityConverter<OperationEntity, OperationBoundary> {
 
-    private String spaceIdKey;
-    private String idKey;
+    private UserConverter userConverter;
+    private ItemConverter itemConverter;
 
-    /**
-     * Sets the spaceIdKey value from the application.properties file, future proofing for future use.
-     *
-     * @param spaceIdKey the loaded spaceId value, default would be "spaceId"
-     */
-    @Value("${key.space:spaceId}")
-    public void setSpaceIdKey(String spaceIdKey) {
-        this.spaceIdKey = spaceIdKey;
+    private final ObjectMapper jackson;
+
+    public OperationConverter(ObjectMapper jackson) {
+        this.jackson = jackson;
     }
 
-    /**
-     * Sets the idKey value from the application.properties file, future proofing for future use.
-     *
-     * @param idKey the loaded spaceId value, default would be "id"
-     */
-    @Value("${key.id:id}")
-    public void setIdKey(String idKey) {
-        this.idKey = idKey;
+    @Autowired
+    public void setConverters(ItemConverter itemConverter, UserConverter userConverter) {
+        this.itemConverter = itemConverter;
+        this.userConverter = userConverter;
     }
+
 
     /**
      * This function will convert a boundary object to entity for all operations
@@ -49,11 +43,13 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
             entity.setOperationId(convertMapKey(boundary.getOperationId()));
         else
             entity.setOperationId(""); // Empty ID string if the ID is missing
-        entity.setOperationType(boundary.getOperationType());
+        entity.setOperationType(boundary.getType());
         entity.setCreatedTimestamp(boundary.getCreatedTimestamp());
-        entity.setInvokedBy(boundary.getInvokedBy());
-        entity.setItem(boundary.getItem());
-        entity.setOperationAttributes(boundary.getOperationAttributes());
+        entity.setInvokedBy(userConverter.toEntity(boundary.getInvokedBy()));
+        entity.setItem(itemConverter.toEntity(boundary.getItem()));
+
+//        entity.setOperationAttributes(boundary.getOperationAttributes());
+        entity.setOperationAttributes(fromMapToJson(boundary.getOperationAttributes()));
         return entity;
     }
 
@@ -70,11 +66,15 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
         if (entity.getOperationId() != null && entity.getOperationId().length() > 0)
             // If there is a valid ID, convert it into map value for the boundary
             boundary.setOperationId(convertStringKey(entity.getOperationId()));
-        boundary.setOperationType(entity.getOperationType());
+        boundary.setType(entity.getOperationType());
         boundary.setCreatedTimestamp(entity.getCreatedTimestamp());
-        boundary.setInvokedBy(entity.getInvokedBy());
-        boundary.setItem(entity.getItem());
-        boundary.setOperationAttributes(entity.getOperationAttributes());
+        if (entity.getInvokedBy() != null)
+            boundary.setInvokedBy(userConverter.toBoundary(entity.getInvokedBy()));
+        if (entity.getItem() != null)
+            boundary.setItem(itemConverter.toBoundary(entity.getItem()));
+
+//        boundary.setOperationAttributes(entity.getOperationAttributes());
+        boundary.setOperationAttributes(fromJsonToMap(entity.getOperationAttributes()));
         return boundary;
     }
 
@@ -101,5 +101,21 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
     public OperationIdBoundary convertStringKey(String operationIdString) {
         String[] idParts = operationIdString.split("&");
         return new OperationIdBoundary(idParts[0], idParts[1]);
+    }
+
+    public String fromMapToJson(Map<String, Object> value) { // marshalling: Java->JSON
+        try {
+            return this.jackson.writeValueAsString(value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Map<String, Object> fromJsonToMap(String json) { // unmarshalling: JSON->Java
+        try {
+            return this.jackson.readValue(json, Map.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

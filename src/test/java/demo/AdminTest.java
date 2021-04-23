@@ -1,15 +1,16 @@
 package demo;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import javax.annotation.PostConstruct;
-
+import app.Application;
+import app.boundaries.DigitalItemBoundary;
+import app.boundaries.NewUserDetails;
+import app.boundaries.OperationBoundary;
+import app.boundaries.UserBoundary;
+import app.dummyData.DummyData;
 import app.twins.logic.ItemsService;
 import app.twins.logic.OperationsService;
 import app.twins.logic.UsersService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +19,9 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.web.client.RestTemplate;
 
-import app.Application;
-import app.boundaries.DigitalItemBoundary;
-import app.boundaries.NewUserDetails;
-import app.boundaries.OperationBoundary;
-import app.boundaries.UserBoundary;
-import app.dummyData.DummyData;
+import javax.annotation.PostConstruct;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class AdminTest {
@@ -95,8 +93,8 @@ public class AdminTest {
         System.err.println("After test..");
         if (usersService.getAllUsers(spaceId, "admin@gmail.com").size() > 0) {
             operationsService.deleteAllOperations(spaceId, "admin@gmail.com");
-            usersService.deleteAllUsers(spaceId, "admin@gmail.com");
             itemsService.deleteAllItems(spaceId, "admin@gmail.com");
+            usersService.deleteAllUsers(spaceId, "admin@gmail.com");
         }
     }
 
@@ -117,6 +115,11 @@ public class AdminTest {
 
         OperationBoundary operation = dataGenerator.getRandomOperation(false);
 
+        // Save generated data to database
+        UserBoundary invokedBy = operation.getInvokedBy();
+        DigitalItemBoundary item = operation.getItem();
+        usersService.createUser(invokedBy);
+        itemsService.createItem(invokedBy.getUserId().getSpace(), invokedBy.getUserId().getEmail(), item);
         // First check that currently operations are empty
 
         OperationBoundary[] response = this.restTemplate
@@ -185,7 +188,6 @@ public class AdminTest {
         String email = "admin@gmail.com";
         String theUrl = this.baseUrl + "admin/operations/" + space + "/" + email;
 
-        OperationBoundary operation = dataGenerator.getRandomOperation(false);
 
         // First check that currently operations is not empty
 
@@ -197,6 +199,13 @@ public class AdminTest {
 
         if (response.length == 0) {
             // If empty then add operations by using POST
+
+            // Save generated data to database
+            OperationBoundary operation = dataGenerator.getRandomOperation(false);
+            UserBoundary invokedBy = operation.getInvokedBy();
+            DigitalItemBoundary item = operation.getItem();
+            usersService.createUser(invokedBy);
+            itemsService.createItem(invokedBy.getUserId().getSpace(), invokedBy.getUserId().getEmail(), item);
 
             restTemplate.postForEntity(baseUrl + "operations", operation, OperationBoundary.class);
             restTemplate.postForEntity(baseUrl + "operations/async", operation, OperationBoundary.class);

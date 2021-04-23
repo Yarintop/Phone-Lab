@@ -18,29 +18,7 @@ public class DummyData {
             {"rafi", "rafi@guy.com"}
     };
 
-    private String spaceIdKey;
     private String spaceId;
-    private String idKey;
-
-    /**
-     * Set the id key, to avoid hard coding the "id" as the key value (future proofing)
-     *
-     * @param idKey - the key for the id in the map values
-     */
-    @Value("${key.id:id}")
-    public void setIdKey(String idKey) {
-        this.idKey = idKey;
-    }
-
-    /**
-     * Set the spaceId key, to avoid hard coding the "spaceId" as the key value (future proofing)
-     *
-     * @param spaceIdKey - the key for the spaceId in the map values
-     */
-    @Value("${key.space:spaceId}")
-    public void setSpaceIdKey(String spaceIdKey) {
-        this.spaceIdKey = spaceIdKey;
-    }
 
     /**
      * Set the spaceId , to avoid hard coding the "2021b.twins" as the key value (future proofing)
@@ -58,30 +36,15 @@ public class DummyData {
 
 
     public OperationBoundary getRandomOperation(boolean withId) {
-        ItemIdBoundary itemId = new ItemIdBoundary(spaceId, getRandomId());
 
-        itemId.setId(getRandomId());
+        // Get random user
+        UserBoundary user = getRandomUser();
 
-        UserBoundary user = new UserBoundary(
-                "Random",
-                "Name",
-                "Something",
-                "Else@else.com",
-                this.spaceId
-        );
-
-        DigitalItemBoundary item = new DigitalItemBoundary(
-                itemId,
-                "RandomItem",
-                "RandomName",
-                false,
-                new Date(),
-                user,
-                new LocationBoundary(),
-                new HashMap<>());
+        // Get random item
+        DigitalItemBoundary item = getRandomDigitalItem(spaceId, getRandomId());
 
         OperationBoundary operation = new OperationBoundary();
-        operation.setOperationType("RandomOperation");
+        operation.setType("RandomOperation");
         operation.setItem(item);
         operation.setInvokedBy(user);
         if (withId) {

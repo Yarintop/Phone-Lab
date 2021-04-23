@@ -1,5 +1,7 @@
 package app.boundaries;
 
+import java.util.Objects;
+
 public class OperationIdBoundary {
     private String space = "";
     private String id = "";
@@ -33,5 +35,18 @@ public class OperationIdBoundary {
     @Override
     public String toString() {
         return id + "&" + space;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OperationIdBoundary that = (OperationIdBoundary) o;
+        return Objects.equals(space, that.space) && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(space, id);
     }
 }
