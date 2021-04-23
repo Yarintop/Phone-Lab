@@ -7,6 +7,13 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import app.boundaries.UserBoundary;
+import app.twins.data.UserEntity;
+import app.twins.data.UserRole;
+import app.twins.logic.ItemsService;
+import app.twins.logic.OperationsService;
+import app.twins.logic.UpdatedItemsService;
+import app.twins.logic.UsersService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +35,9 @@ public class DigitalItemTest {
 	private String baseUrl;
 	private String spaceId;
 	private DummyData dataGenerator;
-	
+	private UsersService usersService;
+	private UpdatedItemsService itemsService;
+
     /**
      * Sets the spaceId value from the application.properties file
      *
@@ -58,6 +67,12 @@ public class DigitalItemTest {
 	public void setPort(int port) {
 		this.port = port;
 	}
+
+	@Autowired
+	public void setServices(UsersService usersService, UpdatedItemsService itemsService) {
+		this.usersService = usersService;
+		this.itemsService = itemsService;
+	}
 	
 	@PostConstruct
 	public void init (){
@@ -70,6 +85,7 @@ public class DigitalItemTest {
 	public void setup() {
 		// init operations before each test
 		System.err.println("init before test..");
+		this.usersService.createUser(new UserBoundary(UserRole.ADMIN.toString(), "tests", "yup", "lol@gmail.com", spaceId));
 	}
 
 	
@@ -78,6 +94,8 @@ public class DigitalItemTest {
 //		this.restTemplate
 //			.delete(this.baseUrl);
 		System.err.println("After test..");
+		this.itemsService.deleteAllItems(spaceId, "lol@gmail.com");
+		this.usersService.deleteAllUsers(spaceId, "lol@gmail.com");
 	}
 	
 	@Test
@@ -126,6 +144,7 @@ public class DigitalItemTest {
 		assertThat(actualItem.getCreatedBy()).isNotNull();
 		
 		// Must have userId map that is not null and have the keys email and space with correct values
+		assertThat(actualItem.getCreatedBy()).isNotNull();
 		assertThat(actualItem.getCreatedBy().getUserId()).isNotNull();
 		assertThat(actualItem.getCreatedBy().getUserId().getEmail()).isNotNull().isEqualTo(email);
 		assertThat(actualItem.getCreatedBy().getUserId().getSpace()).isNotNull().isEqualTo(space);
@@ -218,6 +237,7 @@ public class DigitalItemTest {
 		String theUrl = this.baseUrl + space + "/" + email;
         // ObjectMapper mapper = new ObjectMapper();
 		DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
+		System.out.println(randomItem);
 		
 		// Add an item to the existing items so that I can use get specific item
 		// Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
@@ -227,6 +247,8 @@ public class DigitalItemTest {
 		String itemId = actualItem.getItemId().getId();
 		String itemSpace = actualItem.getItemId().getSpace();
 		
+		System.out.println("Item Id: " + itemId + " Item Space: " + itemSpace);
+		System.out.println(actualItem);
 		
 		theUrl = theUrl + "/" + itemSpace + "/" + itemId;
 		// Use the known ID of the created Item and search it
@@ -236,7 +258,7 @@ public class DigitalItemTest {
 		// Check that item id matches
 		assertThat(retrievedItem.getItemId().getId()).isEqualTo(itemId);
 		assertThat(retrievedItem.getItemId().getSpace()).isEqualTo(itemSpace);
-		
+		System.out.println("dasdasdsad afasfsaf \n\n" + retrievedItem);
 		// Make sure all values are the same.
 		assertTwoItemsAreEqual(retrievedItem, actualItem);
 	}
@@ -256,11 +278,9 @@ public class DigitalItemTest {
 		String space = this.spaceId;
 		String email = "lol@gmail.com";
 		String theUrl = this.baseUrl + space + "/" + email;
-        // ObjectMapper mapper = new ObjectMapper();
 		DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
 		
 		// First add an item to the existing items so that I can update it
-		// Map<String, Object> myItem = mapper.convertValue(randomItem, Map.class);
 		DigitalItemBoundary actualItem = this.restTemplate.postForObject(theUrl, randomItem, DigitalItemBoundary.class);
 		
 		
@@ -315,7 +335,7 @@ public class DigitalItemTest {
 		
 		DigitalItemBoundary[] response = this.restTemplate
 			.getForEntity(theUrl, DigitalItemBoundary[].class).getBody();
-		
+				
 		// Make sure we got 2 items from get all as we only added 2 items
 		assertThat(response).isNotNull().hasSize(2);
 	}

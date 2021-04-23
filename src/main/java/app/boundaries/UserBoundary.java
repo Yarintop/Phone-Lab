@@ -1,5 +1,6 @@
 package app.boundaries;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.HashMap;
@@ -50,10 +51,11 @@ public class UserBoundary implements Boundary {
         return userId;
     }
 
+    @JsonIgnore
     public void setSpace(String userSpace) {
         this.userId.setSpace(userSpace);
     }
-
+    @JsonIgnore
     public void setEmail(String userEmail) {
         this.userId.setEmail(userEmail);
     }

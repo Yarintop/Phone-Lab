@@ -36,27 +36,46 @@ public class DummyData {
 
 
     public OperationBoundary getRandomOperation(boolean withId) {
-//        ItemIdBoundary itemId = new ItemIdBoundary(spaceId, getRandomId());
-//        UserIdBoundary userId = new UserIdBoundary(spaceId, "Else@else.com");
-        DigitalItemBoundary item = getRandomDigitalItem(spaceId, "else@aaa.com");
-        UserBoundary user = getRandomUser();
+        ItemIdBoundary itemId = new ItemIdBoundary(spaceId, getRandomId());
 
-        OperationBoundary operation = new OperationBoundary(getRandomId(), spaceId, "random type", item, user);
-        if (!withId)
-            operation.setOperationId(null);
+        itemId.setId(getRandomId());
 
+        UserBoundary user = new UserBoundary(
+                "Random",
+                "Name",
+                "Something",
+                "Else@else.com",
+                this.spaceId
+        );
+
+        DigitalItemBoundary item = new DigitalItemBoundary(
+                itemId,
+                "RandomItem",
+                "RandomName",
+                false,
+                new Date(),
+                user,
+                new LocationBoundary(),
+                new HashMap<>());
+
+        OperationBoundary operation = new OperationBoundary();
+        operation.setOperationType("RandomOperation");
+        operation.setItem(item);
+        operation.setInvokedBy(user);
+        if (withId) {
+            OperationIdBoundary operationId = new OperationIdBoundary(spaceId, getRandomId());
+            operation.setOperationId(operationId);
+        }
         return operation;
     }
 
     public DigitalItemBoundary getRandomDigitalItem(String userSpace, String userEmail) {
         Random rand = new Random();
         // User ID
-        ItemIdBoundary itemId = new ItemIdBoundary(spaceId, getRandomId());
+        ItemIdBoundary itemId = new ItemIdBoundary(userSpace, getRandomId());
 
         //Lat/Long
-        Map<String, Double> latlng = new HashMap<>();
-        latlng.put("lat", rand.nextDouble() * 40);
-        latlng.put("lng", rand.nextDouble() * 40);
+        LocationBoundary latLng = new LocationBoundary(rand.nextDouble() * 40, rand.nextDouble() * 40);
 
         //Attrs
         Map<String, Object> attrs = new HashMap<>();
@@ -71,7 +90,7 @@ public class DummyData {
                 (rand.nextInt() % 2 == 0),
                 new Date(),
                 new UserBoundary(userEmail, userSpace),
-                latlng,
+                latLng,
                 attrs
         );
     }

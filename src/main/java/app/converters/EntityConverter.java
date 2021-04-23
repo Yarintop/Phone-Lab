@@ -5,8 +5,8 @@ import app.twins.data.Entity;
 
 public interface EntityConverter<E extends Entity, B extends Boundary> {
 
-    E toEntity(B boundaryObject);
+    public E toEntity(B boundaryObject);
 
-    B toBoundary(E entityObject);
+    public B toBoundary(E entityObject);
 
 }
