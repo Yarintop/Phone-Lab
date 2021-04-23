@@ -4,7 +4,10 @@ import app.Application;
 import app.boundaries.DigitalItemBoundary;
 import app.boundaries.OperationBoundary;
 import app.boundaries.UserBoundary;
+import app.converters.OperationConverter;
+import app.dao.OperationDao;
 import app.dummyData.DummyData;
+import app.twins.data.OperationEntity;
 import app.twins.logic.ItemsService;
 import app.twins.logic.OperationsService;
 import app.twins.logic.UsersService;
@@ -19,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,11 +32,18 @@ public class OperationsTest {
     private int port;
     private String baseUrl;
     private RestTemplate restTemplate;
+    private UserBoundary testUser;
+
     private DummyData dataGenerator;
+
     private UsersService usersService;
     private ItemsService itemsService;
-    private UserBoundary testUser;
     private OperationsService operationsService;
+
+    private OperationDao operationDao;
+
+    private OperationConverter operationConverter;
+
 
     /**
      * This function will set the dummy data generator
@@ -49,6 +60,16 @@ public class OperationsTest {
         this.usersService = usersService;
         this.itemsService = itemsService;
         this.operationsService = operationsService;
+    }
+
+    @Autowired
+    public void setOperationDao(OperationDao operationDao) {
+        this.operationDao = operationDao;
+    }
+
+    @Autowired
+    public void setOperationConverter(OperationConverter operationConverter) {
+        this.operationConverter = operationConverter;
     }
 
     /**
@@ -158,5 +179,33 @@ public class OperationsTest {
         assertThat(res.getOperationId()).isNotNull();
     }
 
+    @Test
+    public void testBoundarySaveToEntityDB() throws Exception {
+        //GIVEN a boundary that we want to save in the DB and the invoking user and item is already saved in the DB
+        OperationBoundary operation = dataGenerator.getRandomOperation(true);
+        // save the user & item in the DB
+        UserBoundary user = operation.getInvokedBy();
+        DigitalItemBoundary item = operation.getItem();
+        usersService.createUser(user);
+        itemsService.createItem(user.getUserId().getSpace(), user.getUserId().getEmail(), item);
+
+        //WHEN we save the boundary to the DB
+        operationDao.save(operationConverter.toEntity(operation));
+
+        //THEN the entity in the DB is saved correctly with all the relevant fields
+        Optional<OperationEntity> savedOperationOptional = operationDao.findById(operation.getOperationId().toString());
+        // Assert that the system can find the operation in the DB
+        assertThat(savedOperationOptional.isPresent()).isTrue();
+        // Convert to OperationEntity
+        OperationEntity savedOperation = savedOperationOptional.get();
+        // Assert that the core IDs are equal (except for timestamp & attributes)
+        assertThat(savedOperation.getOperationId()).isEqualTo(operation.getOperationId().toString());
+        assertThat(savedOperation.getOperationType()).isEqualTo(operation.getType());
+        assertThat(savedOperation.getInvokedBy().getUserId()).isEqualTo(operation.getInvokedBy().getUserId().toString());
+        assertThat(savedOperation.getItem().getItemId()).isEqualTo(operation.getItem().getItemId().toString());
+        // Assert that attributes are equal
+        assertThat(savedOperation.getOperationAttributes()).isEqualTo(operationConverter.fromMapToJson(
+                operation.getOperationAttributes()));
+    }
 
 }
