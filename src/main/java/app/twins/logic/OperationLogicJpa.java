@@ -1,12 +1,16 @@
 package app.twins.logic;
 
 import app.boundaries.OperationBoundary;
+import app.boundaries.UserIdBoundary;
 import app.converters.OperationConverter;
 import app.dao.ItemDao;
 import app.dao.OperationDao;
 import app.dao.UserDao;
+import app.exceptions.NoPermissionException;
 import app.exceptions.NotFoundException;
 import app.twins.data.OperationEntity;
+import app.twins.data.UserEntity;
+import app.twins.data.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -74,17 +79,22 @@ public class OperationLogicJpa implements OperationsService {
     @Override
     @Transactional
     public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail) {
-        //TODO: Check if admin user is correct
-        return StreamSupport.stream(operationsDao.findAll().spliterator(), false)
-                .map(converter::toBoundary)
-                .collect(Collectors.toList());
+        Optional<UserEntity> userToCheck = usersDao.findById(new UserIdBoundary(adminSpace, adminEmail).toString());
+        if (userToCheck.isPresent() && userToCheck.get().getRole() == UserRole.ADMIN)
+            return StreamSupport.stream(operationsDao.findAll().spliterator(), false)
+                    .map(converter::toBoundary)
+                    .collect(Collectors.toList());
+        throw new NoPermissionException("User: " + adminEmail + " does not permitted to view all operations");
     }
 
     @Override
     @Transactional
     public void deleteAllOperations(String adminSpace, String adminEmail) {
-        //TODO: Check if admin user is correct
-        operationsDao.deleteAll();
+        Optional<UserEntity> userToCheck = usersDao.findById(new UserIdBoundary(adminSpace, adminEmail).toString());
+        if (userToCheck.isPresent() && userToCheck.get().getRole() == UserRole.ADMIN)
+            operationsDao.deleteAll();
+        else
+            throw new NoPermissionException("User: " + adminEmail + " does not permitted to delete operations");
 
     }
 
