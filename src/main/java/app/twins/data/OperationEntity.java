@@ -1,12 +1,7 @@
 package app.twins.data;
 
-import app.boundaries.ItemIdBoundary;
-import app.boundaries.UserIdBoundary;
-
 import javax.persistence.*;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @javax.persistence.Entity
 @Table(name = "OPERATIONS")
@@ -15,10 +10,11 @@ public class OperationEntity implements Entity {
     private String operationType = "undefined";
     private ItemEntity item;
     private Date createdTimestamp = new Date();
-    private UserEntity invokedBy ;
-    private Map<String, Object> operationAttributes = new HashMap<>();
+    private UserEntity invokedBy;
+    private String operationAttributes;
 
-    public OperationEntity() {    }
+    public OperationEntity() {
+    }
 
     @Id
     public String getOperationId() {
@@ -41,7 +37,7 @@ public class OperationEntity implements Entity {
         this.operationType = operationType;
     }
 
-//    @Transient
+    //    @Transient
     @ManyToOne(fetch = FetchType.LAZY)
     public ItemEntity getItem() {
         return item;
@@ -60,7 +56,7 @@ public class OperationEntity implements Entity {
         this.createdTimestamp = createdTimestamp;
     }
 
-//    @Transient
+    //    @Transient
     @ManyToOne(fetch = FetchType.LAZY)
     public UserEntity getInvokedBy() {
         return invokedBy;
@@ -70,12 +66,12 @@ public class OperationEntity implements Entity {
         this.invokedBy = invokedBy;
     }
 
-    @Transient
-    public Map<String, Object> getOperationAttributes() {
+    @Lob
+    public String getOperationAttributes() {
         return operationAttributes;
     }
 
-    public void setOperationAttributes(Map<String, Object> operationAttributes) {
+    public void setOperationAttributes(String operationAttributes) {
         this.operationAttributes = operationAttributes;
     }
 

@@ -3,16 +3,24 @@ package app.converters;
 import app.boundaries.OperationBoundary;
 import app.boundaries.OperationIdBoundary;
 import app.twins.data.OperationEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class OperationConverter implements EntityConverter<OperationEntity, OperationBoundary> {
 
     private UserConverter userConverter;
     private ItemConverter itemConverter;
+
+    private final ObjectMapper jackson;
+
+    public OperationConverter(ObjectMapper jackson) {
+        this.jackson = jackson;
+    }
 
     @Autowired
     public void setConverters(ItemConverter itemConverter, UserConverter userConverter) {
@@ -37,11 +45,11 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
             entity.setOperationId(""); // Empty ID string if the ID is missing
         entity.setOperationType(boundary.getType());
         entity.setCreatedTimestamp(boundary.getCreatedTimestamp());
-//        entity.setInvokedBy(boundary.getInvokedBy());
-//        entity.setItem(boundary.getItem());
         entity.setInvokedBy(userConverter.toEntity(boundary.getInvokedBy()));
         entity.setItem(itemConverter.toEntity(boundary.getItem()));
-        entity.setOperationAttributes(boundary.getOperationAttributes());
+
+//        entity.setOperationAttributes(boundary.getOperationAttributes());
+        entity.setOperationAttributes(fromMapToJson(boundary.getOperationAttributes()));
         return entity;
     }
 
@@ -65,7 +73,8 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
         if (entity.getItem() != null)
             boundary.setItem(itemConverter.toBoundary(entity.getItem()));
 
-        boundary.setOperationAttributes(entity.getOperationAttributes());
+//        boundary.setOperationAttributes(entity.getOperationAttributes());
+        boundary.setOperationAttributes(fromJsonToMap(entity.getOperationAttributes()));
         return boundary;
     }
 
@@ -92,5 +101,21 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
     public OperationIdBoundary convertStringKey(String operationIdString) {
         String[] idParts = operationIdString.split("&");
         return new OperationIdBoundary(idParts[0], idParts[1]);
+    }
+
+    public String fromMapToJson(Map<String, Object> value) { // marshalling: Java->JSON
+        try {
+            return this.jackson.writeValueAsString(value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Map<String, Object> fromJsonToMap(String json) { // unmarshalling: JSON->Java
+        try {
+            return this.jackson.readValue(json, Map.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
