@@ -1,8 +1,8 @@
 package twins.dummyData;
 
-import twins.boundaries.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import twins.boundaries.*;
 
 import java.util.*;
 

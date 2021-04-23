@@ -1,24 +1,23 @@
 package twins.logic;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import twins.boundaries.ItemIdBoundary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import twins.dao.ItemDao;
 import twins.boundaries.DigitalItemBoundary;
+import twins.boundaries.ItemIdBoundary;
 import twins.boundaries.UserBoundary;
 import twins.converters.ItemConverter;
-import twins.exceptions.NotFoundException;
+import twins.dao.ItemDao;
 import twins.data.ItemEntity;
+import twins.exceptions.NotFoundException;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
-public class ItemLogicJpa implements UpdatedItemsService {
+public class ItemServiceJpa implements UpdatedItemsService {
     private ItemDao itemDao;
     //private Map<String,ItemEntity> items;
     private String spaceId;
@@ -35,7 +34,7 @@ public class ItemLogicJpa implements UpdatedItemsService {
         this.spaceId = spaceId;
     }
 
-    public ItemLogicJpa() {
+    public ItemServiceJpa() {
     }
 
     @Autowired
@@ -75,8 +74,6 @@ public class ItemLogicJpa implements UpdatedItemsService {
 
         ItemEntity entity = this.entityConverter.toEntity(item);
         this.itemDao.save(entity);
-
-        DigitalItemBoundary temp = this.entityConverter.toBoundary(entity);
 
         return this.entityConverter.toBoundary(entity);
     }

@@ -1,11 +1,11 @@
 package twins.converters;
 
-import twins.boundaries.OperationBoundary;
-import twins.boundaries.OperationIdBoundary;
-import twins.data.OperationEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import twins.boundaries.OperationBoundary;
+import twins.boundaries.OperationIdBoundary;
+import twins.data.OperationEntity;
 
 import java.util.HashMap;
 import java.util.Map;

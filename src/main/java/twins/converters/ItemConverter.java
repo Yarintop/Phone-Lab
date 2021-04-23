@@ -1,5 +1,8 @@
 package twins.converters;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import twins.boundaries.DigitalItemBoundary;
 import twins.boundaries.ItemIdBoundary;
 import twins.boundaries.LocationBoundary;
@@ -7,14 +10,9 @@ import twins.data.ItemEntity;
 
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 @Component
 public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBoundary> {
-    private ObjectMapper jackson;
+    private final ObjectMapper jackson;
 
     private UserConverter userConverter;
 
@@ -79,7 +77,7 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
     }
 
     /**
-     * Convert ItemIdBoundaryto String format, used for entity classes.
+     * Convert ItemIdBoundary to String format, used for entity classes.
      *
      * @param itemId - ItemIdBoundary from a boundary object
      * @return String that represent the id in the format: id&spaceId

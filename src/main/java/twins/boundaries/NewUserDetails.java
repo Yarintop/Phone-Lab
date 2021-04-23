@@ -1,50 +1,50 @@
 package twins.boundaries;
 
 public class NewUserDetails {
-	
-	private String email;
-	private String role = "PLAYER";
-	private String username;
-	private String avatar;
-	
-	public NewUserDetails() { /* Default Constructor */}
 
-	public NewUserDetails(String email, String role, String username, String avatar) {
-		this.email = email;
-		this.role = role;
-		this.username = username;
-		this.avatar = avatar;
-	}
+    private String email;
+    private String role = "PLAYER";
+    private String username;
+    private String avatar;
 
-	public String getEmail() {
-		return email;
-	}
+    public NewUserDetails() { /* Default Constructor */}
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public NewUserDetails(String email, String role, String username, String avatar) {
+        this.email = email;
+        this.role = role;
+        this.username = username;
+        this.avatar = avatar;
+    }
 
-	public String getRole() {
-		return role;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setRole(String role) {
-		this.role = role;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getRole() {
+        return role;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setRole(String role) {
+        this.role = role;
+    }
 
-	public String getAvatar() {
-		return avatar;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 }

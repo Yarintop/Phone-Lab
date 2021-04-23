@@ -3,12 +3,7 @@ package twins.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import twins.boundaries.NewUserDetails;
 import twins.boundaries.UserBoundary;
 import twins.logic.UsersService;
@@ -36,11 +31,12 @@ public class UserController {
         this.spaceId = spaceId;
     }
 
-	/**
-	 * Adds a new user to the system
-	 * @param newUserDetails - The details of the user to be created
-	 * @return A boundary object of the newly created user
-	 */
+    /**
+     * Adds a new user to the system
+     *
+     * @param newUserDetails - The details of the user to be created
+     * @return A boundary object of the newly created user
+     */
     @RequestMapping(path = "/twins/users", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserBoundary createNewUsers(@RequestBody NewUserDetails newUserDetails) {
 
@@ -59,8 +55,7 @@ public class UserController {
 
 
     /**
-     *
-     * @param userSpace - Used as part of the key to retrieve the user
+     * @param userSpace  - Used as part of the key to retrieve the user
      * @param userEmail- Used as part of the key to retrieve the user
      * @return A boundary object of the desired user
      */
@@ -72,15 +67,14 @@ public class UserController {
     }
 
     /**
-     *
-     * @param userSpace - Used as part of the key to retrieve the user
+     * @param userSpace  - Used as part of the key to retrieve the user
      * @param userEmail- Used as part of the key to retrieve the user
-     * @param user - Details to update
+     * @param user       - Details to update
      */
     @RequestMapping(path = "/twins/users/{userSpace}/{userEmail}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void updateUserDetails(@PathVariable("userSpace") String userSpace,
                                   @PathVariable("userEmail") String userEmail, @RequestBody UserBoundary user) {
 
-       this.userService.updateUser(userSpace, userEmail, user);
+        this.userService.updateUser(userSpace, userEmail, user);
     }
 }

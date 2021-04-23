@@ -50,6 +50,7 @@ public class UserBoundary implements Boundary {
     public void setSpace(String userSpace) {
         this.userId.setSpace(userSpace);
     }
+
     @JsonIgnore
     public void setEmail(String userEmail) {
         this.userId.setEmail(userEmail);

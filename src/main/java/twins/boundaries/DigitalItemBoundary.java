@@ -59,7 +59,6 @@ public class DigitalItemBoundary implements Boundary {
     }
 
     @JsonProperty("createdBy")
-//    @JsonIgnore
     public Map<String, UserIdBoundary> getCreatedById() {
         if (createdBy == null) return null;
         HashMap<String, UserIdBoundary> temp = new HashMap<>();

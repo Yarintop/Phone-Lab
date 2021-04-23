@@ -1,22 +1,16 @@
 package twins.logic;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import twins.converters.UserConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-
 import twins.boundaries.DigitalItemBoundary;
 import twins.boundaries.UserBoundary;
 import twins.converters.ItemConverter;
-import twins.exceptions.NotFoundException;
+import twins.converters.UserConverter;
 import twins.data.ItemEntity;
+import twins.exceptions.NotFoundException;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 //@Service
 public class ItemsServiceMockup implements ItemsService {

@@ -1,17 +1,16 @@
 package twins.logic;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import twins.boundaries.UserBoundary;
 import twins.converters.UserConverter;
 import twins.dao.UserDao;
+import twins.data.UserEntity;
+import twins.data.UserRole;
 import twins.exceptions.BadRequestException;
 import twins.exceptions.NoPermissionException;
 import twins.exceptions.NotFoundException;
-import twins.data.UserEntity;
-import twins.data.UserRole;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +22,6 @@ import java.util.stream.StreamSupport;
 @Service
 public class UsersServiceJpa implements UsersService {
 
-    private String spaceId;
     private UserConverter converter;
     private UserDao usersDao; // Users data
 
@@ -35,13 +33,6 @@ public class UsersServiceJpa implements UsersService {
     @Autowired
     public void setUserConverter(UserConverter converter) {
         this.converter = converter;
-    }
-
-    // Sets the space ID
-    @Value("${spring.application.name:${spring.application.name:2021b.notdef}}")
-    public void setSpaceId(String spaceId) {
-        //TODO: If not used, remove
-        this.spaceId = spaceId;
     }
 
 
@@ -83,8 +74,6 @@ public class UsersServiceJpa implements UsersService {
 
         // Adding user to the system
         UserEntity userEntity = this.converter.toEntity(user);
-
-//        userEntity.setSpace(spaceId); // Setting the user's space
 
         // Generating key
 //        String key = userEntity.getSpace() + "&" + userEntity.getEmail();

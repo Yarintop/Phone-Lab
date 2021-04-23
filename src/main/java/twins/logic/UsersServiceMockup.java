@@ -1,11 +1,11 @@
 package twins.logic;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import twins.boundaries.UserBoundary;
 import twins.converters.UserConverter;
 import twins.data.UserEntity;
 import twins.data.UserRole;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -65,7 +65,6 @@ public class UsersServiceMockup { //implements UsersService {
         // Generating key
         String key = userEntity.getUserId();
 
-        // System.out.println(key);
 
 //        System.out.println("Email " + userEntity.getEmail() + " Space: " + userEntity.getSpace());
 

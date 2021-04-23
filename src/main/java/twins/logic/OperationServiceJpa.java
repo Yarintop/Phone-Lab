@@ -1,20 +1,20 @@
 package twins.logic;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import twins.boundaries.OperationBoundary;
 import twins.boundaries.UserIdBoundary;
 import twins.converters.OperationConverter;
 import twins.dao.ItemDao;
 import twins.dao.OperationDao;
 import twins.dao.UserDao;
-import twins.exceptions.NoPermissionException;
-import twins.exceptions.NotFoundException;
 import twins.data.OperationEntity;
 import twins.data.UserEntity;
 import twins.data.UserRole;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import twins.exceptions.NoPermissionException;
+import twins.exceptions.NotFoundException;
 
 import java.util.Date;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
-public class OperationLogicJpa implements OperationsService {
+public class OperationServiceJpa implements OperationsService {
 
     private OperationDao operationsDao;
 

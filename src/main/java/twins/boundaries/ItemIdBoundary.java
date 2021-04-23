@@ -41,12 +41,6 @@ public class ItemIdBoundary {
 
     @Override
     public String toString() {
-//        String space = this.space;
-//        String id = this.id;
-//        if (space == null)
-//            space = "";
-//        if (id == null)
-//            id = "";
         return this.id + "&" + this.space;
     }
 
@@ -65,11 +59,8 @@ public class ItemIdBoundary {
         } else if (!id.equals(other.id))
             return false;
         if (space == null) {
-            if (other.space != null)
-                return false;
-        } else if (!space.equals(other.space))
-            return false;
-        return true;
+            return other.space == null;
+        } else return space.equals(other.space);
     }
 
     @Override

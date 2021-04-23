@@ -1,7 +1,7 @@
 package twins.dao;
 
-import twins.data.OperationEntity;
 import org.springframework.data.repository.CrudRepository;
+import twins.data.OperationEntity;
 
 public interface OperationDao extends CrudRepository<OperationEntity, String> {
 

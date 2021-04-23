@@ -1,10 +1,10 @@
 package twins.converters;
 
+import org.springframework.stereotype.Component;
 import twins.boundaries.UserBoundary;
-import twins.exceptions.BadRequestException;
 import twins.data.UserEntity;
 import twins.data.UserRole;
-import org.springframework.stereotype.Component;
+import twins.exceptions.BadRequestException;
 
 @Component
 public class UserConverter implements EntityConverter<UserEntity, UserBoundary> {

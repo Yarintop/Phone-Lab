@@ -1,10 +1,5 @@
 package demo;
 
-import twins.Application;
-import twins.boundaries.NewUserDetails;
-import twins.boundaries.UserBoundary;
-import twins.dummyData.DummyData;
-import twins.logic.UsersService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +10,11 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import twins.Application;
+import twins.boundaries.NewUserDetails;
+import twins.boundaries.UserBoundary;
+import twins.dummyData.DummyData;
+import twins.logic.UsersService;
 
 import javax.annotation.PostConstruct;
 
@@ -116,6 +116,7 @@ public class UsersTest {
         assertThat(returnCode).isEqualTo(200);
 
         // Must be of type application/json
+        assertThat(contentType).isNotNull();
         assertThat(contentType.toString()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
 
         UserBoundary createdUser = entity.getBody(); // Getting the user that was created
@@ -169,6 +170,7 @@ public class UsersTest {
         UserBoundary res = response.getBody(); // Getting the UserBoundary from the body
 
         // assert all the fields that should be update are updated
+        assertThat(res).isNotNull();
         assertThat(res.getRole()).isEqualTo("ADMIN");
 
         // Making sure that email didn't change even though we tried to change it

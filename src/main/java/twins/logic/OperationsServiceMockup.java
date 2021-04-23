@@ -1,13 +1,16 @@
 package twins.logic;
 
-import twins.boundaries.OperationBoundary;
-import twins.converters.OperationConverter;
-import twins.dummyData.DummyData;
-import twins.data.OperationEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import twins.boundaries.OperationBoundary;
+import twins.converters.OperationConverter;
+import twins.data.OperationEntity;
+import twins.dummyData.DummyData;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 //@Service
