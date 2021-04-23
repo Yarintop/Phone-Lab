@@ -37,7 +37,6 @@ public class OperationEntity implements Entity {
         this.operationType = operationType;
     }
 
-    //    @Transient
     @ManyToOne(fetch = FetchType.LAZY)
     public ItemEntity getItem() {
         return item;
@@ -56,7 +55,6 @@ public class OperationEntity implements Entity {
         this.createdTimestamp = createdTimestamp;
     }
 
-    //    @Transient
     @ManyToOne(fetch = FetchType.LAZY)
     public UserEntity getInvokedBy() {
         return invokedBy;
