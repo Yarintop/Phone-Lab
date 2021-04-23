@@ -1,8 +1,13 @@
 package demo;
 
 import app.Application;
+import app.boundaries.DigitalItemBoundary;
 import app.boundaries.OperationBoundary;
+import app.boundaries.UserBoundary;
 import app.dummyData.DummyData;
+import app.twins.logic.ItemsService;
+import app.twins.logic.OperationsService;
+import app.twins.logic.UsersService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +29,10 @@ public class OperationsTest {
     private String baseUrl;
     private RestTemplate restTemplate;
     private DummyData dataGenerator;
-
+    private UsersService usersService;
+    private ItemsService itemsService;
+    private UserBoundary testUser;
+    private OperationsService operationsService;
 
     /**
      * This function will set the dummy data generator
@@ -34,6 +42,13 @@ public class OperationsTest {
     @Autowired
     public void setDummyDataGenerator(DummyData dataGenerator) {
         this.dataGenerator = dataGenerator;
+    }
+
+    @Autowired
+    public void setServices(UsersService usersService, ItemsService itemsService, OperationsService operationsService) {
+        this.usersService = usersService;
+        this.itemsService = itemsService;
+        this.operationsService = operationsService;
     }
 
     /**
@@ -50,19 +65,24 @@ public class OperationsTest {
     public void init() {
         this.restTemplate = new RestTemplate();
         this.baseUrl = "http://localhost:" + this.port + "/twins/operations/";
+        this.testUser = dataGenerator.getRandomUser();
+        this.testUser.setEmail("admin@admin.com");
+        this.testUser.setRole("Admin");
 
     }
 
     @BeforeEach
     public void setup() {
-        // init operations before each test
-        System.err.println("init before test..");
+        usersService.createUser(testUser);
     }
 
 
     @AfterEach
     public void teardown() {
-        System.err.println("After test..");
+        operationsService.deleteAllOperations(testUser.getUserId().getSpace(), testUser.getUserId().getEmail());
+        itemsService.deleteAllItems(testUser.getUserId().getSpace(), testUser.getUserId().getEmail());
+        usersService.deleteAllUsers(testUser.getUserId().getSpace(), testUser.getUserId().getEmail());
+
     }
 
     /**
@@ -72,12 +92,17 @@ public class OperationsTest {
      */
     @Test
     public void testPostOperationReturnsJSON() throws Exception {
-        // GIVEN the server is up
-        // do nothing
+        // GIVEN the server is up (OLD)
+        // GIVEN the server is up and I want to invoke an operation with 1 item invoked by 1 user
+        // and given that the user & item already in the DB
+        OperationBoundary operation = dataGenerator.getRandomOperation(false);
+        UserBoundary user = operation.getInvokedBy();
+        DigitalItemBoundary item = operation.getItem();
+        usersService.createUser(user);
+        itemsService.createItem(user.getUserId().getSpace(), user.getUserId().getEmail(), item);
+
 
         // WHEN I POST using /twins/operations with an operation
-
-        OperationBoundary operation = dataGenerator.getRandomOperation(false);
         ResponseEntity<String> entity = restTemplate.postForEntity(baseUrl, operation, String.class);
         int returnCode = entity.getStatusCodeValue();
         MediaType contentType = entity.getHeaders().getContentType();
@@ -99,12 +124,17 @@ public class OperationsTest {
      */
     @Test
     public void testPostAsyncOperationReturnsOperation() throws Exception {
-        // GIVEN the server is up
-        // do nothing
+        // GIVEN the server is up (OLD)
+        // GIVEN the server is up and I want to invoke an operation with 1 item invoked by 1 user
+        // and given that the user & item already in the DB
+        OperationBoundary operation = dataGenerator.getRandomOperation(false);
+        UserBoundary user = operation.getInvokedBy();
+        DigitalItemBoundary item = operation.getItem();
+        usersService.createUser(user);
+        itemsService.createItem(user.getUserId().getSpace(), user.getUserId().getEmail(), item);
 
         // WHEN I POST using /twins/operations with an operation
 
-        OperationBoundary operation = dataGenerator.getRandomOperation(false);
         ResponseEntity<OperationBoundary> entity = restTemplate.postForEntity(baseUrl + "async", operation, OperationBoundary.class);
         int returnCode = entity.getStatusCodeValue();
         OperationBoundary res = entity.getBody();
@@ -117,13 +147,12 @@ public class OperationsTest {
         // assert result is not null
         assertThat(res).isNotNull();
 
-        // assert all the fields that are not ID, equal to the original
-        assertThat(res.getCreatedTimestamp()).isEqualTo(operation.getCreatedTimestamp());
+        // assert all the fields that are not ID, equal to the original (Except for timestamp)
         assertThat(res.getType()).isEqualTo(operation.getType());
         assertThat(res.getOperationAttributes()).isEqualTo(operation.getOperationAttributes());
 
-        assertThat(res.getItem()).isEqualTo(operation.getItem());
-        assertThat(res.getInvokedBy()).isEqualTo(operation.getInvokedBy());
+        assertThat(res.getItem().getItemId()).isEqualTo(operation.getItem().getItemId());
+        assertThat(res.getInvokedBy().getUserId()).isEqualTo(operation.getInvokedBy().getUserId());
 
         // assert that a new ID was generated
         assertThat(res.getOperationId()).isNotNull();

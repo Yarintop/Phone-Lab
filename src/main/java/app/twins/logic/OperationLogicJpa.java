@@ -2,6 +2,7 @@ package app.twins.logic;
 
 import app.boundaries.OperationBoundary;
 import app.converters.OperationConverter;
+import app.dao.ItemDao;
 import app.dao.OperationDao;
 import app.dao.UserDao;
 import app.exceptions.NotFoundException;
@@ -24,16 +25,16 @@ public class OperationLogicJpa implements OperationsService {
 
     //DAOs for checking user & items are correct
     private UserDao usersDao;
-//    private ItemDao itemsDao;
+    private ItemDao itemsDao;
 
     private OperationConverter converter;
     private String spaceId;
 
     @Autowired
-    public void setDAOs(OperationDao operationsDao, UserDao usersDao) {
+    public void setDAOs(OperationDao operationsDao, UserDao usersDao, ItemDao itemsDao) {
         this.operationsDao = operationsDao;
         this.usersDao = usersDao;
-        //this.items = itemsDao;
+        this.itemsDao = itemsDao;
     }
 
     @Autowired
@@ -52,6 +53,7 @@ public class OperationLogicJpa implements OperationsService {
         OperationEntity entity = converter.toEntity(operation);
         if (checkUserAndItemMissing(entity))
             throw new NotFoundException("Either the item or the user inside the operation not found!");
+        entity.setOperationId(UUID.randomUUID().toString(), spaceId);
         entity.setCreatedTimestamp(new Date());
         operationsDao.save(entity);
         return operation;
@@ -89,8 +91,8 @@ public class OperationLogicJpa implements OperationsService {
     @Transactional(readOnly = true)
     public boolean checkUserAndItemMissing(OperationEntity oe) {
         if (oe.getItem() == null || oe.getInvokedBy() == null) return true;
-        String userKey = oe.getInvokedBy().getKey();
-        String itemKey = oe.getItem().getItemId().toString();
-        return !usersDao.findById(userKey).isPresent();// && itemsDao.findById(itemKey).isPresent();
+        String userKey = oe.getInvokedBy().getUserId();
+        String itemKey = oe.getItem().getItemId();
+        return !usersDao.findById(userKey).isPresent() && itemsDao.findById(itemKey).isPresent();
     }
 }

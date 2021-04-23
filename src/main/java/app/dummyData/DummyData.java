@@ -36,30 +36,15 @@ public class DummyData {
 
 
     public OperationBoundary getRandomOperation(boolean withId) {
-        ItemIdBoundary itemId = new ItemIdBoundary(spaceId, getRandomId());
 
-        itemId.setId(getRandomId());
+        // Get random user
+        UserBoundary user = getRandomUser();
 
-        UserBoundary user = new UserBoundary(
-                "Random",
-                "Name",
-                "Something",
-                "Else@else.com",
-                this.spaceId
-        );
-
-        DigitalItemBoundary item = new DigitalItemBoundary(
-                itemId,
-                "RandomItem",
-                "RandomName",
-                false,
-                new Date(),
-                user,
-                new LocationBoundary(),
-                new HashMap<>());
+        // Get random item
+        DigitalItemBoundary item = getRandomDigitalItem(spaceId, getRandomId());
 
         OperationBoundary operation = new OperationBoundary();
-        operation.setOperationType("RandomOperation");
+        operation.setType("RandomOperation");
         operation.setItem(item);
         operation.setInvokedBy(user);
         if (withId) {

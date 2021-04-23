@@ -41,8 +41,8 @@ public class OperationEntity implements Entity {
         this.operationType = operationType;
     }
 
-    @Transient
-//    @ManyToOne(fetch = FetchType.LAZY)
+//    @Transient
+    @ManyToOne(fetch = FetchType.LAZY)
     public ItemEntity getItem() {
         return item;
     }

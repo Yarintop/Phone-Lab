@@ -23,7 +23,7 @@ public class OperationBoundary implements Boundary {
      * This is the default constructor, all the fields will be the default values
      */
     public OperationBoundary() {
-        operationId = new OperationIdBoundary();
+//        operationId = new OperationIdBoundary();
         /* Default Constructor */
     }
 
@@ -72,8 +72,12 @@ public class OperationBoundary implements Boundary {
     }
 
     @JsonProperty("item")
-    public ItemIdBoundary getItemId() {
-        return item == null ? null : item.getItemId();
+    public HashMap<String, ItemIdBoundary> getItemId() {
+        if (item == null) return null;
+        HashMap<String, ItemIdBoundary> temp = new HashMap<>();
+        temp.put("itemId", item.getItemId());
+        return temp;
+//        return item == null ? null : item.getItemId();
     }
 
 
@@ -96,8 +100,11 @@ public class OperationBoundary implements Boundary {
     }
 
     @JsonProperty("invokedBy")
-    public UserIdBoundary getInvokedById() {
-        return invokedBy == null ? null : invokedBy.getUserId();
+    public HashMap<String, UserIdBoundary> getInvokedById() {
+        if (invokedBy == null) return null;
+        HashMap<String, UserIdBoundary> temp = new HashMap<>();
+        temp.put("userId", invokedBy.getUserId());
+        return temp;
     }
 
     public Map<String, Object> getOperationAttributes() {
