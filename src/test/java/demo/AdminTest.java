@@ -1,12 +1,14 @@
 package demo;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import javax.annotation.PostConstruct;
-
-import app.twins.logic.ItemsService;
-import app.twins.logic.OperationsService;
-import app.twins.logic.UsersService;
+import twins.Application;
+import twins.boundaries.DigitalItemBoundary;
+import twins.boundaries.NewUserDetails;
+import twins.boundaries.OperationBoundary;
+import twins.boundaries.UserBoundary;
+import twins.dummyData.DummyData;
+import twins.logic.ItemsService;
+import twins.logic.OperationsService;
+import twins.logic.UsersService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,12 +19,9 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.web.client.RestTemplate;
 
-import app.Application;
-import app.boundaries.DigitalItemBoundary;
-import app.boundaries.NewUserDetails;
-import app.boundaries.OperationBoundary;
-import app.boundaries.UserBoundary;
-import app.dummyData.DummyData;
+import javax.annotation.PostConstruct;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class AdminTest {
@@ -83,18 +82,20 @@ public class AdminTest {
     public void setup() {
         UserBoundary user = dataGenerator.getRandomUser();
         user.setRole("Admin");
-        user.setEmail("remove@me.com");
+        user.setEmail("admin@gmail.com");
         usersService.createUser(user);
-        operationsService.deleteAllOperations(spaceId, user.getUserId().get("email"));
-        itemsService.deleteAllItems(spaceId, user.getUserId().get("email"));
-        usersService.deleteAllUsers(spaceId, user.getUserId().get("email"));
+
     }
 
 
     @AfterEach
     public void teardown() {
         System.err.println("After test..");
-
+        if (usersService.getAllUsers(spaceId, "admin@gmail.com").size() > 0) {
+            operationsService.deleteAllOperations(spaceId, "admin@gmail.com");
+            itemsService.deleteAllItems(spaceId, "admin@gmail.com");
+            usersService.deleteAllUsers(spaceId, "admin@gmail.com");
+        }
     }
 
     /**
@@ -109,11 +110,16 @@ public class AdminTest {
 
         // WHEN I GET all using /twins/admin/operations/{userSpace}/{userEmail}
         String space = this.spaceId;
-        String email = "admin@email.com";
+        String email = "admin@gmail.com";
         String theUrl = this.baseUrl + "admin/operations/" + space + "/" + email;
 
         OperationBoundary operation = dataGenerator.getRandomOperation(false);
 
+        // Save generated data to database
+        UserBoundary invokedBy = operation.getInvokedBy();
+        DigitalItemBoundary item = operation.getItem();
+        usersService.createUser(invokedBy);
+        itemsService.createItem(invokedBy.getUserId().getSpace(), invokedBy.getUserId().getEmail(), item);
         // First check that currently operations are empty
 
         OperationBoundary[] response = this.restTemplate
@@ -148,10 +154,10 @@ public class AdminTest {
         // WHEN I GET all using /twins/admin/users/{userSpace}/{userEmail}
 
         UserBoundary user = dataGenerator.getRandomUser();
-        NewUserDetails userDetails = new NewUserDetails(user.getUserId().get("email"), "Admin",
+        NewUserDetails userDetails = new NewUserDetails(user.getUserId().getEmail(), "Admin",
                 user.getUsername(), user.getAvatar());
         String space = this.spaceId;
-        String email = user.getUserId().get("email");
+        String email = user.getUserId().getEmail();
         String theUrl = this.baseUrl + "admin/users/" + space + "/" + email;
 
         // First creating a user by using POST
@@ -179,10 +185,9 @@ public class AdminTest {
         // THEN delete all operations
 
         String space = this.spaceId;
-        String email = "admin@email.com";
+        String email = "admin@gmail.com";
         String theUrl = this.baseUrl + "admin/operations/" + space + "/" + email;
 
-        OperationBoundary operation = dataGenerator.getRandomOperation(false);
 
         // First check that currently operations is not empty
 
@@ -194,6 +199,13 @@ public class AdminTest {
 
         if (response.length == 0) {
             // If empty then add operations by using POST
+
+            // Save generated data to database
+            OperationBoundary operation = dataGenerator.getRandomOperation(false);
+            UserBoundary invokedBy = operation.getInvokedBy();
+            DigitalItemBoundary item = operation.getItem();
+            usersService.createUser(invokedBy);
+            itemsService.createItem(invokedBy.getUserId().getSpace(), invokedBy.getUserId().getEmail(), item);
 
             restTemplate.postForEntity(baseUrl + "operations", operation, OperationBoundary.class);
             restTemplate.postForEntity(baseUrl + "operations/async", operation, OperationBoundary.class);
@@ -225,14 +237,14 @@ public class AdminTest {
         // THEN delete all users
 
         UserBoundary user = dataGenerator.getRandomUser();
-        NewUserDetails userDetails1 = new NewUserDetails(user.getUserId().get("email") + "1", "Admin",
+        NewUserDetails userDetails1 = new NewUserDetails(user.getUserId().getEmail() + "1", "Admin",
                 user.getUsername(), user.getAvatar());
-        NewUserDetails userDetails2 = new NewUserDetails(user.getUserId().get("email") + "2", "Admin",
+        NewUserDetails userDetails2 = new NewUserDetails(user.getUserId().getEmail() + "2", "Admin",
                 user.getUsername(), user.getAvatar());
-        NewUserDetails userDetails3 = new NewUserDetails(user.getUserId().get("email") + "3", "Admin",
+        NewUserDetails userDetails3 = new NewUserDetails(user.getUserId().getEmail() + "3", "Admin",
                 user.getUsername(), user.getAvatar());
         String space = this.spaceId;
-        String email = user.getUserId().get("email") + "1";
+        String email = user.getUserId().getEmail() + "1";
         String theUrl = this.baseUrl + "admin/users/" + space + "/" + email;
 
         // First adding three users by using POST
@@ -256,6 +268,8 @@ public class AdminTest {
 
         // Check that size is one meaning only the newly added admin user
         assertThat(response).isNotNull().hasSize(1);
+
+        setup();
     }
 
 
@@ -272,7 +286,7 @@ public class AdminTest {
         // THEN delete all items
 
         String space = this.spaceId;
-        String email = "admin@email.com";
+        String email = "admin@gmail.com";
         String theUrl = this.baseUrl + "admin/items/" + space + "/" + email;
         String itemUrl = this.baseUrl + "items/" + this.spaceId + "/" + email;
 

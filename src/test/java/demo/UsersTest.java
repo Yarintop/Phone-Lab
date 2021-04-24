@@ -1,10 +1,5 @@
 package demo;
 
-import app.Application;
-import app.boundaries.NewUserDetails;
-import app.boundaries.UserBoundary;
-import app.dummyData.DummyData;
-import app.twins.logic.UsersService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +10,11 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import twins.Application;
+import twins.boundaries.NewUserDetails;
+import twins.boundaries.UserBoundary;
+import twins.dummyData.DummyData;
+import twins.logic.UsersService;
 
 import javax.annotation.PostConstruct;
 
@@ -86,7 +86,7 @@ public class UsersTest {
         user.setRole("Admin");
         user.setEmail("remove@me.com");
         usersService.createUser(user);
-        usersService.deleteAllUsers(spaceId, user.getUserId().get("email"));
+        usersService.deleteAllUsers(spaceId, user.getUserId().getEmail());
         System.err.println("After test..");
     }
 
@@ -104,7 +104,7 @@ public class UsersTest {
         // WHEN I POST using /twins/users with an user
 
         UserBoundary user = dataGenerator.getRandomUser();
-        NewUserDetails userDetails = new NewUserDetails(user.getUserId().get("email"), user.getRole(),
+        NewUserDetails userDetails = new NewUserDetails(user.getUserId().getEmail(), user.getRole(),
                 user.getUsername(), user.getAvatar());
         ResponseEntity<UserBoundary> entity = restTemplate.postForEntity(baseUrl, userDetails, UserBoundary.class);
         int returnCode = entity.getStatusCodeValue();
@@ -116,6 +116,7 @@ public class UsersTest {
         assertThat(returnCode).isEqualTo(200);
 
         // Must be of type application/json
+        assertThat(contentType).isNotNull();
         assertThat(contentType.toString()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
 
         UserBoundary createdUser = entity.getBody(); // Getting the user that was created
@@ -142,7 +143,7 @@ public class UsersTest {
 
         // First creating a user by using POST
         UserBoundary user = dataGenerator.getRandomUser();
-        NewUserDetails userDetails = new NewUserDetails(user.getUserId().get("email"), user.getRole(),
+        NewUserDetails userDetails = new NewUserDetails(user.getUserId().getEmail(), user.getRole(),
                 user.getUsername(), user.getAvatar());
         ResponseEntity<UserBoundary> entity = restTemplate.postForEntity(baseUrl, userDetails, UserBoundary.class);
 
@@ -157,23 +158,24 @@ public class UsersTest {
         // Details to update at the user (Fields with null won't be updated)
         UserBoundary update = new UserBoundary("Admin", null, null, "new@email.com", this.spaceId);
 
-        String url = this.baseUrl + "/" + user.getUserId().get("space") + "/" + user.getUserId().get("email");
-        restTemplate.put(url, update, user.getUserId().get("space"), user.getUserId().get("email"));
+        String url = this.baseUrl + "/" + user.getUserId().getSpace() + "/" + user.getUserId().getEmail();
+        restTemplate.put(url, update, user.getUserId().getSpace(), user.getUserId().getEmail());
 
 
         // Finally making sure the user updated by using GET
-        url = this.baseUrl + "/login/" + user.getUserId().get("space") + "/" + user.getUserId().get("email");
+        url = this.baseUrl + "/login/" + user.getUserId().getSpace() + "/" + user.getUserId().getEmail();
         ResponseEntity<UserBoundary> response = this.restTemplate.getForEntity(url, UserBoundary.class,
-                user.getUserId().get("space"), user.getUserId().get("email"));
+                user.getUserId().getSpace(), user.getUserId().getEmail());
 
         UserBoundary res = response.getBody(); // Getting the UserBoundary from the body
 
         // assert all the fields that should be update are updated
+        assertThat(res).isNotNull();
         assertThat(res.getRole()).isEqualTo("ADMIN");
 
         // Making sure that email didn't change even though we tried to change it
-        assertThat(res.getUserId().get("email")).isEqualTo(user.getUserId().get("email"));
-        assertThat(res.getUserId().get("space")).isEqualTo(user.getUserId().get("space"));
+        assertThat(res.getUserId().getEmail()).isEqualTo(user.getUserId().getEmail());
+        assertThat(res.getUserId().getSpace()).isEqualTo(user.getUserId().getSpace());
         assertThat(res.getUsername()).isEqualTo(user.getUsername());
         assertThat(res.getAvatar()).isEqualTo(user.getAvatar());
     }
