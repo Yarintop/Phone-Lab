@@ -10,6 +10,7 @@ import twins.boundaries.UserBoundary;
 import twins.converters.ItemConverter;
 import twins.dao.ItemDao;
 import twins.data.ItemEntity;
+import twins.exceptions.BadRequestException;
 import twins.exceptions.NotFoundException;
 
 import java.util.*;
@@ -68,9 +69,19 @@ public class ItemServiceJpa implements UpdatedItemsService {
         item.setCreatedBy(new UserBoundary(userEmail, userSpace));
 
         if (item.getLocation() == null)
-            item.setLocation(-1, -1);
+            throw (new BadRequestException("Can't create an item without a location")); // Item must have a location
         if (item.getItemAttributes() == null)
             item.setItemAttributes(new HashMap<>());
+        if (item.getType() == null)
+            throw (new BadRequestException("Can't create an item without a type")); // Item must have a type
+        if (item.getName() == null)
+            throw (new BadRequestException("Can't create an item without a name")); // Item must have a name
+        if (item.getActive() == null)
+            item.setActive (false); // Set default active value to false
+        if(item.getItemAttributes() == null)
+            item.setItemAttributes(new HashMap<>()); // Set default item attributes to an empty map
+
+
 
         ItemEntity entity = this.entityConverter.toEntity(item);
         this.itemDao.save(entity);

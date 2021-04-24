@@ -1,6 +1,7 @@
 package demo;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +9,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import twins.Application;
 import twins.boundaries.DigitalItemBoundary;
 import twins.boundaries.UserBoundary;
 import twins.data.UserRole;
 import twins.dummyData.DummyData;
+import twins.exceptions.BadRequestException;
 import twins.logic.UpdatedItemsService;
 import twins.logic.UsersService;
 
@@ -110,37 +113,12 @@ public class DigitalItemTest {
 
 
         Map<String, Object> emptyItem = new HashMap<>();
-        DigitalItemBoundary actualItem = this.restTemplate
-                .postForObject(theUrl, emptyItem, DigitalItemBoundary.class);
 
-
+        Assertions.assertThrows(HttpClientErrorException.BadRequest.class, () ->{
+            this.restTemplate
+                    .postForObject(theUrl, emptyItem, DigitalItemBoundary.class);
+        });
         // THEN the server creates a default value and stores it in the database
-
-        // assert that the actual item is not null
-        assertThat(actualItem).isNotNull();
-
-        // Must have ItemId map that is not null and have the keys id and space with correct values
-        assertThat(actualItem.getItemId()).isNotNull();
-        assertThat(actualItem.getItemId().getId()).isNotNull();
-        assertThat(actualItem.getItemId().getSpace()).isNotNull().isEqualTo(space);
-
-        // assert that the User Boundary is not null
-        assertThat(actualItem.getCreatedBy()).isNotNull();
-
-        // Must have userId map that is not null and have the keys email and space with correct values
-        assertThat(actualItem.getCreatedBy()).isNotNull();
-        assertThat(actualItem.getCreatedBy().getUserId()).isNotNull();
-        assertThat(actualItem.getCreatedBy().getUserId().getEmail()).isNotNull().isEqualTo(email);
-        assertThat(actualItem.getCreatedBy().getUserId().getSpace()).isNotNull().isEqualTo(space);
-
-        // AND initialized non null time-stamp
-        assertThat(actualItem.getCreatedTimestamp())
-                .isNotNull();
-
-        // AND initialized not null Item Attributes(e.g. {})
-        assertThat(actualItem.getItemAttributes())
-                .overridingErrorMessage("expected Item Attributes not to be null")
-                .isNotNull();
     }
 
     /**
