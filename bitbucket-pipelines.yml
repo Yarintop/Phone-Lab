@@ -9,7 +9,7 @@ image: maven:3.6.3-jdk-8
 
 pipelines:
   branches:
-    '{production, dev-sprint-3}':
+    '{production, dev-sprint-4}':
     - parallel:
       - step:
           name: Build and Test
