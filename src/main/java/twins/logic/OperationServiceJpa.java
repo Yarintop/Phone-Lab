@@ -101,8 +101,8 @@ public class OperationServiceJpa implements OperationsService {
     @Transactional(readOnly = true)
     public boolean checkUserAndItemMissing(OperationEntity oe) {
         if (oe.getItem() == null || oe.getInvokedBy() == null) return true;
-        String userKey = oe.getInvokedBy().getUserId();
-        String itemKey = oe.getItem().getItemId();
+        String userKey = oe.getInvokedBy();
+        String itemKey = oe.getItem();
         return !usersDao.findById(userKey).isPresent() && itemsDao.findById(itemKey).isPresent();
     }
 }

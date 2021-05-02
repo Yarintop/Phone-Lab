@@ -5,18 +5,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import twins.boundaries.OperationBoundary;
 import twins.boundaries.OperationIdBoundary;
+import twins.dao.ItemDao;
+import twins.dao.UserDao;
+import twins.data.ItemEntity;
 import twins.data.OperationEntity;
+import twins.data.UserEntity;
+import twins.exceptions.NotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class OperationConverter implements EntityConverter<OperationEntity, OperationBoundary> {
 
+    private final ObjectMapper jackson;
     private UserConverter userConverter;
     private ItemConverter itemConverter;
+    private UserDao userDao;
+    private ItemDao itemDao;
 
-    private final ObjectMapper jackson;
 
     public OperationConverter(ObjectMapper jackson) {
         this.jackson = jackson;
@@ -26,6 +34,12 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
     public void setConverters(ItemConverter itemConverter, UserConverter userConverter) {
         this.itemConverter = itemConverter;
         this.userConverter = userConverter;
+    }
+
+    @Autowired
+    public void setConverters(UserDao userDao, ItemDao itemDao) {
+        this.itemDao = itemDao;
+        this.userDao = userDao;
     }
 
 
@@ -45,9 +59,10 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
             entity.setOperationId(""); // Empty ID string if the ID is missing
         entity.setOperationType(boundary.getType());
         entity.setCreatedTimestamp(boundary.getCreatedTimestamp());
-        entity.setInvokedBy(userConverter.toEntity(boundary.getInvokedBy()));
-        entity.setItem(itemConverter.toEntity(boundary.getItem()));
-
+        if(boundary.getInvokedBy() != null)
+            entity.setInvokedBy(boundary.getInvokedBy().getUserId().toString());
+        if(boundary.getItem() != null)
+            entity.setItem(boundary.getItem().getItemId().toString());
 //        entity.setOperationAttributes(boundary.getOperationAttributes());
         entity.setOperationAttributes(fromMapToJson(boundary.getOperationAttributes()));
         return entity;
@@ -68,10 +83,22 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
             boundary.setOperationId(convertStringKey(entity.getOperationId()));
         boundary.setType(entity.getOperationType());
         boundary.setCreatedTimestamp(entity.getCreatedTimestamp());
-        if (entity.getInvokedBy() != null)
-            boundary.setInvokedBy(userConverter.toBoundary(entity.getInvokedBy()));
-        if (entity.getItem() != null)
-            boundary.setItem(itemConverter.toBoundary(entity.getItem()));
+//      boundary.setInvokedBy(userConverter.toBoundary(entity.getInvokedBy()));
+        if (entity.getInvokedBy() != null) {  //TODO: add logic when item & user not present
+            Optional<UserEntity> userEntity = userDao.findById(entity.getInvokedBy());
+            if (userEntity.isPresent())
+                boundary.setInvokedBy(userConverter.toBoundary(userEntity.get()));
+            else
+                throw new NotFoundException("Related user not found (" + entity.getInvokedBy() + ") in the given operation");
+        }
+        if (entity.getItem() != null) {
+            Optional<ItemEntity> itemEntity = itemDao.findById(entity.getItem());
+            if (itemEntity.isPresent())
+                boundary.setItem(itemConverter.toBoundary(itemEntity.get()));
+            else
+                throw new NotFoundException("Related user not found (" + entity.getItem() + ") in the given operation");
+//            boundary.setItem(itemConverter.toBoundary(entity.getItem()));
+        }
 
 //        boundary.setOperationAttributes(entity.getOperationAttributes());
         boundary.setOperationAttributes(fromJsonToMap(entity.getOperationAttributes()));

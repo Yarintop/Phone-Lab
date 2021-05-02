@@ -6,20 +6,28 @@ import org.springframework.stereotype.Component;
 import twins.boundaries.DigitalItemBoundary;
 import twins.boundaries.ItemIdBoundary;
 import twins.boundaries.LocationBoundary;
+import twins.dao.UserDao;
 import twins.data.ItemEntity;
+import twins.data.UserEntity;
+import twins.exceptions.NotFoundException;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBoundary> {
     private final ObjectMapper jackson;
 
     private UserConverter userConverter;
+    private UserDao userDao;
 
     @Autowired
     public void setConverters(UserConverter userConverter) {
         this.userConverter = userConverter;
     }
+
+    @Autowired
+    public void setUserDao(UserDao userDao){this.userDao = userDao;}
 
     public ItemConverter() {
         this.jackson = new ObjectMapper();
@@ -36,7 +44,8 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
         if (boundaryObject.getActive() != null)
             rv.setActive(boundaryObject.getActive());
         rv.setCreatedTimestamp(boundaryObject.getCreatedTimestamp());
-        rv.setCreatedBy(userConverter.toEntity(boundaryObject.getCreatedBy()));
+//        rv.setCreatedBy(userConverter.toEntity(boundaryObject.getCreatedBy()));
+        rv.setCreatedBy(boundaryObject.getCreatedBy().getUserId().toString());
         rv.setLocation(this.fromMapToJson(boundaryObject.getLocation()));
         rv.setItemAttributes(this.fromMapToJson(boundaryObject.getItemAttributes()));
 
@@ -52,7 +61,15 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
         rv.setName(entityObject.getName());
         rv.setActive(entityObject.isActive());
         rv.setCreatedTimestamp(entityObject.getCreatedTimestamp());
-        rv.setCreatedBy(userConverter.toBoundary(entityObject.getCreatedBy())); // This line might change
+//        rv.setCreatedBy(userConverter.toBoundary(entityObject.getCreatedBy())); // This line might change
+
+        Optional<UserEntity> userEntity = userDao.findById(entityObject.getCreatedBy());
+        // This line might change
+        if(userEntity.isPresent())
+            rv.setCreatedBy(userConverter.toBoundary(userEntity.get()));
+        else
+            throw new NotFoundException("Related user not found ("+ entityObject.getCreatedBy() +") in the given item");
+
         rv.setLocation((LocationBoundary) this.fromJsonToMap(entityObject.getLocation(), LocationBoundary.class));
         rv.setItemAttributes((Map<String, Object>) this.fromJsonToMap(entityObject.getItemAttributes(), Map.class));
 
