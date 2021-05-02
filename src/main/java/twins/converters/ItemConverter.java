@@ -26,6 +26,9 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
         this.userConverter = userConverter;
     }
 
+    @Autowired
+    public void setUserDao(UserDao userDao){this.userDao = userDao;}
+
     public ItemConverter() {
         this.jackson = new ObjectMapper();
     }
