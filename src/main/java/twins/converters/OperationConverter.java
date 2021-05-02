@@ -127,7 +127,7 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
      */
     public OperationIdBoundary convertStringKey(String operationIdString) {
         String[] idParts = operationIdString.split("&");
-        return new OperationIdBoundary(idParts[0], idParts[1]);
+        return new OperationIdBoundary(idParts[1], idParts[0]);
     }
 
     public String fromMapToJson(Map<String, Object> value) { // marshalling: Java->JSON
