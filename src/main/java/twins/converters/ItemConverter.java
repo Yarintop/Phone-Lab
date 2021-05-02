@@ -27,7 +27,9 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
     }
 
     @Autowired
-    public void setUserDao(UserDao userDao){this.userDao = userDao;}
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     public ItemConverter() {
         this.jackson = new ObjectMapper();
@@ -46,7 +48,8 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
         rv.setCreatedTimestamp(boundaryObject.getCreatedTimestamp());
 //        rv.setCreatedBy(userConverter.toEntity(boundaryObject.getCreatedBy()));
         rv.setCreatedBy(boundaryObject.getCreatedBy().getUserId().toString());
-        rv.setLocation(this.fromMapToJson(boundaryObject.getLocation()));
+        rv.setLongitude(boundaryObject.getLocation().getLng());
+        rv.setLatitude(boundaryObject.getLocation().getLat());
         rv.setItemAttributes(this.fromMapToJson(boundaryObject.getItemAttributes()));
 
         return rv;
@@ -65,12 +68,11 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
 
         Optional<UserEntity> userEntity = userDao.findById(entityObject.getCreatedBy());
         // This line might change
-        if(userEntity.isPresent())
+        if (userEntity.isPresent())
             rv.setCreatedBy(userConverter.toBoundary(userEntity.get()));
         else
-            throw new NotFoundException("Related user not found ("+ entityObject.getCreatedBy() +") in the given item");
-
-        rv.setLocation((LocationBoundary) this.fromJsonToMap(entityObject.getLocation(), LocationBoundary.class));
+            throw new NotFoundException("Related user not found (" + entityObject.getCreatedBy() + ") in the given item");
+        rv.setLocation(entityObject.getLatitude(), entityObject.getLongitude());
         rv.setItemAttributes((Map<String, Object>) this.fromJsonToMap(entityObject.getItemAttributes(), Map.class));
 
         return rv;

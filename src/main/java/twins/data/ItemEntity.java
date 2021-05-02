@@ -16,13 +16,29 @@ public class ItemEntity implements Entity {
     //    private UserIdBoundary createdBy = new UserIdBoundary(); // This line might change
 //    private UserEntity createdBy;
     private String createdBy;
-    private String location = "{}";
+    private double longitude;
+    private double latitude;
     private String itemAttributes = "{}";
 
     private Set<ItemEntity> children;
 
     private Set<ItemEntity> parents;
 
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
 
     public ItemEntity() {
         super();
@@ -83,15 +99,6 @@ public class ItemEntity implements Entity {
     }
 
     @Lob
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    @Lob
     public String getItemAttributes() {
         return itemAttributes;
     }
@@ -100,7 +107,7 @@ public class ItemEntity implements Entity {
         this.itemAttributes = itemAttributes;
     }
 
-    @ManyToMany()
+    @ManyToMany(fetch = FetchType.LAZY)
     public Set<ItemEntity> getChildren() {
         return children;
     }
@@ -109,7 +116,7 @@ public class ItemEntity implements Entity {
         this.children = children;
     }
 
-    @ManyToMany(mappedBy = "children")
+    @ManyToMany(mappedBy = "children",fetch = FetchType.LAZY)
     public Set<ItemEntity> getParents() {
         return parents;
     }
