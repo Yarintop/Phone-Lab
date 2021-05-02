@@ -60,7 +60,7 @@ public class OperationServiceJpa implements OperationsService {
             throw new BadRequestException("Invalid operation type! (" + operation.getType() + ")");
         OperationEntity entity = converter.toEntity(operation);
         if (checkUserAndItemMissing(entity))
-            throw new NotFoundException("Either the item or the user inside the operation not found!");
+            throw new NotFoundException("Either the item or the user inside the operation are not found!");
         entity.setOperationId(UUID.randomUUID().toString(), spaceId);
         entity.setCreatedTimestamp(new Date());
         operationsDao.save(entity);
