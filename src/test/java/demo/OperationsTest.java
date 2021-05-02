@@ -201,8 +201,8 @@ public class OperationsTest {
         // Assert that the core IDs are equal (except for timestamp & attributes)
         assertThat(savedOperation.getOperationId()).isEqualTo(operation.getOperationId().toString());
         assertThat(savedOperation.getOperationType()).isEqualTo(operation.getType());
-        assertThat(savedOperation.getInvokedBy().getUserId()).isEqualTo(operation.getInvokedBy().getUserId().toString());
-        assertThat(savedOperation.getItem().getItemId()).isEqualTo(operation.getItem().getItemId().toString());
+        assertThat(savedOperation.getInvokedBy()).isEqualTo(operation.getInvokedBy().getUserId().toString());
+        assertThat(savedOperation.getItem()).isEqualTo(operation.getItem().getItemId().toString());
         // Assert that attributes are equal
         assertThat(savedOperation.getOperationAttributes()).isEqualTo(operationConverter.fromMapToJson(
                 operation.getOperationAttributes()));

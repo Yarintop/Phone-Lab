@@ -14,7 +14,8 @@ public class ItemEntity implements Entity {
     private boolean active = false;
     private Date createdTimestamp = new Date();
     //    private UserIdBoundary createdBy = new UserIdBoundary(); // This line might change
-    private UserEntity createdBy;
+//    private UserEntity createdBy;
+    private String createdBy;
     private String location = "{}";
     private String itemAttributes = "{}";
 
@@ -72,12 +73,12 @@ public class ItemEntity implements Entity {
         this.createdTimestamp = createdTimestamp;
     }
 
-    @ManyToOne
-    public UserEntity getCreatedBy() {
+    @Lob
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(UserEntity createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 

@@ -8,9 +8,11 @@ import java.util.Date;
 public class OperationEntity implements Entity {
     private String operationId = "";
     private String operationType = "undefined";
-    private ItemEntity item;
+//    private ItemEntity item;
+    private String item;
     private Date createdTimestamp = new Date();
-    private UserEntity invokedBy;
+//    private UserEntity invokedBy;
+    private String invokedBy;
     private String operationAttributes;
 
     public OperationEntity() {
@@ -37,12 +39,12 @@ public class OperationEntity implements Entity {
         this.operationType = operationType;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    public ItemEntity getItem() {
+    @Lob
+    public String getItem() {
         return item;
     }
 
-    public void setItem(ItemEntity item) {
+    public void setItem(String item) {
         this.item = item;
     }
 
@@ -55,12 +57,12 @@ public class OperationEntity implements Entity {
         this.createdTimestamp = createdTimestamp;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    public UserEntity getInvokedBy() {
+    @Lob
+    public String getInvokedBy() {
         return invokedBy;
     }
 
-    public void setInvokedBy(UserEntity invokedBy) {
+    public void setInvokedBy(String invokedBy) {
         this.invokedBy = invokedBy;
     }
 
