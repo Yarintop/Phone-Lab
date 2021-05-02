@@ -101,10 +101,10 @@ public class ItemServiceJpa implements UpdatedItemsService {
     public DigitalItemBoundary updateItem(String userSpace, String userEmail, String itemSpace, String itemId,
                                           DigitalItemBoundary update) {
 
-        if(update.getName() == null || update.getName().length() == 0)
+        if(update.getName() != null && update.getName().length() == 0)
             throw new BadRequestException("Invalid item name! (" + update.getName() + ")");
 
-        if(update.getType() == null || update.getType().length() == 0)
+        if(update.getType() != null && update.getType().length() == 0)
             throw new BadRequestException("Invalid item type! (" + update.getType() + ")");
 
         String itemKey = this.entityConverter.toSecondaryId(itemSpace, itemId);
