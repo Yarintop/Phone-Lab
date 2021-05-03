@@ -1,4 +1,4 @@
-package demo;
+package twins;
 
 import twins.Application;
 import twins.boundaries.DigitalItemBoundary;
