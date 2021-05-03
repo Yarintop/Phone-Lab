@@ -13,6 +13,7 @@ import twins.dao.UserDao;
 import twins.data.OperationEntity;
 import twins.data.UserEntity;
 import twins.data.UserRole;
+import twins.exceptions.BadRequestException;
 import twins.exceptions.NoPermissionException;
 import twins.exceptions.NotFoundException;
 
@@ -55,9 +56,11 @@ public class OperationServiceJpa implements OperationsService {
     @Override
     @Transactional
     public Object invokeOperation(OperationBoundary operation) {
+        if (operation.getType() == null || operation.getType().length() == 0) //TODO: check from a given list also
+            throw new BadRequestException("Invalid operation type! (" + operation.getType() + ")");
         OperationEntity entity = converter.toEntity(operation);
         if (checkUserAndItemMissing(entity))
-            throw new NotFoundException("Either the item or the user inside the operation not found!");
+            throw new NotFoundException("Either the item or the user inside the operation are not found!");
         entity.setOperationId(UUID.randomUUID().toString(), spaceId);
         entity.setCreatedTimestamp(new Date());
         operationsDao.save(entity);
@@ -67,6 +70,9 @@ public class OperationServiceJpa implements OperationsService {
     @Override
     @Transactional
     public OperationBoundary invokeAsynchronous(OperationBoundary operation) {
+        if (operation.getType() == null || operation.getType().length() == 0) //TODO: check from a given list also
+            throw new BadRequestException("Invalid operation type! (" + operation.getType() + ")");
+
         OperationEntity entity = converter.toEntity(operation);
         if (checkUserAndItemMissing(entity))
             throw new NotFoundException("Either the item or the user inside the operation not found!");
@@ -103,6 +109,6 @@ public class OperationServiceJpa implements OperationsService {
         if (oe.getItem() == null || oe.getInvokedBy() == null) return true;
         String userKey = oe.getInvokedBy();
         String itemKey = oe.getItem();
-        return !usersDao.findById(userKey).isPresent() && itemsDao.findById(itemKey).isPresent();
+        return !(usersDao.findById(userKey).isPresent() && itemsDao.findById(itemKey).isPresent());
     }
 }

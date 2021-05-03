@@ -61,7 +61,8 @@ public class UsersServiceJpa implements UsersService {
 
         // If it doesn't changing it to 'Player' by default
         catch (IllegalArgumentException e) {
-            user.setRole("PLAYER");
+            throw new BadRequestException("Invalid role type! (" + user.getRole() + ")");
+//            user.setRole("PLAYER");
         }
 
         if (user.getAvatar() == null || user.getAvatar().isEmpty()) {
@@ -113,9 +114,13 @@ public class UsersServiceJpa implements UsersService {
         }
 
 
-        if (updateEntity.getRole() != null)
-            user.setRole(updateEntity.getRole());
-
+        if (updateEntity.getRole() != null) {
+            try {
+                user.setRole(updateEntity.getRole());
+            } catch (IllegalArgumentException e) {
+                throw new BadRequestException("Invalid role type! (" + updateEntity.getRole() + ")");
+            }
+        }
 
         if (updateEntity.getUsername() != null)
             user.setUsername(updateEntity.getUsername());

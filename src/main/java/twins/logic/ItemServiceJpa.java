@@ -25,6 +25,9 @@ public class ItemServiceJpa implements UpdatedItemsService {
     private ItemConverter entityConverter;
 
 
+    public ItemServiceJpa() {
+    }
+
     /**
      * Sets the spaceId value from the application.properties file
      *
@@ -33,9 +36,6 @@ public class ItemServiceJpa implements UpdatedItemsService {
     @Value("${spring.application.name:2021b.notdef}")
     public void setSpaceId(String spaceId) {
         this.spaceId = spaceId;
-    }
-
-    public ItemServiceJpa() {
     }
 
     @Autowired
@@ -57,6 +57,13 @@ public class ItemServiceJpa implements UpdatedItemsService {
     @Override
     @Transactional//(readOnly = false)
     public DigitalItemBoundary createItem(String userSpace, String userEmail, DigitalItemBoundary item) {
+
+        if(item.getName() == null || item.getName().length() == 0)
+            throw new BadRequestException("Invalid item name! (" + item.getName() + ")");
+
+        if(item.getType() == null || item.getType().length() == 0)
+            throw new BadRequestException("Invalid item type! (" + item.getType() + ")");
+
         userSpace = this.spaceId;
         String newId = UUID.randomUUID().toString();
 
@@ -77,10 +84,9 @@ public class ItemServiceJpa implements UpdatedItemsService {
         if (item.getName() == null)
             throw (new BadRequestException("Can't create an item without a name")); // Item must have a name
         if (item.getActive() == null)
-            item.setActive (false); // Set default active value to false
-        if(item.getItemAttributes() == null)
+            item.setActive(false); // Set default active value to false
+        if (item.getItemAttributes() == null)
             item.setItemAttributes(new HashMap<>()); // Set default item attributes to an empty map
-
 
 
         ItemEntity entity = this.entityConverter.toEntity(item);
@@ -94,6 +100,13 @@ public class ItemServiceJpa implements UpdatedItemsService {
     @Transactional//(readOnly = false)
     public DigitalItemBoundary updateItem(String userSpace, String userEmail, String itemSpace, String itemId,
                                           DigitalItemBoundary update) {
+
+        if(update.getName() != null && update.getName().length() == 0)
+            throw new BadRequestException("Invalid item name! (" + update.getName() + ")");
+
+        if(update.getType() != null && update.getType().length() == 0)
+            throw new BadRequestException("Invalid item type! (" + update.getType() + ")");
+
         String itemKey = this.entityConverter.toSecondaryId(itemSpace, itemId);
         Optional<ItemEntity> optionalItem = this.itemDao.findById(itemKey);
         // get existing message from mockup database
