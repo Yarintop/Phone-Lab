@@ -7,7 +7,6 @@ import javax.persistence.Table;
 @Table(name = "USERS")
 public class UserEntity implements Entity {
 
-    @Id
     private String userId;
     private String email;
     private UserRole role;
@@ -19,7 +18,7 @@ public class UserEntity implements Entity {
     public String getEmail() {
         return email;
     }
-
+    @Id
     public String getUserId() {
         return userId;
     }
