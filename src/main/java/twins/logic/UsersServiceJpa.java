@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import twins.boundaries.UserBoundary;
 import twins.converters.UserConverter;
 import twins.dao.UserDao;
+import twins.data.ErrorType;
 import twins.data.UserEntity;
 import twins.data.UserRole;
 import twins.exceptions.BadRequestException;
@@ -176,5 +177,14 @@ public class UsersServiceJpa implements UsersService {
         // Return found user's entity
         return optionalUser.get();
 
+    }
+
+    public ErrorType checkRoleUser(String space, String email, UserRole role) {
+        Optional<UserEntity> optionalUser = this.usersDao.findById(email + "&" + space);
+        if (!optionalUser.isPresent())
+            return ErrorType.USER_DOES_NOT_EXIST;
+        if (optionalUser.get().getRole() != role)
+            return ErrorType.BAD_USER_ROLE;
+        return ErrorType.GOOD;
     }
 }
