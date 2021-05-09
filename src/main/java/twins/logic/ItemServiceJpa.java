@@ -9,7 +9,6 @@ import twins.boundaries.ItemIdBoundary;
 import twins.boundaries.UserBoundary;
 import twins.converters.ItemConverter;
 import twins.dao.ItemDao;
-import twins.dao.UserDao;
 import twins.data.ErrorType;
 import twins.data.ItemEntity;
 import twins.data.UserRole;
@@ -23,7 +22,6 @@ import java.util.stream.StreamSupport;
 @Service
 public class ItemServiceJpa implements UpdatedItemsService {
     private ItemDao itemDao;
-    private UserDao userDao;
 
     private UserUtilsService userUtilsService;
 
@@ -45,9 +43,8 @@ public class ItemServiceJpa implements UpdatedItemsService {
     }
 
     @Autowired
-    public void setDAOs(ItemDao itemDao, UserDao userDao) {
+    public void setDAOs(ItemDao itemDao) {
         this.itemDao = itemDao;
-        this.userDao = userDao;
     }
 
     @Autowired
