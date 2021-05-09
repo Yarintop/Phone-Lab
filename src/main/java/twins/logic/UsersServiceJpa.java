@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
-public class UsersServiceJpa implements UsersService {
+public class UsersServiceJpa implements UsersService, UserUtilsService {
 
     private UserConverter converter;
     private UserDao usersDao; // Users data
@@ -179,6 +179,7 @@ public class UsersServiceJpa implements UsersService {
 
     }
 
+    @Override
     public ErrorType checkRoleUser(String space, String email, UserRole role) {
         Optional<UserEntity> optionalUser = this.usersDao.findById(email + "&" + space);
         if (!optionalUser.isPresent())

@@ -9,7 +9,10 @@ import twins.boundaries.ItemIdBoundary;
 import twins.boundaries.UserBoundary;
 import twins.converters.ItemConverter;
 import twins.dao.ItemDao;
+import twins.dao.UserDao;
+import twins.data.ErrorType;
 import twins.data.ItemEntity;
+import twins.data.UserRole;
 import twins.exceptions.BadRequestException;
 import twins.exceptions.NotFoundException;
 
@@ -20,7 +23,10 @@ import java.util.stream.StreamSupport;
 @Service
 public class ItemServiceJpa implements UpdatedItemsService {
     private ItemDao itemDao;
-    //private Map<String,ItemEntity> items;
+    private UserDao userDao;
+
+    private UserUtilsService userUtilsService;
+
     private String spaceId;
     private ItemConverter entityConverter;
 
@@ -39,8 +45,14 @@ public class ItemServiceJpa implements UpdatedItemsService {
     }
 
     @Autowired
-    public void setItemDao(ItemDao itemDao) {
+    public void setDAOs(ItemDao itemDao, UserDao userDao) {
         this.itemDao = itemDao;
+        this.userDao = userDao;
+    }
+
+    @Autowired
+    public void setServices(UserUtilsService userUtilsService) {
+        this.userUtilsService = userUtilsService;
     }
 
     /**
@@ -58,10 +70,10 @@ public class ItemServiceJpa implements UpdatedItemsService {
     @Transactional//(readOnly = false)
     public DigitalItemBoundary createItem(String userSpace, String userEmail, DigitalItemBoundary item) {
 
-        if(item.getName() == null || item.getName().length() == 0)
+        if (item.getName() == null || item.getName().length() == 0)
             throw new BadRequestException("Invalid item name! (" + item.getName() + ")");
 
-        if(item.getType() == null || item.getType().length() == 0)
+        if (item.getType() == null || item.getType().length() == 0)
             throw new BadRequestException("Invalid item type! (" + item.getType() + ")");
 
         userSpace = this.spaceId;
@@ -101,10 +113,10 @@ public class ItemServiceJpa implements UpdatedItemsService {
     public DigitalItemBoundary updateItem(String userSpace, String userEmail, String itemSpace, String itemId,
                                           DigitalItemBoundary update) {
 
-        if(update.getName() != null && update.getName().length() == 0)
+        if (update.getName() != null && update.getName().length() == 0)
             throw new BadRequestException("Invalid item name! (" + update.getName() + ")");
 
-        if(update.getType() != null && update.getType().length() == 0)
+        if (update.getType() != null && update.getType().length() == 0)
             throw new BadRequestException("Invalid item type! (" + update.getType() + ")");
 
         String itemKey = this.entityConverter.toSecondaryId(itemSpace, itemId);
@@ -164,6 +176,16 @@ public class ItemServiceJpa implements UpdatedItemsService {
     @Override
     @Transactional(readOnly = true)
     public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail) {
+
+        ErrorType managerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.MANAGER);
+        if (managerRoleCheck == ErrorType.USER_DOES_NOT_EXIST)
+            throw new NotFoundException("User " + userEmail + " with space ID: " + userSpace + " not found!");
+
+        ErrorType playerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.PLAYER);
+        if (playerRoleCheck != ErrorType.GOOD && managerRoleCheck != ErrorType.GOOD)
+            throw new NotFoundException("User " + userEmail + " with space ID: " + userSpace +
+                    " doesn't have permission for this action!");
+
         Iterable<ItemEntity> allEntities = this.itemDao.findAll();
         return StreamSupport
                 .stream(allEntities.spliterator(), false) // get stream from iterable
