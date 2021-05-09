@@ -118,6 +118,7 @@ public class OperationsTest {
         // and given that the user & item already in the DB
         OperationBoundary operation = dataGenerator.getRandomOperation(false);
         UserBoundary user = operation.getInvokedBy();
+        user.setRole("Player");
         DigitalItemBoundary item = operation.getItem();
         usersService.createUser(user);
         itemsService.createItem(user.getUserId().getSpace(), user.getUserId().getEmail(), item);
@@ -150,6 +151,7 @@ public class OperationsTest {
         // and given that the user & item already in the DB
         OperationBoundary operation = dataGenerator.getRandomOperation(false);
         UserBoundary user = operation.getInvokedBy();
+        user.setRole("Player");
         DigitalItemBoundary item = operation.getItem();
         usersService.createUser(user);
         itemsService.createItem(user.getUserId().getSpace(), user.getUserId().getEmail(), item);

@@ -10,6 +10,7 @@ import twins.converters.OperationConverter;
 import twins.dao.ItemDao;
 import twins.dao.OperationDao;
 import twins.dao.UserDao;
+import twins.data.ErrorType;
 import twins.data.OperationEntity;
 import twins.data.UserEntity;
 import twins.data.UserRole;
@@ -29,9 +30,12 @@ public class OperationServiceJpa implements OperationsService {
 
     private OperationDao operationsDao;
 
-    //DAOs for checking user & items are correct
+    // DAOs for checking user & items are correct
     private UserDao usersDao;
     private ItemDao itemsDao;
+
+    // User utils
+    private UserUtilsService userUtilsService;
 
     private OperationConverter converter;
     private String spaceId;
@@ -41,6 +45,11 @@ public class OperationServiceJpa implements OperationsService {
         this.operationsDao = operationsDao;
         this.usersDao = usersDao;
         this.itemsDao = itemsDao;
+    }
+
+    @Autowired
+    public void setServices(UserUtilsService userUtilsService) {
+        this.userUtilsService = userUtilsService;
     }
 
     @Autowired
@@ -56,11 +65,27 @@ public class OperationServiceJpa implements OperationsService {
     @Override
     @Transactional
     public Object invokeOperation(OperationBoundary operation) {
+        //TODO: fix the duplicated code, create a function
+        String userSpace = operation.getInvokedBy().getUserId().getSpace();
+        String userEmail = operation.getInvokedBy().getUserId().getEmail();
+
+        // Check Permission
+        ErrorType permissionStatus = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.PLAYER);
+        if (permissionStatus == ErrorType.USER_DOES_NOT_EXIST)
+            throw new NotFoundException("User " + userEmail + " with space ID: " + userSpace + " not found!");
+
+        if (permissionStatus == ErrorType.BAD_USER_ROLE)
+            throw new NoPermissionException("User " + userEmail + " with space ID: " + userSpace +
+                    " doesn't have permission for this action!");
+
+        // Check operation format
         if (operation.getType() == null || operation.getType().length() == 0) //TODO: check from a given list also
             throw new BadRequestException("Invalid operation type! (" + operation.getType() + ")");
+
         OperationEntity entity = converter.toEntity(operation);
-        if (checkUserAndItemMissing(entity))
-            throw new NotFoundException("Either the item or the user inside the operation are not found!");
+        if (checkItemMissing(entity))
+            throw new NotFoundException("The item inside the operation was not found!");
+
         entity.setOperationId(UUID.randomUUID().toString(), spaceId);
         entity.setCreatedTimestamp(new Date());
         operationsDao.save(entity);
@@ -70,12 +95,27 @@ public class OperationServiceJpa implements OperationsService {
     @Override
     @Transactional
     public OperationBoundary invokeAsynchronous(OperationBoundary operation) {
+        //TODO: fix the duplicated code, create a function
+        String userSpace = operation.getInvokedBy().getUserId().getSpace();
+        String userEmail = operation.getInvokedBy().getUserId().getEmail();
+
+        // Check Permission
+        ErrorType permissionStatus = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.PLAYER);
+        if (permissionStatus == ErrorType.USER_DOES_NOT_EXIST)
+            throw new NotFoundException("User " + userEmail + " with space ID: " + userSpace + " not found!");
+
+        if (permissionStatus == ErrorType.BAD_USER_ROLE)
+            throw new NoPermissionException("User " + userEmail + " with space ID: " + userSpace +
+                    " doesn't have permission for this action!");
+
+        // Check operation format
         if (operation.getType() == null || operation.getType().length() == 0) //TODO: check from a given list also
             throw new BadRequestException("Invalid operation type! (" + operation.getType() + ")");
 
         OperationEntity entity = converter.toEntity(operation);
-        if (checkUserAndItemMissing(entity))
-            throw new NotFoundException("Either the item or the user inside the operation not found!");
+        if (checkItemMissing(entity))
+            throw new NotFoundException("The item inside the operation was not found!");
+
         entity.setOperationId(UUID.randomUUID().toString(), spaceId);
         entity.setCreatedTimestamp(new Date());
         operationsDao.save(entity);
@@ -105,10 +145,9 @@ public class OperationServiceJpa implements OperationsService {
     }
 
     @Transactional(readOnly = true)
-    public boolean checkUserAndItemMissing(OperationEntity oe) {
-        if (oe.getItem() == null || oe.getInvokedBy() == null) return true;
-        String userKey = oe.getInvokedBy();
+    public boolean checkItemMissing(OperationEntity oe) {
+        if (oe.getItem() == null) return true;
         String itemKey = oe.getItem();
-        return !(usersDao.findById(userKey).isPresent() && itemsDao.findById(itemKey).isPresent());
+        return !itemsDao.findById(itemKey).isPresent();
     }
 }
