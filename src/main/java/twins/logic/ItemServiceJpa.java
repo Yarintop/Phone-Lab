@@ -13,6 +13,7 @@ import twins.data.ErrorType;
 import twins.data.ItemEntity;
 import twins.data.UserRole;
 import twins.exceptions.BadRequestException;
+import twins.exceptions.NoPermissionException;
 import twins.exceptions.NotFoundException;
 
 import java.util.*;
@@ -180,7 +181,7 @@ public class ItemServiceJpa implements UpdatedItemsService {
 
         ErrorType playerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.PLAYER);
         if (playerRoleCheck != ErrorType.GOOD && managerRoleCheck != ErrorType.GOOD)
-            throw new NotFoundException("User " + userEmail + " with space ID: " + userSpace +
+            throw new NoPermissionException("User " + userEmail + " with space ID: " + userSpace +
                     " doesn't have permission for this action!");
 
         Iterable<ItemEntity> allEntities = this.itemDao.findAll();
