@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_tool/Models/item.dart';
-
 import '../../MainProvider.dart';
 
 class ItemsView extends StatelessWidget {
   String _getItemDetails(Item item) {
     String itemName = item.name;
+    String itemType = item.type;
+    bool itemActive = item.active;
     String userEmail = item.user.email;
-    return userEmail + " | " + itemName;
+    return userEmail +
+        " | " +
+        itemName +
+        " | " +
+        itemType +
+        " | " +
+        itemActive.toString();
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:test_tool/Models/operation.dart';
 
 import '../../MainProvider.dart';
 
@@ -10,6 +11,7 @@ class OperationController extends StatefulWidget {
 class UserState extends State<OperationController> {
   String _selectedUser = "";
   String _selectedItem = "";
+  String _operationType = "";
 
   void _selectUser(String? email) {
     setState(() {
@@ -30,7 +32,17 @@ class UserState extends State<OperationController> {
   }
 
   void _addOperation(MainModel mainModel) {
-    //TODO: Add operation
+    int indexUser =
+        mainModel.users.indexWhere((element) => element.email == _selectedUser);
+    int indexItem = mainModel.items.indexWhere((element) =>
+        element.user.email == _selectedUser && element.name == _selectedItem);
+    if (indexItem == -1 || indexUser == -1) return;
+
+    Operation operation = new Operation();
+    operation.item = mainModel.items[indexItem];
+    operation.user = mainModel.users[indexUser];
+    operation.type = _operationType;
+    mainModel.addOperation(operation);
   }
 
   DropdownButton<String> getDropDownUsers(MainModel mainModel) {
@@ -90,7 +102,28 @@ class UserState extends State<OperationController> {
               Text("Item:"),
               Container(
                 margin: EdgeInsets.only(left: 16.0),
-                child: getDropDownUsers(mainModel),
+                child: getDropDownItems(mainModel),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      hintText: "Type",
+                      contentPadding: EdgeInsets.all(4.0)),
+                  onChanged: (type) => {
+                    setState(() {
+                      _operationType = type;
+                    })
+                  },
+                ),
+                width: 100,
               ),
             ],
           ),

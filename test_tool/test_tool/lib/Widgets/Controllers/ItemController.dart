@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:test_tool/Models/item.dart';
 
 import '../../MainProvider.dart';
 
@@ -28,7 +29,18 @@ class UserState extends State<ItemController> {
   }
 
   void _addItem(MainModel mainModel) {
-    //TODO: Add item
+    Item item = new Item();
+    item.name = _itemName;
+    item.type = _itemType;
+    item.active = _active;
+    item.lat = _lat;
+    item.lng = _lng;
+    int index =
+        mainModel.users.indexWhere((element) => element.email == _selectedUser);
+    if (index != -1) {
+      item.user = mainModel.users[index];
+      mainModel.addItem(item);
+    }
   }
 
   DropdownButton<String> getDropDownUsers(MainModel mainModel) {
@@ -165,7 +177,7 @@ class UserState extends State<ItemController> {
                 padding: EdgeInsets.all(4.0),
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(primary: Colors.red),
-                    onPressed: mainModel.removeAllOperations,
+                    onPressed: mainModel.removeAllItems,
                     child: Text("Remove All")),
               ),
             ],
