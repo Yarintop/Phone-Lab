@@ -11,7 +11,6 @@ import twins.converters.ItemConverter;
 import twins.dao.ItemDao;
 import twins.data.ErrorType;
 import twins.data.ItemEntity;
-import twins.data.UserEntity;
 import twins.data.UserRole;
 import twins.exceptions.BadRequestException;
 import twins.exceptions.NoPermissionException;
@@ -189,15 +188,14 @@ public class ItemServiceJpa implements UpdatedItemsService {
         if (playerRoleCheck != ErrorType.GOOD && managerRoleCheck != ErrorType.GOOD)
             throw new NoPermissionException("User " + userEmail + " with space ID: " + userSpace +
                     " doesn't have permission for this action!");
+        Iterable<ItemEntity> allEntities = this.itemDao.findAll();
         if (managerRoleCheck == ErrorType.GOOD) {
-            Iterable<ItemEntity> allEntities = this.itemDao.findAll();
             return StreamSupport
                     .stream(allEntities.spliterator(), false) // get stream from iterable
                     .map(this.entityConverter::toBoundary)
                     .collect(Collectors.toList());
         }
-        else if(playerRoleCheck == ErrorType.GOOD){
-            Iterable<ItemEntity> allEntities = this.itemDao.findAll();
+        else {
             List<DigitalItemBoundary> activeEntities = new ArrayList<>();
             for(DigitalItemBoundary dib:StreamSupport
                     .stream(allEntities.spliterator(), false) // get stream from iterable
@@ -208,8 +206,6 @@ public class ItemServiceJpa implements UpdatedItemsService {
             }
             return activeEntities;
         }
-        else
-            throw new NoPermissionException("User must be manager or player!");
     }
 
     @Override
