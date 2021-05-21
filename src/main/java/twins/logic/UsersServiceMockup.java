@@ -131,7 +131,7 @@ public class UsersServiceMockup { //implements UsersService {
             throw (new RuntimeException("Could not find user with the given email and space"));
 
         if (user.getRole() != UserRole.ADMIN)
-            throw (new RuntimeException("User doesn't have permissions"));
+            throw (new RuntimeException("User doesn't have the required permissions"));
 
 
         return users.values().stream().map(this.converter::toBoundary).collect(Collectors.toList());
@@ -148,7 +148,7 @@ public class UsersServiceMockup { //implements UsersService {
             throw (new RuntimeException("Could not find user with the given email and space"));
 
         if (user.getRole() != UserRole.ADMIN)
-            throw (new RuntimeException("User doesn't have permissions"));
+            throw (new RuntimeException("User doesn't have the required permissions"));
 
         this.users.clear();
     }

@@ -91,7 +91,7 @@ public class AdminTest {
     @AfterEach
     public void teardown() {
         System.err.println("After test..");
-        if (usersService.getAllUsers(spaceId, "admin@gmail.com").size() > 0) {
+        if (usersService.getAllUsers(spaceId, "admin@gmail.com", 20, 0).size() > 0) {
             operationsService.deleteAllOperations(spaceId, "admin@gmail.com");
             itemsService.deleteAllItems(spaceId, "admin@gmail.com");
             usersService.deleteAllUsers(spaceId, "admin@gmail.com");

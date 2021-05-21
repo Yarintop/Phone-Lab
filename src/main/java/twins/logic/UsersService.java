@@ -1,8 +1,8 @@
 package twins.logic;
 
-import twins.boundaries.UserBoundary;
-
 import java.util.List;
+
+import twins.boundaries.UserBoundary;
 
 public interface UsersService {
     public UserBoundary createUser(UserBoundary user);
@@ -11,7 +11,13 @@ public interface UsersService {
 
     public UserBoundary updateUser(String userSpace, String userEmail, UserBoundary update);
 
-    public List<UserBoundary> getAllUsers(String adminSpace, String adminEmail);
-
+    public List<UserBoundary> getAllUsers(String adminSpace, String adminEmail, int size, int page);
+    
     public void deleteAllUsers(String adminSpace, String adminEmail);
+
+    /* ####################################### */
+    /* ####################################### */
+
+    @Deprecated
+    public List<UserBoundary> getAllUsers(String adminSpace, String adminEmail);
 }

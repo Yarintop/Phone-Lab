@@ -18,6 +18,7 @@ public class UserEntity implements Entity {
     public String getEmail() {
         return email;
     }
+    
     @Id
     public String getUserId() {
         return userId;
