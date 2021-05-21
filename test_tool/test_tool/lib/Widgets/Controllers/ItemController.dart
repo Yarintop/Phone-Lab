@@ -17,7 +17,9 @@ class UserState extends State<ItemController> {
   bool _active = true;
   double? _lat;
   double? _lng;
-  HashMap? _attrs;
+  HashMap _attrs = new HashMap();
+  String _currentKey = "";
+  String _currentVal = "";
 
   void _selectUser(String? email) {
     setState(() {
@@ -35,6 +37,7 @@ class UserState extends State<ItemController> {
     item.active = _active;
     item.lat = _lat;
     item.lng = _lng;
+    item.attributes = _attrs;
     int index =
         mainModel.users.indexWhere((element) => element.email == _selectedUser);
     if (index != -1) {
@@ -164,7 +167,71 @@ class UserState extends State<ItemController> {
               ),
             ],
           ),
-          //TODO: Add attribute table/list
+          Text("Attributes:"),
+          Row(
+            // Operation Attributes
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      hintText: "key",
+                      contentPadding: EdgeInsets.all(4.0)),
+                  onChanged: (key) => {
+                    setState(() {
+                      _currentKey = key;
+                    })
+                  },
+                ),
+                width: 50,
+              ),
+              Container(
+                margin: EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      hintText: "value",
+                      contentPadding: EdgeInsets.all(4.0)),
+                  onChanged: (val) => {
+                    setState(() {
+                      _currentVal = val;
+                    })
+                  },
+                ),
+                width: 100,
+              ),
+              ElevatedButton(
+                  onPressed: () => {
+                        setState(() {
+                          _attrs[_currentKey] = _currentVal;
+                          _attrs = HashMap.from(_attrs);
+                        })
+                      },
+                  child: Text("+"))
+            ],
+          ),
+          ..._attrs.keys.map((e) => Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(e + ": " + _attrs[e]),
+                  MaterialButton(
+                    onPressed: () => {
+                      setState(() {
+                        _attrs.remove(e);
+                        _attrs = HashMap.from(_attrs);
+                      })
+                    },
+                    child: Text("-"),
+                    color: Colors.red,
+                    textColor: Colors.white,
+                    minWidth: 10,
+                  )
+                ],
+              )),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [

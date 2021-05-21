@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_tool/Models/operation.dart';
@@ -12,6 +14,9 @@ class UserState extends State<OperationController> {
   String _selectedUser = "";
   String _selectedItem = "";
   String _operationType = "";
+  String _currentKey = "";
+  String _currentVal = "";
+  HashMap _attrs = new HashMap();
 
   void _selectUser(String? email) {
     setState(() {
@@ -42,6 +47,7 @@ class UserState extends State<OperationController> {
     operation.item = mainModel.items[indexItem];
     operation.user = mainModel.users[indexUser];
     operation.type = _operationType;
+    operation.attributes = _attrs;
     mainModel.addOperation(operation);
   }
 
@@ -107,6 +113,7 @@ class UserState extends State<OperationController> {
             ],
           ),
           Row(
+            //Type input
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
@@ -127,7 +134,73 @@ class UserState extends State<OperationController> {
               ),
             ],
           ),
+          Text("Attributes:"),
           Row(
+            // Operation Attributes
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      hintText: "key",
+                      contentPadding: EdgeInsets.all(4.0)),
+                  onChanged: (key) => {
+                    setState(() {
+                      _currentKey = key;
+                    })
+                  },
+                ),
+                width: 50,
+              ),
+              Container(
+                margin: EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      hintText: "value",
+                      contentPadding: EdgeInsets.all(4.0)),
+                  onChanged: (val) => {
+                    setState(() {
+                      _currentVal = val;
+                    })
+                  },
+                ),
+                width: 100,
+              ),
+              ElevatedButton(
+                  onPressed: () => {
+                        setState(() {
+                          _attrs[_currentKey] = _currentVal;
+                          _attrs = HashMap.from(_attrs);
+                        })
+                      },
+                  child: Text("+"))
+            ],
+          ),
+          ..._attrs.keys.map((e) => Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(e + ": " + _attrs[e]),
+                  MaterialButton(
+                    onPressed: () => {
+                      setState(() {
+                        _attrs.remove(e);
+                        _attrs = HashMap.from(_attrs);
+                      })
+                    },
+                    child: Text("-"),
+                    color: Colors.red,
+                    textColor: Colors.white,
+                    minWidth: 10,
+                  )
+                ],
+              )),
+          Row(
+            // Add/Remove operation
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Container(
