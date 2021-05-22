@@ -43,8 +43,8 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
         rv.setItemId(this.convertMapKey(boundaryObject.getItemId()));
         rv.setType(boundaryObject.getType());
         rv.setName(boundaryObject.getName());
-        if (boundaryObject.getActive() != null)
-            rv.setActive(boundaryObject.getActive());
+        if (boundaryObject.isActive() != null)
+            rv.setActive(boundaryObject.isActive());
         rv.setCreatedTimestamp(boundaryObject.getCreatedTimestamp());
 //        rv.setCreatedBy(userConverter.toEntity(boundaryObject.getCreatedBy()));
         rv.setCreatedBy(boundaryObject.getCreatedBy().getUserId().toString());

@@ -2,6 +2,7 @@ package twins.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import twins.boundaries.OperationBoundary;
@@ -126,11 +127,27 @@ public class OperationServiceJpa implements OperationsService {
     @Transactional
     public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail) {
         Optional<UserEntity> userToCheck = usersDao.findById(new UserIdBoundary(adminSpace, adminEmail).toString());
-        if (userToCheck.isPresent() && userToCheck.get().getRole() == UserRole.ADMIN)
-            return StreamSupport.stream(operationsDao.findAll().spliterator(), false)
-                    .map(converter::toBoundary)
-                    .collect(Collectors.toList());
-        throw new NoPermissionException("User: " + adminEmail + " does not permitted to view all operations");
+        if (!userToCheck.isPresent() || userToCheck.get().getRole() != UserRole.ADMIN)
+            throw new NoPermissionException("User: " + adminEmail + " is not permitted to view all operations");
+        
+        return StreamSupport.stream(operationsDao.findAll().spliterator(), false)
+            .map(converter::toBoundary)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail, int size, int page) {
+        Optional<UserEntity> userToCheck = usersDao.findById(new UserIdBoundary(adminSpace, adminEmail).toString());
+        if (!userToCheck.isPresent() || userToCheck.get().getRole() != UserRole.ADMIN)
+            throw new NoPermissionException("User: " + adminEmail + " is not permitted to view all operations");
+
+        return operationsDao
+            .findAll(PageRequest.of(page, size))
+            .getContent()
+            .stream()
+            .map(this.converter::toBoundary)
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -140,8 +157,7 @@ public class OperationServiceJpa implements OperationsService {
         if (userToCheck.isPresent() && userToCheck.get().getRole() == UserRole.ADMIN)
             operationsDao.deleteAll();
         else
-            throw new NoPermissionException("User: " + adminEmail + " does not permitted to delete operations");
-
+            throw new NoPermissionException("User: " + adminEmail + " is not permitted to delete operations");
     }
 
     @Transactional(readOnly = true)

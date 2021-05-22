@@ -68,12 +68,15 @@ public class DigitalItemController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+
     public DigitalItemBoundary[] getAllItems(
             // public DigitalItemBoundary[] getAllItems(
             @PathVariable("userSpace") String userSpace,
-            @PathVariable("userEmail") String userEmail) {
+            @PathVariable("userEmail") String userEmail,
+            @RequestParam(name="size", required=false, defaultValue="20") int size,
+            @RequestParam(name="page", required=false, defaultValue="0") int page) {
         List<DigitalItemBoundary> allItems =
-                this.itemLogic.getAllItems(userSpace, userEmail);
+                this.itemLogic.getAllItems(userSpace, userEmail, size, page);
 
         return allItems.toArray(new DigitalItemBoundary[0]);
     }
@@ -103,7 +106,9 @@ public class DigitalItemController {
             @PathVariable("userSpace") String userSpace,
             @PathVariable("userEmail") String userEmail,
             @PathVariable("itemSpace") String itemSpace,
-            @PathVariable("itemId") String itemId) {
+            @PathVariable("itemId") String itemId,
+            @RequestParam(name="size", required=false, defaultValue="20") int size,
+            @RequestParam(name="page", required=false, defaultValue="0") int page) {
         List<DigitalItemBoundary> allChildren = this.itemLogic.getAllChildren(userSpace, userEmail, itemSpace, itemId);
         return allChildren.toArray(new DigitalItemBoundary[0]);
     }
@@ -117,7 +122,9 @@ public class DigitalItemController {
             @PathVariable("userSpace") String userSpace,
             @PathVariable("userEmail") String userEmail,
             @PathVariable("itemSpace") String itemSpace,
-            @PathVariable("itemId") String itemId) {
+            @PathVariable("itemId") String itemId,
+            @RequestParam(name="size", required=false, defaultValue="20") int size,
+            @RequestParam(name="page", required=false, defaultValue="0") int page) {
         List<DigitalItemBoundary> allItems =
                 this.itemLogic.getParents(userSpace, userEmail, itemSpace, itemId);
 

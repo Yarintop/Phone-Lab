@@ -1,6 +1,8 @@
 package twins.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import twins.boundaries.UserBoundary;
@@ -63,7 +65,7 @@ public class UsersServiceJpa implements UsersService, UserUtilsService {
         // If it doesn't changing it to 'Player' by default
         catch (IllegalArgumentException e) {
             throw new BadRequestException("Invalid role type! (" + user.getRole() + ")");
-//            user.setRole("PLAYER");
+        //    user.setRole("PLAYER");
         }
 
         if (user.getAvatar() == null || user.getAvatar().isEmpty()) {
@@ -78,7 +80,7 @@ public class UsersServiceJpa implements UsersService, UserUtilsService {
         UserEntity userEntity = this.converter.toEntity(user);
 
         // Generating key
-//        String key = userEntity.getSpace() + "&" + userEntity.getEmail();
+        // String key = userEntity.getSpace() + "&" + userEntity.getEmail();
         String key = userEntity.getUserId();
 
 
@@ -133,17 +135,34 @@ public class UsersServiceJpa implements UsersService, UserUtilsService {
 
     @Override
     @Transactional(readOnly = true)
+    @Deprecated
     public List<UserBoundary> getAllUsers(String adminSpace, String adminEmail) throws RuntimeException {
 
         // If the user is not an admin
         if (findUser(adminSpace, adminEmail).getRole() != UserRole.ADMIN)
-            throw (new NoPermissionException("User doesn't have permissions"));
+            throw (new NoPermissionException("User doesn't have the required permissions"));
 
         Iterable<UserEntity> allEntities = this.usersDao
                 .findAll();
 
         return StreamSupport
                 .stream(allEntities.spliterator(), false) // get stream from iterable
+                .map(this.converter::toBoundary)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserBoundary> getAllUsers(String adminSpace, String adminEmail, int size, int page) throws RuntimeException {
+
+        // If the user is not an admin
+        if (findUser(adminSpace, adminEmail).getRole() != UserRole.ADMIN)
+            throw (new NoPermissionException("User doesn't have the required permissions"));
+
+        return this.usersDao
+                .findAll(PageRequest.of(page, size))
+                .getContent()
+                .stream()
                 .map(this.converter::toBoundary)
                 .collect(Collectors.toList());
     }
@@ -157,7 +176,7 @@ public class UsersServiceJpa implements UsersService, UserUtilsService {
 
         // If the user is not an admin
         if (adminUser.getRole() != UserRole.ADMIN)
-            throw (new NoPermissionException("User doesn't have permissions"));
+            throw (new NoPermissionException("User doesn't have the required permissions"));
 
         // Deleting all the users from the users table
         this.usersDao.deleteAll();

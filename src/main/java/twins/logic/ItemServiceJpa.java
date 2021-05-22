@@ -2,6 +2,7 @@ package twins.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import twins.boundaries.DigitalItemBoundary;
@@ -93,7 +94,7 @@ public class ItemServiceJpa implements UpdatedItemsService {
             throw (new BadRequestException("Can't create an item without a type")); // Item must have a type
         if (item.getName() == null)
             throw (new BadRequestException("Can't create an item without a name")); // Item must have a name
-        if (item.getActive() == null)
+        if (item.isActive() == null)
             item.setActive(false); // Set default active value to false
         if (item.getItemAttributes() == null)
             item.setItemAttributes(new HashMap<>()); // Set default item attributes to an empty map
@@ -125,8 +126,8 @@ public class ItemServiceJpa implements UpdatedItemsService {
             boolean dirty = false;
 
             // update collection and return update
-            if (update.getActive() != null) {
-                existing.setActive(update.getActive());
+            if (update.isActive() != null) {
+                existing.setActive(update.isActive());
                 dirty = true;
             }
 
@@ -168,9 +169,6 @@ public class ItemServiceJpa implements UpdatedItemsService {
         }
     }
 
-    /**
-     * Get all items created by UserId= {email: userEmail, space: userSpace}
-     */
     @Override
     @Transactional(readOnly = true)
     public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail) {
@@ -193,6 +191,35 @@ public class ItemServiceJpa implements UpdatedItemsService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail, int size, int page) {
+
+        ErrorType managerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.MANAGER);
+        if (managerRoleCheck == ErrorType.USER_DOES_NOT_EXIST)
+            throw new NotFoundException("User " + userEmail + " with space ID: " + userSpace + " not found!");
+
+        ErrorType playerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.PLAYER);
+        if (playerRoleCheck != ErrorType.GOOD && managerRoleCheck != ErrorType.GOOD)
+            throw new NoPermissionException("User " + userEmail + " with space ID: " + userSpace +
+                    " doesn't have permission for this action!");
+
+        if(managerRoleCheck == ErrorType.GOOD) // User role is manager
+            return this.itemDao
+                    .findAll(PageRequest.of(page, size))
+                    .getContent()
+                    .stream()
+                    .map(this.entityConverter::toBoundary)
+                    .collect(Collectors.toList());
+        else // User role is Player
+            return this.itemDao
+                    .findAllByActiveTrue(PageRequest.of(page, size)) // Find all items where active=true
+                    .getContent()
+                    .stream()
+                    .map(this.entityConverter::toBoundary)
+                    .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public DigitalItemBoundary getSpecificItem(String userSpace, String userEmail, String itemSpace, String itemId) {
         // MOCKUP
         String itemKey = this.entityConverter.toSecondaryId(itemSpace, itemId);
@@ -201,7 +228,8 @@ public class ItemServiceJpa implements UpdatedItemsService {
         if (optionalItem.isPresent()) {
             ItemEntity entity = optionalItem.get();
             return entityConverter.toBoundary(entity);
-        } else {
+        } 
+        else {
             // TODO have server return status 404 here
             throw new NotFoundException("could not find message by id: " + itemKey);// NullPointerException
         }
@@ -234,21 +262,63 @@ public class ItemServiceJpa implements UpdatedItemsService {
     @Override
     @Transactional(readOnly = true)
     public List<DigitalItemBoundary> getAllChildren(String userSpace, String userEmail, String itemSpace, String itemId) {
+        ErrorType managerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.MANAGER);
+        if (managerRoleCheck == ErrorType.USER_DOES_NOT_EXIST)
+            throw new NotFoundException("User " + userEmail + " with space ID: " + userSpace + " not found!");
+
+        ErrorType playerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.PLAYER);
+        if (playerRoleCheck != ErrorType.GOOD && managerRoleCheck != ErrorType.GOOD)
+            throw new NoPermissionException("User " + userEmail + " with space ID: " + userSpace +
+                    " doesn't have permission for this action!");
+
+
         String parentId = this.entityConverter.toSecondaryId(itemSpace, itemId);
         ItemEntity parentItem = this.itemDao.findById(parentId)
                 .orElseThrow(() -> new NotFoundException("Item with ID:" + parentId + "not found"));
 
-        return parentItem.getChildren().stream().map(entityConverter::toBoundary).collect(Collectors.toList());
+                if (managerRoleCheck == ErrorType.GOOD) // User role is Manager
+                return parentItem
+                        .getChildren()
+                        .stream()
+                        .map(this.entityConverter::toBoundary)
+                        .collect(Collectors.toList());
+            else // User role is Player
+                return parentItem
+                        .getChildren()
+                        .stream()
+                        .filter( e -> e.isActive() )
+                        .map(this.entityConverter::toBoundary)
+                        .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<DigitalItemBoundary> getParents(String userSpace, String userEmail, String itemSpace, String itemId) {
-        String itemKey = this.entityConverter.toSecondaryId(itemSpace, itemId);
+        ErrorType managerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.MANAGER);
+        if (managerRoleCheck == ErrorType.USER_DOES_NOT_EXIST)
+            throw new NotFoundException("User " + userEmail + " with space ID: " + userSpace + " not found!");
 
+        ErrorType playerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.PLAYER);
+        if (playerRoleCheck != ErrorType.GOOD && managerRoleCheck != ErrorType.GOOD)
+            throw new NoPermissionException("User " + userEmail + " with space ID: " + userSpace +
+                    " doesn't have permission for this action!");
+                    
+        String itemKey = this.entityConverter.toSecondaryId(itemSpace, itemId);
         ItemEntity item = this.itemDao.findById(itemKey)
                 .orElseThrow(() -> new NotFoundException("Item with ID:" + itemKey + "not found"));
 
-        return item.getParents().stream().map(this.entityConverter::toBoundary).collect(Collectors.toList());
+        if (managerRoleCheck == ErrorType.GOOD) // User role is Manager
+            return item
+                    .getParents()
+                    .stream()
+                    .map(this.entityConverter::toBoundary)
+                    .collect(Collectors.toList());
+        else // User role is Player
+            return item
+                    .getParents()
+                    .stream()
+                    .filter( e -> e.isActive() )
+                    .map(this.entityConverter::toBoundary)
+                    .collect(Collectors.toList());
     }
 }

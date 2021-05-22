@@ -43,8 +43,14 @@ public class AdminController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public UserBoundary[] exportAllUsers(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail) {
-        return usersService.getAllUsers(id, userEmail).toArray(new UserBoundary[0]);
+    public UserBoundary[] exportAllUsers(
+            @PathVariable("userSpace") String id,
+            @PathVariable("userEmail") String userEmail,
+            @RequestParam(name="size", required=false, defaultValue="20") int size,
+            @RequestParam(name="page", required=false, defaultValue="0") int page) {
+        return usersService
+                .getAllUsers(id, userEmail, size, page)
+                .toArray(new UserBoundary[0]);
     }
 
     /**
@@ -59,8 +65,14 @@ public class AdminController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public OperationBoundary[] exportAllOperations(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail) {
-        return operationsService.getAllOperations(id, userEmail).toArray(new OperationBoundary[0]);
+    public OperationBoundary[] exportAllOperations(
+            @PathVariable("userSpace") String id,
+            @PathVariable("userEmail") String userEmail,
+            @RequestParam(name="size", required=false, defaultValue="20") int size,
+            @RequestParam(name="page", required=false, defaultValue="0") int page) {
+        return operationsService
+                .getAllOperations(id, userEmail, size, page)
+                .toArray(new OperationBoundary[0]);
     }
 
     /**
