@@ -8,6 +8,7 @@ import twins.boundaries.NewUserDetails;
 import twins.boundaries.UserBoundary;
 import twins.logic.UsersService;
 
+@CrossOrigin //Because we don't value security, everyone is welcomed
 @RestController
 public class UserController {
 

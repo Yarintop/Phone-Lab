@@ -2,17 +2,14 @@ package twins.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import twins.boundaries.OperationBoundary;
 import twins.boundaries.UserBoundary;
 import twins.logic.ItemsService;
 import twins.logic.OperationsService;
 import twins.logic.UsersService;
 
+@CrossOrigin //Because we don't value security, everyone is welcomed
 @RestController
 public class AdminController {
 

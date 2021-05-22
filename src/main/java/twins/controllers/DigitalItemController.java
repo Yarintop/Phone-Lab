@@ -9,6 +9,7 @@ import twins.logic.UpdatedItemsService;
 
 import java.util.List;
 
+@CrossOrigin //Because we don't value security, everyone is welcomed
 @RestController
 public class DigitalItemController {
     private UpdatedItemsService itemLogic;
