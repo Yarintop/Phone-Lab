@@ -55,7 +55,7 @@ class UserState extends State<ItemController> {
 
     return DropdownButton<String>(
         onChanged: _selectUser,
-        value: mainModel.users[0].email,
+        value: _selectedUser == "" ? mainModel.users[0].email : _selectedUser,
         items: mainModel.users
             .map((user) => DropdownMenuItem(
                   value: user.email,
@@ -159,7 +159,7 @@ class UserState extends State<ItemController> {
                       contentPadding: EdgeInsets.all(4.0)),
                   onChanged: (lng) => {
                     setState(() {
-                      _lat = double.tryParse(lng);
+                      _lng = double.tryParse(lng);
                     })
                   },
                 ),
@@ -169,7 +169,7 @@ class UserState extends State<ItemController> {
           ),
           Text("Attributes:"),
           Row(
-            // Operation Attributes
+            // Item Attributes
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
@@ -208,7 +208,6 @@ class UserState extends State<ItemController> {
                   onPressed: () => {
                         setState(() {
                           _attrs[_currentKey] = _currentVal;
-                          _attrs = HashMap.from(_attrs);
                         })
                       },
                   child: Text("+"))

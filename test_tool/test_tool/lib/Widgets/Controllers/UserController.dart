@@ -9,39 +9,35 @@ class UserController extends StatefulWidget {
 }
 
 class UserState extends State<UserController> {
-  String inputText = "";
-  String emailText = "";
-  String selectedRole = "Player";
-  void _updateText(String newText) {
-    inputText = newText;
-  }
-
-  void _updateEmail(String newText) {
-    emailText = newText;
-  }
+  String _username = "";
+  String _email = "";
+  String _selectedRole = "Player";
+  String _avatar = "";
 
   void _addUser(MainModel mainModel) {
     User user = new User();
-    user.name = inputText;
-    user.email = emailText;
-    user.role = selectedRole;
+    user.name = _username;
+    user.email = _email;
+    user.role = _selectedRole;
+    user.avatar = _avatar;
     mainModel.addUser(user);
   }
 
   void _selectRole(String? role) {
     setState(() {
       if (role == null)
-        selectedRole = "Player";
+        _selectedRole = "Player";
       else
-        selectedRole = role;
+        _selectedRole = role;
     });
   }
 
   DropdownButton getDropDownButton() {
     return DropdownButton<String>(
-        value: selectedRole,
-        icon: const Icon(Icons.arrow_downward_rounded),
+        value: _selectedRole,
         onChanged: _selectRole,
+
+        // focusNode: _secondNode,
         items: ["Player", "Manager", "Admin"]
             .map((e) => DropdownMenuItem(
                   child: Text(e),
@@ -66,7 +62,7 @@ class UserState extends State<UserController> {
                       filled: true,
                       hintText: "Username",
                       contentPadding: EdgeInsets.all(4.0)),
-                  onChanged: _updateText,
+                  onChanged: (username) => {_username = username},
                 ),
                 width: 100,
               ),
@@ -84,7 +80,20 @@ class UserState extends State<UserController> {
                   filled: true,
                   hintText: "Email",
                   contentPadding: EdgeInsets.all(4.0)),
-              onChanged: _updateEmail,
+              onChanged: (email) => {_email = email},
+            ),
+            width: 200,
+          ),
+          Container(
+            margin: EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                  fillColor: Colors.white,
+                  filled: true,
+                  hintText: "Avatar",
+                  contentPadding: EdgeInsets.all(4.0)),
+              onChanged: (txt) => {_avatar = txt},
+              onEditingComplete: () => _addUser(mainModel),
             ),
             width: 200,
           ),

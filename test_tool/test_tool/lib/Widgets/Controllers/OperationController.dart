@@ -37,10 +37,14 @@ class UserState extends State<OperationController> {
   }
 
   void _addOperation(MainModel mainModel) {
+    _selectedUser =
+        _selectedUser == "" ? mainModel.users[0].email : _selectedUser;
+    _selectedItem =
+        _selectedItem == "" ? mainModel.items[0].name : _selectedItem;
     int indexUser =
         mainModel.users.indexWhere((element) => element.email == _selectedUser);
-    int indexItem = mainModel.items.indexWhere((element) =>
-        element.user.email == _selectedUser && element.name == _selectedItem);
+    int indexItem =
+        mainModel.items.indexWhere((element) => element.name == _selectedItem);
     if (indexItem == -1 || indexUser == -1) return;
 
     Operation operation = new Operation();
@@ -60,7 +64,7 @@ class UserState extends State<OperationController> {
 
     return DropdownButton<String>(
         onChanged: _selectUser,
-        value: mainModel.users[0].email,
+        value: _selectedUser == "" ? mainModel.users[0].email : _selectedUser,
         items: mainModel.users
             .map((user) => DropdownMenuItem(
                   value: user.email,
@@ -78,7 +82,7 @@ class UserState extends State<OperationController> {
 
     return DropdownButton<String>(
         onChanged: _selectItem,
-        value: mainModel.items[0].name,
+        value: _selectedItem == "" ? mainModel.items[0].name : _selectedItem,
         items: mainModel.items
             .map((item) => DropdownMenuItem(
                   value: item.name,
@@ -181,15 +185,14 @@ class UserState extends State<OperationController> {
                   child: Text("+"))
             ],
           ),
-          ..._attrs.keys.map((e) => Row(
+          ..._attrs.keys.map((key) => Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(e + ": " + _attrs[e]),
+                  Text(key + ": " + _attrs[key]),
                   MaterialButton(
                     onPressed: () => {
                       setState(() {
-                        _attrs.remove(e);
-                        _attrs = HashMap.from(_attrs);
+                        _attrs.remove(key);
                       })
                     },
                     child: Text("-"),
