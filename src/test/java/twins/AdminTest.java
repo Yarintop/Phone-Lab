@@ -85,6 +85,10 @@ public class AdminTest {
         user.setEmail("admin@gmail.com");
         usersService.createUser(user);
 
+        user = dataGenerator.getRandomUser();
+        user.setRole("Manager");
+        user.setEmail("manager@gmail.com");
+        usersService.createUser(user);
     }
 
 
@@ -286,7 +290,7 @@ public class AdminTest {
         // THEN delete all items
 
         String space = this.spaceId;
-        String email = "admin@gmail.com";
+        String email = "manager@gmail.com";
         String theUrl = this.baseUrl + "admin/items/" + space + "/" + email;
         String itemUrl = this.baseUrl + "items/" + this.spaceId + "/" + email;
 

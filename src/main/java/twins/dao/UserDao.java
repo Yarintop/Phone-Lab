@@ -10,9 +10,9 @@ import twins.data.UserEntity;
 
 public interface UserDao extends PagingAndSortingRepository<UserEntity, String> {
     
-    public List<UserEntity> findByUserId(
-        @Param("userId") String userSpace,
-        Pageable pageable
-    );
+    // public List<UserEntity> findByUserId(
+    //     @Param("userId") String userSpace,
+    //     Pageable pageable
+    // );
 
 }

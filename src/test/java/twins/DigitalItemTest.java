@@ -168,8 +168,8 @@ public class DigitalItemTest {
                 .isEqualTo(originalItem.getType());
 
         // Make sure active value is same as was given
-        assertThat(resultItem.getActive())
-                .isEqualTo(originalItem.getActive());
+        assertThat(resultItem.isActive())
+                .isEqualTo(originalItem.isActive());
 
         // Must have userId map that is not null and have the keys email and space with correct values
         assertThat(resultItem.getCreatedBy()).isNotNull();

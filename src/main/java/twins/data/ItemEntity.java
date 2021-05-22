@@ -13,16 +13,14 @@ public class ItemEntity implements Entity {
     private String name = "no name yet";
     private boolean active = false;
     private Date createdTimestamp = new Date();
-    //    private UserIdBoundary createdBy = new UserIdBoundary(); // This line might change
-//    private UserEntity createdBy;
     private String createdBy;
     private double longitude;
     private double latitude;
     private String itemAttributes = "{}";
-
     private Set<ItemEntity> children;
-
     private Set<ItemEntity> parents;
+    //  private UserIdBoundary createdBy = new UserIdBoundary(); // This line might change
+    //  private UserEntity createdBy;
 
     public double getLongitude() {
         return longitude;
@@ -107,7 +105,7 @@ public class ItemEntity implements Entity {
         this.itemAttributes = itemAttributes;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch=FetchType.LAZY)
     public Set<ItemEntity> getChildren() {
         return children;
     }
@@ -116,7 +114,7 @@ public class ItemEntity implements Entity {
         this.children = children;
     }
 
-    @ManyToMany(mappedBy = "children",fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy="children", fetch=FetchType.LAZY)
     public Set<ItemEntity> getParents() {
         return parents;
     }

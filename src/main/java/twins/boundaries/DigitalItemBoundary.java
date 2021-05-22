@@ -96,7 +96,7 @@ public class DigitalItemBoundary implements Boundary {
         this.name = name;
     }
 
-    public Boolean getActive() {
+    public Boolean isActive() {
         return active;
     }
 
