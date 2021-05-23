@@ -9,7 +9,7 @@ import java.util.Date;
 //@javax.persistence.Entity
 //@Document
 //@Table(name = "OPERATIONS")
-@Document(collation = "Operations")
+@Document(collection="Operations")
 
 public class OperationEntity implements Entity {
     private String id = "";

@@ -10,7 +10,7 @@ import java.util.Set;
 
 //@javax.persistence.Entity
 //@Table(name = "ITEMS")
-@Document(collation = "Items")
+@Document(collection="Items")
 public class ItemEntity implements Entity {
     private String id = ""; // This line might change
     private String type = "no type";

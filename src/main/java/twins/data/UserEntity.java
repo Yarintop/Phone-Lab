@@ -9,7 +9,7 @@ import javax.persistence.Table;
 //@javax.persistence.Entity
 //@Document
 //@Table(name = "USERS")
-@Document(collation = "Users")
+@Document(collection="Users")
 public class UserEntity implements Entity {
 
     private String id;

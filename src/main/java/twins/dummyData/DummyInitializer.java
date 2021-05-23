@@ -67,13 +67,13 @@ public class DummyInitializer implements CommandLineRunner{
         }
 
         // Create 10 operations 
-        for(int i = 0; i < 10; i++){
-            DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
-            randomItem.setActive(i % 2 == 0);
-            randomItem = this.items.createItem(space, email, randomItem);
-            randomItem.getItemId().getSpace();
-            this.items.bindChild(space, email, randomItem.getItemId().getSpace(), randomItem.getItemId().getId(), specialItem.getItemId());
-            this.items.bindChild(space, email, specialItem.getItemId().getSpace(), specialItem.getItemId().getId(), randomItem.getItemId());
-        }
+//        for(int i = 0; i < 10; i++){
+//            DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
+//            randomItem.setActive(i % 2 == 0);
+//            randomItem = this.items.createItem(space, email, randomItem);
+//            randomItem.getItemId().getSpace();
+//            this.items.bindChild(space, email, randomItem.getItemId().getSpace(), randomItem.getItemId().getId(), specialItem.getItemId());
+//            this.items.bindChild(space, email, specialItem.getItemId().getSpace(), specialItem.getItemId().getId(), randomItem.getItemId());
+//        }
 	}
 }
