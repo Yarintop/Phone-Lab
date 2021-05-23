@@ -197,7 +197,7 @@ public class ItemServiceJpa implements UpdatedItemsService {
                     .stream(allEntities.spliterator(), false) // get stream from iterable
                     .map(this.entityConverter::toBoundary)
                     .collect(Collectors.toList())) {
-                if (dib.getActive())
+                if (dib.isActive())
                     activeEntities.add(dib);
             }
             return activeEntities;
