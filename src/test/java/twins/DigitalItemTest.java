@@ -84,6 +84,7 @@ public class DigitalItemTest {
         // init operations before each test
         System.err.println("init before test..");
         this.usersService.createUser(new UserBoundary(UserRole.ADMIN.toString(), "tests", "yup", "lol@gmail.com", spaceId));
+        this.usersService.createUser(new UserBoundary(UserRole.MANAGER.toString(), "managerTest", "yup", "manager@gmail.com", spaceId));
     }
 
 
@@ -114,10 +115,8 @@ public class DigitalItemTest {
 
         Map<String, Object> emptyItem = new HashMap<>();
 
-        Assertions.assertThrows(HttpClientErrorException.BadRequest.class, () ->{
-            this.restTemplate
-                    .postForObject(theUrl, emptyItem, DigitalItemBoundary.class);
-        });
+        Assertions.assertThrows(HttpClientErrorException.BadRequest.class, () -> this.restTemplate
+                .postForObject(theUrl, emptyItem, DigitalItemBoundary.class));
         // THEN the server creates a default value and stores it in the database
     }
 
@@ -283,7 +282,7 @@ public class DigitalItemTest {
         // WHEN I GET all using /twins/items/{userSpace}/{userEmail}
 
         String space = this.spaceId;
-        String email = "lol@gmail.com";
+        String email = "manager@gmail.com";
         String theUrl = this.baseUrl + space + "/" + email;
 
         // ObjectMapper mapper = new ObjectMapper();
