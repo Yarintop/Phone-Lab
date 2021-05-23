@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import twins.boundaries.DigitalItemBoundary;
 import twins.boundaries.ItemIdBoundary;
-import twins.boundaries.LocationBoundary;
 import twins.dao.UserDao;
 import twins.data.ItemEntity;
 import twins.data.UserEntity;
@@ -40,7 +39,7 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
     public ItemEntity toEntity(DigitalItemBoundary boundaryObject) {
         ItemEntity rv = new ItemEntity();
 
-        rv.setItemId(this.convertMapKey(boundaryObject.getItemId()));
+        rv.setId(this.convertMapKey(boundaryObject.getItemId()));
         rv.setType(boundaryObject.getType());
         rv.setName(boundaryObject.getName());
         if (boundaryObject.isActive() != null)
@@ -58,8 +57,8 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
     @Override
     public DigitalItemBoundary toBoundary(ItemEntity entityObject) {
         DigitalItemBoundary rv = new DigitalItemBoundary();
-
-        rv.setItemId(this.convertStringKey(entityObject.getItemId()));
+        System.err.println(entityObject);
+        rv.setItemId(this.convertStringKey(entityObject.getId()));
         rv.setType(entityObject.getType());
         rv.setName(entityObject.getName());
         rv.setActive(entityObject.isActive());
