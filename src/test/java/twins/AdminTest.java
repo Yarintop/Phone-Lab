@@ -124,7 +124,7 @@ public class AdminTest {
         DigitalItemBoundary item = operation.getItem();
         invokedBy.setRole("Player"); // Invoking user must be a player
         usersService.createUser(invokedBy);
-        itemsService.createItem(invokedBy.getUserId().getSpace(), invokedBy.getUserId().getEmail(), item);
+        itemsService.createItem(invokedBy.getUserId().getSpace(), "manager@gmail.com", item);
         // First check that currently operations are empty
 
         OperationBoundary[] response = this.restTemplate
@@ -211,7 +211,7 @@ public class AdminTest {
             invokedBy.setRole("Player"); // Invoking user must be a player
             DigitalItemBoundary item = operation.getItem();
             usersService.createUser(invokedBy);
-            itemsService.createItem(invokedBy.getUserId().getSpace(), invokedBy.getUserId().getEmail(), item);
+            itemsService.createItem(invokedBy.getUserId().getSpace(), "manager@gmail.com", item);
 
             restTemplate.postForEntity(baseUrl + "operations", operation, OperationBoundary.class);
             restTemplate.postForEntity(baseUrl + "operations/async", operation, OperationBoundary.class);

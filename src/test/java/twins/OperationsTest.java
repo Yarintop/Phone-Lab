@@ -42,6 +42,7 @@ public class OperationsTest {
     private OperationDao operationDao;
 
     private OperationConverter operationConverter;
+    private UserBoundary managerUser;
 
 
     /**
@@ -85,15 +86,22 @@ public class OperationsTest {
     public void init() {
         this.restTemplate = new RestTemplate();
         this.baseUrl = "http://localhost:" + this.port + "/twins/operations/";
+
         this.testUser = dataGenerator.getRandomUser();
         this.testUser.setEmail("admin@admin.com");
         this.testUser.setRole("Admin");
+
+        this.managerUser = dataGenerator.getRandomUser();
+        this.managerUser.setRole("Manager");
+        this.managerUser.setEmail("manager@gmail.com");
 
     }
 
     @BeforeEach
     public void setup() {
         usersService.createUser(testUser);
+        usersService.createUser(managerUser);
+
     }
 
 
@@ -120,7 +128,7 @@ public class OperationsTest {
         user.setRole("Player");
         DigitalItemBoundary item = operation.getItem();
         usersService.createUser(user);
-        itemsService.createItem(user.getUserId().getSpace(), user.getUserId().getEmail(), item);
+        itemsService.createItem(user.getUserId().getSpace(), "manager@gmail.com", item);
 
 
         // WHEN I POST using /twins/operations with an operation
@@ -153,7 +161,7 @@ public class OperationsTest {
         user.setRole("Player");
         DigitalItemBoundary item = operation.getItem();
         usersService.createUser(user);
-        itemsService.createItem(user.getUserId().getSpace(), user.getUserId().getEmail(), item);
+        itemsService.createItem(user.getUserId().getSpace(), "manager@gmail.com", item);
 
         // WHEN I POST using /twins/operations with an operation
 
@@ -188,7 +196,7 @@ public class OperationsTest {
         UserBoundary user = operation.getInvokedBy();
         DigitalItemBoundary item = operation.getItem();
         usersService.createUser(user);
-        itemsService.createItem(user.getUserId().getSpace(), user.getUserId().getEmail(), item);
+        itemsService.createItem(user.getUserId().getSpace(), "manager@gmail.com", item);
 
         //WHEN we save the boundary to the DB
         operationDao.save(operationConverter.toEntity(operation));

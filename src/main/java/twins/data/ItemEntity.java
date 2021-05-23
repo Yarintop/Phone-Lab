@@ -120,7 +120,7 @@ public class ItemEntity implements Entity {
         return parents;
     }
 
-    public void setParents(Set<ItemEntity> parents) {
+    public void setAllParents(Set<ItemEntity> parents) {
         this.parents = parents;
     }
 

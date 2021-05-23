@@ -109,7 +109,7 @@ public class DigitalItemTest {
 
         // WHEN I POST using /twins/items/{userSpace}/{userEmail} with {}
         String space = this.spaceId;
-        String email = "lol@gmail.com";
+        String email = "manager@gmail.com";
         String theUrl = this.baseUrl + space + "/" + email;
 
 
@@ -133,7 +133,7 @@ public class DigitalItemTest {
 
         // WHEN I POST using /twins/items/{userSpace}/{userEmail} with a specific JSON
         String space = this.spaceId;
-        String email = "lol@gmail.com";
+        String email = "manager@gmail.com";
         String theUrl = this.baseUrl + space + "/" + email;
         // ObjectMapper mapper = new ObjectMapper();
         DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
@@ -194,7 +194,7 @@ public class DigitalItemTest {
 
         // WHEN I GET using /twins/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}
         String space = this.spaceId;
-        String email = "lol@gmail.com";
+        String email = "manager@gmail.com";
         String theUrl = this.baseUrl + space + "/" + email;
         // ObjectMapper mapper = new ObjectMapper();
         DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
@@ -237,7 +237,7 @@ public class DigitalItemTest {
 
         // WHEN I PUT using /twins/items/{userSpace}/{userEmail}/{itemSpace}/{itemId}
         String space = this.spaceId;
-        String email = "lol@gmail.com";
+        String email = "manager@gmail.com";
         String theUrl = this.baseUrl + space + "/" + email;
         DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
 

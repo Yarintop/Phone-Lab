@@ -10,9 +10,9 @@ import twins.data.ItemEntity;
 public interface ItemDao extends MongoRepository<ItemEntity, String> {
     
     public Page<ItemEntity> findAllByActiveTrue(Pageable pageable);
-    public Page<ItemEntity> findAllByActiveTrueAndParents_itemId(String parentId, Pageable pageable);
-    public Page<ItemEntity> findAllByParents_itemId(String parentId, Pageable pageable);
-    public Page<ItemEntity> findAllByActiveTrueAndChildren_itemId(String childId, Pageable pageable);
-    public Page<ItemEntity> findAllByChildren_itemId(String childId, Pageable pageable);
+    public Page<ItemEntity> findAllByActiveTrueAndParents_id(String parentId, Pageable pageable);
+    public Page<ItemEntity> findAllByParents_id(String parentId, Pageable pageable);
+    public Page<ItemEntity> findAllByActiveTrueAndChildren_id(String childId, Pageable pageable);
+    public Page<ItemEntity> findAllByChildren_id(String childId, Pageable pageable);
 
 }

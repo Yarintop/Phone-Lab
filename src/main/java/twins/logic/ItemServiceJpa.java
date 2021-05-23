@@ -326,14 +326,14 @@ public class ItemServiceJpa implements UpdatedItemsService {
 
                 if (managerRoleCheck == ErrorType.GOOD) // User role is Manager
                 return this.itemDao
-                        .findAllByParents_itemId(parentId, PageRequest.of(page,size))
+                        .findAllByParents_id(parentId, PageRequest.of(page,size))
                         .getContent()
                         .stream()
                         .map(this.entityConverter::toBoundary)
                         .collect(Collectors.toList());
             else // User role is Player
                 return this.itemDao
-                        .findAllByActiveTrueAndParents_itemId(parentId, PageRequest.of(page,size))
+                        .findAllByActiveTrueAndParents_id(parentId, PageRequest.of(page,size))
                         .getContent()
                         .stream()
                         .map(this.entityConverter::toBoundary)
@@ -390,14 +390,14 @@ public class ItemServiceJpa implements UpdatedItemsService {
 
         if (managerRoleCheck == ErrorType.GOOD) // User role is Manager
             return this.itemDao
-                    .findAllByChildren_itemId(childId, PageRequest.of(page,size))
+                    .findAllByChildren_id(childId, PageRequest.of(page,size))
                     .getContent()
                     .stream()
                     .map(this.entityConverter::toBoundary)
                     .collect(Collectors.toList());
         else // User role is Player
             return this.itemDao
-                    .findAllByActiveTrueAndChildren_itemId(childId, PageRequest.of(page,size))
+                    .findAllByActiveTrueAndChildren_id(childId, PageRequest.of(page,size))
                     .getContent()
                     .stream()
                     .map(this.entityConverter::toBoundary)
