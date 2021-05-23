@@ -2,7 +2,6 @@ package twins.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import twins.boundaries.UserBoundary;
@@ -81,7 +80,7 @@ public class UsersServiceJpa implements UsersService, UserUtilsService {
 
         // Generating key
         // String key = userEntity.getSpace() + "&" + userEntity.getEmail();
-        String key = userEntity.getUserId();
+        String key = userEntity.getId();
 
 
         if (!this.usersDao.findById(key).isPresent()) // Making sure the user is a new user in the system

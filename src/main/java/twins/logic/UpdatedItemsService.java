@@ -15,4 +15,7 @@ public interface UpdatedItemsService extends ItemsService {
     public List<DigitalItemBoundary> getParents(String userSpace, String userEmail,
                                                 String itemSpace, String itemId);
 
+    public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail, int size, int page);
+
+
 }

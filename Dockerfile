@@ -6,7 +6,7 @@ RUN mkdir -p "$SERVER_HOME/src"
 ADD ./src "$SERVER_HOME/src"
 COPY pom.xml $SERVER_HOME
 
-RUN mvn -Drevision=$VERSION package -f $SERVER_HOME/
+RUN mvn -Drevision=$VERSION package -Dmaven.test.skip=true -f $SERVER_HOME/
 
 ENV SERVER_HOME ${SERVER_HOME}
 ENV VERSION ${VERSION}

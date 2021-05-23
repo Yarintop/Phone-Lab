@@ -22,7 +22,7 @@ public class UserConverter implements EntityConverter<UserEntity, UserBoundary> 
             ue.setUsername(boundaryObject.getUsername());
         }
         if (boundaryObject.getUserId() != null) {
-            ue.setUserId(boundaryObject.getUserId().toString());
+            ue.setId(boundaryObject.getUserId().toString());
             ue.setEmail(boundaryObject.getUserId().getEmail());
         }
         if (boundaryObject.getRole() != null) {
@@ -41,9 +41,9 @@ public class UserConverter implements EntityConverter<UserEntity, UserBoundary> 
         if (entityObject == null)
             return null;
 
-        String[] idParts = entityObject.getUserId().split("&");
+        String[] idParts = entityObject.getId().split("&");
         if (idParts.length != 2)
-            throw new BadRequestException("User with ID: " + entityObject.getUserId() + " not formatted correctly");
+            throw new BadRequestException("User with ID: " + entityObject.getId() + " not formatted correctly");
         String email = idParts[0];
         String space = idParts[1];
         UserBoundary ub = new UserBoundary(email, space);

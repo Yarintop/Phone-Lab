@@ -1,6 +1,5 @@
 package twins;
 
-import twins.Application;
 import twins.boundaries.DigitalItemBoundary;
 import twins.boundaries.OperationBoundary;
 import twins.boundaries.UserBoundary;
@@ -201,7 +200,7 @@ public class OperationsTest {
         // Convert to OperationEntity
         OperationEntity savedOperation = savedOperationOptional.get();
         // Assert that the core IDs are equal (except for timestamp & attributes)
-        assertThat(savedOperation.getOperationId()).isEqualTo(operation.getOperationId().toString());
+        assertThat(savedOperation.getId()).isEqualTo(operation.getOperationId().toString());
         assertThat(savedOperation.getOperationType()).isEqualTo(operation.getType());
         assertThat(savedOperation.getInvokedBy()).isEqualTo(operation.getInvokedBy().getUserId().toString());
         assertThat(savedOperation.getItem()).isEqualTo(operation.getItem().getItemId().toString());

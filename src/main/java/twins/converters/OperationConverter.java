@@ -54,9 +54,9 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
         OperationEntity entity = new OperationEntity();
         if (boundary.getOperationId() != null)
             // If there is an ID, convert it into a single string
-            entity.setOperationId(convertMapKey(boundary.getOperationId()));
+            entity.setId(convertMapKey(boundary.getOperationId()));
         else
-            entity.setOperationId(""); // Empty ID string if the ID is missing
+            entity.setId(""); // Empty ID string if the ID is missing
         entity.setOperationType(boundary.getType());
         entity.setCreatedTimestamp(boundary.getCreatedTimestamp());
         if(boundary.getInvokedBy() != null)
@@ -78,9 +78,9 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
     public OperationBoundary toBoundary(OperationEntity entity) {
         OperationBoundary boundary = new OperationBoundary();
 
-        if (entity.getOperationId() != null && entity.getOperationId().length() > 0)
+        if (entity.getId() != null && entity.getId().length() > 0)
             // If there is a valid ID, convert it into map value for the boundary
-            boundary.setOperationId(convertStringKey(entity.getOperationId()));
+            boundary.setOperationId(convertStringKey(entity.getId()));
         boundary.setType(entity.getOperationType());
         boundary.setCreatedTimestamp(entity.getCreatedTimestamp());
 //      boundary.setInvokedBy(userConverter.toBoundary(entity.getInvokedBy()));
