@@ -12,8 +12,6 @@ public interface ItemsService {
     @Deprecated
     public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail);
 
-    public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail, int size, int page);
-
     public DigitalItemBoundary getSpecificItem(String userSpace, String userEmail, String itemSpace, String itemId);
 
     public void deleteAllItems(String adminSpace, String adminEmail);

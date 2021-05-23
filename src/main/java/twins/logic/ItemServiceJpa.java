@@ -24,9 +24,7 @@ import java.util.stream.StreamSupport;
 @Service
 public class ItemServiceJpa implements UpdatedItemsService {
     private ItemDao itemDao;
-
     private UserUtilsService userUtilsService;
-
     private String spaceId;
     private ItemConverter entityConverter;
 
@@ -293,7 +291,41 @@ public class ItemServiceJpa implements UpdatedItemsService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DigitalItemBoundary> getParents(String userSpace, String userEmail, String itemSpace, String itemId) {
+    public List<DigitalItemBoundary> getAllChildren(String userSpace, String userEmail, String itemSpace, String itemId, int size, int page) {
+        ErrorType managerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.MANAGER);
+        if (managerRoleCheck == ErrorType.USER_DOES_NOT_EXIST)
+            throw new NotFoundException("User " + userEmail + " with space ID: " + userSpace + " not found!");
+
+        ErrorType playerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.PLAYER);
+        if (playerRoleCheck != ErrorType.GOOD && managerRoleCheck != ErrorType.GOOD)
+            throw new NoPermissionException("User " + userEmail + " with space ID: " + userSpace +
+                    " doesn't have permission for this action!");
+
+        String parentId = this.entityConverter.toSecondaryId(itemSpace, itemId);
+        
+        this.itemDao
+                .findById(parentId)
+                .orElseThrow(() -> new NotFoundException("Item with ID:" + parentId + "not found"));
+
+                if (managerRoleCheck == ErrorType.GOOD) // User role is Manager
+                return this.itemDao
+                        .findAllByParents_itemId(parentId, PageRequest.of(page,size))
+                        .getContent()
+                        .stream()
+                        .map(this.entityConverter::toBoundary)
+                        .collect(Collectors.toList());
+            else // User role is Player
+                return this.itemDao
+                        .findAllByActiveTrueAndParents_itemId(parentId, PageRequest.of(page,size))
+                        .getContent()
+                        .stream()
+                        .map(this.entityConverter::toBoundary)
+                        .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DigitalItemBoundary> getAllParents(String userSpace, String userEmail, String itemSpace, String itemId) {
         ErrorType managerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.MANAGER);
         if (managerRoleCheck == ErrorType.USER_DOES_NOT_EXIST)
             throw new NotFoundException("User " + userEmail + " with space ID: " + userSpace + " not found!");
@@ -309,15 +341,48 @@ public class ItemServiceJpa implements UpdatedItemsService {
 
         if (managerRoleCheck == ErrorType.GOOD) // User role is Manager
             return item
-                    .getParents()
+                    .getAllParents()
                     .stream()
                     .map(this.entityConverter::toBoundary)
                     .collect(Collectors.toList());
         else // User role is Player
             return item
-                    .getParents()
+                    .getAllParents()
                     .stream()
                     .filter( e -> e.isActive() )
+                    .map(this.entityConverter::toBoundary)
+                    .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DigitalItemBoundary> getAllParents(String userSpace, String userEmail, String itemSpace, String itemId, int size, int page) {
+        ErrorType managerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.MANAGER);
+        if (managerRoleCheck == ErrorType.USER_DOES_NOT_EXIST)
+            throw new NotFoundException("User " + userEmail + " with space ID: " + userSpace + " not found!");
+
+        ErrorType playerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.PLAYER);
+        if (playerRoleCheck != ErrorType.GOOD && managerRoleCheck != ErrorType.GOOD)
+            throw new NoPermissionException("User " + userEmail + " with space ID: " + userSpace +
+                    " doesn't have permission for this action!");
+                    
+        String childId = this.entityConverter.toSecondaryId(itemSpace, itemId);
+        this.itemDao
+                .findById(childId)
+                .orElseThrow(() -> new NotFoundException("Item with ID:" + childId + "not found"));
+
+        if (managerRoleCheck == ErrorType.GOOD) // User role is Manager
+            return this.itemDao
+                    .findAllByChildren_itemId(childId, PageRequest.of(page,size))
+                    .getContent()
+                    .stream()
+                    .map(this.entityConverter::toBoundary)
+                    .collect(Collectors.toList());
+        else // User role is Player
+            return this.itemDao
+                    .findAllByActiveTrueAndChildren_itemId(childId, PageRequest.of(page,size))
+                    .getContent()
+                    .stream()
                     .map(this.entityConverter::toBoundary)
                     .collect(Collectors.toList());
     }

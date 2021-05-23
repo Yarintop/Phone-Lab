@@ -22,6 +22,7 @@ public class ItemEntity implements Entity {
     //  private UserIdBoundary createdBy = new UserIdBoundary(); // This line might change
     //  private UserEntity createdBy;
 
+    
     public double getLongitude() {
         return longitude;
     }
@@ -115,7 +116,7 @@ public class ItemEntity implements Entity {
     }
 
     @ManyToMany(mappedBy="children", fetch=FetchType.LAZY)
-    public Set<ItemEntity> getParents() {
+    public Set<ItemEntity> getAllParents() {
         return parents;
     }
 

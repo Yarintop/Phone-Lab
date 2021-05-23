@@ -109,7 +109,7 @@ public class DigitalItemController {
             @PathVariable("itemId") String itemId,
             @RequestParam(name="size", required=false, defaultValue="20") int size,
             @RequestParam(name="page", required=false, defaultValue="0") int page) {
-        List<DigitalItemBoundary> allChildren = this.itemLogic.getAllChildren(userSpace, userEmail, itemSpace, itemId);
+        List<DigitalItemBoundary> allChildren = this.itemLogic.getAllChildren(userSpace, userEmail, itemSpace, itemId, size, page);
         return allChildren.toArray(new DigitalItemBoundary[0]);
     }
 
@@ -126,7 +126,7 @@ public class DigitalItemController {
             @RequestParam(name="size", required=false, defaultValue="20") int size,
             @RequestParam(name="page", required=false, defaultValue="0") int page) {
         List<DigitalItemBoundary> allItems =
-                this.itemLogic.getParents(userSpace, userEmail, itemSpace, itemId);
+                this.itemLogic.getAllParents(userSpace, userEmail, itemSpace, itemId, size, page);
 
         return allItems.toArray(new DigitalItemBoundary[0]);
     }
