@@ -28,4 +28,5 @@ public interface UpdatedItemsService extends ItemsService {
                                                 String itemSpace, String itemId,
                                                 int size, int page);
 
+
 }

@@ -8,7 +8,7 @@ import java.util.Set;
 @javax.persistence.Entity
 @Table(name = "ITEMS")
 public class ItemEntity implements Entity {
-    private String itemId = ""; // This line might change
+    private String id = ""; // This line might change
     private String type = "no type";
     private String name = "no name yet";
     private boolean active = false;
@@ -46,12 +46,12 @@ public class ItemEntity implements Entity {
     }
 
     @Id
-    public String getItemId() {
-        return itemId;
+    public String getId() {
+        return id;
     }
 
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
+    public void setId(String itemId) {
+        this.id = itemId;
     }
 
     public String getType() {

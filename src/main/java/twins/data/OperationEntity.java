@@ -1,12 +1,14 @@
 package twins.data;
 
+import org.springframework.data.mongodb.core.mapping.MongoId;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @javax.persistence.Entity
 @Table(name = "OPERATIONS")
 public class OperationEntity implements Entity {
-    private String operationId = "";
+    private String id = "";
     private String operationType = "undefined";
 //    private ItemEntity item;
     private String item;
@@ -19,16 +21,17 @@ public class OperationEntity implements Entity {
     }
 
     @Id
-    public String getOperationId() {
-        return operationId;
+    @MongoId
+    public String getId() {
+        return id;
     }
 
-    public void setOperationId(String operationId) {
-        this.operationId = operationId;
+    public void setId(String operationId) {
+        this.id = operationId;
     }
 
     public void setOperationId(String id, String spaceId) {
-        this.operationId = id + "&" + spaceId;
+        this.id = id + "&" + spaceId;
     }
 
     public String getOperationType() {
