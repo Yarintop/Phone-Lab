@@ -1,12 +1,16 @@
 package twins.data;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@javax.persistence.Entity
-@Table(name = "ITEMS")
+//@javax.persistence.Entity
+//@Table(name = "ITEMS")
+@Document(collation = "Items")
 public class ItemEntity implements Entity {
     private String id = ""; // This line might change
     private String type = "no type";
@@ -17,7 +21,9 @@ public class ItemEntity implements Entity {
     private double longitude;
     private double latitude;
     private String itemAttributes = "{}";
+    @DBRef(lazy = true)
     private Set<ItemEntity> children;
+    @DBRef(lazy = true)
     private Set<ItemEntity> parents;
     //  private UserIdBoundary createdBy = new UserIdBoundary(); // This line might change
     //  private UserEntity createdBy;
@@ -106,7 +112,7 @@ public class ItemEntity implements Entity {
         this.itemAttributes = itemAttributes;
     }
 
-    @ManyToMany(fetch=FetchType.LAZY)
+//    @ManyToMany(fetch=FetchType.LAZY)
     public Set<ItemEntity> getChildren() {
         return children;
     }
@@ -115,7 +121,7 @@ public class ItemEntity implements Entity {
         this.children = children;
     }
 
-    @ManyToMany(mappedBy="children", fetch=FetchType.LAZY)
+//    @ManyToMany(mappedBy="children", fetch=FetchType.LAZY)
     public Set<ItemEntity> getAllParents() {
         return parents;
     }

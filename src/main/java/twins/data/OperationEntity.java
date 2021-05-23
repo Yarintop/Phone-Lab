@@ -1,12 +1,16 @@
 package twins.data;
 
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import javax.persistence.*;
 import java.util.Date;
 
-@javax.persistence.Entity
-@Table(name = "OPERATIONS")
+//@javax.persistence.Entity
+//@Document
+//@Table(name = "OPERATIONS")
+@Document(collation = "Operations")
+
 public class OperationEntity implements Entity {
     private String id = "";
     private String operationType = "undefined";
@@ -21,7 +25,6 @@ public class OperationEntity implements Entity {
     }
 
     @Id
-    @MongoId
     public String getId() {
         return id;
     }
