@@ -66,6 +66,9 @@ public class ItemServiceJpa implements UpdatedItemsService {
     @Override
     @Transactional//(readOnly = false)
     public DigitalItemBoundary createItem(String userSpace, String userEmail, DigitalItemBoundary item) {
+        ErrorType managerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.MANAGER);
+        if (managerRoleCheck == ErrorType.BAD_USER_ROLE)
+            throw new NoPermissionException("User must be Manager to execute!");
 
         if (item.getName() == null || item.getName().length() == 0)
             throw new BadRequestException("Invalid item name! (" + item.getName() + ")");
@@ -109,7 +112,9 @@ public class ItemServiceJpa implements UpdatedItemsService {
     @Transactional//(readOnly = false)
     public DigitalItemBoundary updateItem(String userSpace, String userEmail, String itemSpace, String itemId,
                                           DigitalItemBoundary update) {
-
+        ErrorType managerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.MANAGER);
+        if (managerRoleCheck == ErrorType.BAD_USER_ROLE)
+            throw new NoPermissionException("User must be Manager to execute!");
         if (update.getName() != null && update.getName().length() == 0)
             throw new BadRequestException("Invalid item name! (" + update.getName() + ")");
 
@@ -179,12 +184,24 @@ public class ItemServiceJpa implements UpdatedItemsService {
         if (playerRoleCheck != ErrorType.GOOD && managerRoleCheck != ErrorType.GOOD)
             throw new NoPermissionException("User " + userEmail + " with space ID: " + userSpace +
                     " doesn't have permission for this action!");
-
         Iterable<ItemEntity> allEntities = this.itemDao.findAll();
-        return StreamSupport
-                .stream(allEntities.spliterator(), false) // get stream from iterable
-                .map(this.entityConverter::toBoundary)
-                .collect(Collectors.toList());
+        if (managerRoleCheck == ErrorType.GOOD) {
+            return StreamSupport
+                    .stream(allEntities.spliterator(), false) // get stream from iterable
+                    .map(this.entityConverter::toBoundary)
+                    .collect(Collectors.toList());
+        }
+        else {
+            List<DigitalItemBoundary> activeEntities = new ArrayList<>();
+            for(DigitalItemBoundary dib:StreamSupport
+                    .stream(allEntities.spliterator(), false) // get stream from iterable
+                    .map(this.entityConverter::toBoundary)
+                    .collect(Collectors.toList())) {
+                if (dib.getActive())
+                    activeEntities.add(dib);
+            }
+            return activeEntities;
+        }
     }
 
     @Override
