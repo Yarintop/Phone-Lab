@@ -125,7 +125,8 @@ public class ItemServiceJpa implements UpdatedItemsService {
         Optional<ItemEntity> optionalItem = this.itemDao.findById(itemKey);
         // get existing message from mockup database
         if (optionalItem.isPresent()) {
-            DigitalItemBoundary existing = this.entityConverter.toBoundary(optionalItem.get());
+            ItemEntity res = optionalItem.get();
+            DigitalItemBoundary existing = this.entityConverter.toBoundary(res);
             boolean dirty = false;
 
             // update collection and return update
@@ -161,13 +162,13 @@ public class ItemServiceJpa implements UpdatedItemsService {
             }
 
             if (dirty) {
-                //TODO
-                // Found new bug here(I think it's because of MongoDB)
-                // It updates the entity and override current one, but since now
-                // The parents and children is an array in the item entity
-                // Those two lists are overridden
-                // How to fix it? Not sure yet
-                this.itemDao.save(this.entityConverter.toEntity(existing));
+                ItemEntity temp = this.entityConverter.toEntity(existing);
+
+                // Getting children and parents items from the original item that was in the DB so they won't be deleted
+                temp.setChildren(res.getChildren());
+                temp.setAllParents(res.getAllParents());
+
+                this.itemDao.save(temp);
             }
 
             return existing;
@@ -296,19 +297,19 @@ public class ItemServiceJpa implements UpdatedItemsService {
         ItemEntity parentItem = this.itemDao.findById(parentId)
                 .orElseThrow(() -> new NotFoundException("Item with ID:" + parentId + "not found"));
 
-                if (managerRoleCheck == ErrorType.GOOD) // User role is Manager
+        if (managerRoleCheck == ErrorType.GOOD) // User role is Manager
                 return parentItem
                         .getChildren()
                         .stream()
                         .map(this.entityConverter::toBoundary)
                         .collect(Collectors.toList());
-            else // User role is Player
-                return parentItem
-                        .getChildren()
-                        .stream()
-                        .filter( e -> e.isActive() )
-                        .map(this.entityConverter::toBoundary)
-                        .collect(Collectors.toList());
+        else // User role is Player
+            return parentItem
+                    .getChildren()
+                    .stream()
+                    .filter( e -> e.isActive() )
+                    .map(this.entityConverter::toBoundary)
+                    .collect(Collectors.toList());
     }
 
     @Override
@@ -329,20 +330,20 @@ public class ItemServiceJpa implements UpdatedItemsService {
                 .findById(parentId)
                 .orElseThrow(() -> new NotFoundException("Item with ID:" + parentId + "not found"));
 
-                if (managerRoleCheck == ErrorType.GOOD) // User role is Manager
-                return this.itemDao
-                        .findAllByParents_id(parentId, PageRequest.of(page,size))
-                        .getContent()
-                        .stream()
-                        .map(this.entityConverter::toBoundary)
-                        .collect(Collectors.toList());
-            else // User role is Player
-                return this.itemDao
-                        .findAllByActiveTrueAndParents_id(parentId, PageRequest.of(page,size))
-                        .getContent()
-                        .stream()
-                        .map(this.entityConverter::toBoundary)
-                        .collect(Collectors.toList());
+        if (managerRoleCheck == ErrorType.GOOD) // User role is Manager
+            return this.itemDao
+                    .findAllByParents_id(parentId, PageRequest.of(page,size))
+                    .getContent()
+                    .stream()
+                    .map(this.entityConverter::toBoundary)
+                    .collect(Collectors.toList());
+        else // User role is Player
+            return this.itemDao
+                    .findAllByActiveTrueAndParents_id(parentId, PageRequest.of(page,size))
+                    .getContent()
+                    .stream()
+                    .map(this.entityConverter::toBoundary)
+                    .collect(Collectors.toList());
     }
 
     @Override
