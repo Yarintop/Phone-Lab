@@ -1,28 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/routes/route_generator.dart';
+import 'package:myapp/routes/routes.dart';
 
-import 'MyHomePage.dart';
+import 'app_view.dart';
 
 void main() {
-    runApp(MyApp());
+  runApp(MyApp());
 }
 
 /// This widget is the root of your application.
-class MyApp extends StatelessWidget
-{
-    @override
-    Widget build(BuildContext context)
-    {
-        return MaterialApp(
-            title: 'Flutter App',
-            // theme: ThemeData(
-            //     primarySwatch: Colors.deepPurple,
-            // ),
-            theme: ThemeData.dark().copyWith(
-                primaryColor: Colors.deepPurple,
-            ),
-            home: MyHomePage(
-                title: 'Home Page'
-            ),
-        );
-    }
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: 'Repair System',
+        // theme: ThemeData.dark().copyWith(
+        // primaryColor: Colors.deepPurple,
+        // ),
+        initialRoute: ROUTE_LOGIN,
+        navigatorKey: navKey,
+        onGenerateRoute: RouteGenerator.generateRoute,
+        builder: (context, child) => AppView(child: child));
+  }
 }
