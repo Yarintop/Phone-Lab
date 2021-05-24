@@ -1,8 +1,10 @@
 package twins.logic;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import twins.boundaries.OperationBoundary;
@@ -30,6 +32,8 @@ import java.util.stream.StreamSupport;
 public class OperationServiceJpa implements OperationsService {
 
     private OperationDao operationsDao;
+    private JmsTemplate jmsTemplate;
+
 
     // DAOs for checking user & items are correct
     private UserDao usersDao;
@@ -51,6 +55,11 @@ public class OperationServiceJpa implements OperationsService {
     @Autowired
     public void setServices(UserUtilsService userUtilsService) {
         this.userUtilsService = userUtilsService;
+    }
+
+    @Autowired
+    public void setJmsTemplate(JmsTemplate jmsTemplate) {
+        this.jmsTemplate = jmsTemplate;
     }
 
     @Autowired
@@ -90,7 +99,7 @@ public class OperationServiceJpa implements OperationsService {
         entity.setOperationId(UUID.randomUUID().toString(), spaceId);
         entity.setCreatedTimestamp(new Date());
         operationsDao.save(entity);
-        return operation;
+        return converter.toBoundary(entity);
     }
 
     @Override
@@ -118,9 +127,22 @@ public class OperationServiceJpa implements OperationsService {
             throw new NotFoundException("The item inside the operation was not found!");
 
         entity.setOperationId(UUID.randomUUID().toString(), spaceId);
-        entity.setCreatedTimestamp(new Date());
-        operationsDao.save(entity);
-        return converter.toBoundary(entity);
+        operation = converter.toBoundary(entity);
+
+        // send MessageBoundary to MOM for a-synchronous processing
+        ObjectMapper jackson = new ObjectMapper();
+        try {
+            String json = jackson.writeValueAsString(operation); // make sure you send JSON text content
+            this.jmsTemplate // API for MOM (ActiveMQ)
+                    .send("opInbox", // target of message
+                            session->session.createTextMessage(json) // message creator that generates Text Message
+                    );
+
+            // return response to client without waiting for processing to end by MOM
+            return operation;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
