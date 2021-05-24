@@ -160,8 +160,13 @@ public class ItemServiceJpa implements UpdatedItemsService {
                 dirty = true;
             }
 
-            // update mockup database
             if (dirty) {
+                //TODO
+                // Found new bug here(I think it's because of MongoDB)
+                // It updates the entity and override current one, but since now
+                // The parents and children is an array in the item entity
+                // Those two lists are overridden
+                // How to fix it? Not sure yet
                 this.itemDao.save(this.entityConverter.toEntity(existing));
             }
 
