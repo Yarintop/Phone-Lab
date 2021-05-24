@@ -129,10 +129,10 @@ public class OperationServiceJpa implements OperationsService {
         entity.setOperationId(UUID.randomUUID().toString(), spaceId);
         operation = converter.toBoundary(entity);
 
-        // send MessageBoundary to MOM for a-synchronous processing
+        // send OperationBoundary to MOM for a-synchronous processing
         ObjectMapper jackson = new ObjectMapper();
         try {
-            String json = jackson.writeValueAsString(operation); // make sure you send JSON text content
+            String json = jackson.writeValueAsString(operation);
             this.jmsTemplate // API for MOM (ActiveMQ)
                     .send("opInbox", // target of message
                             session->session.createTextMessage(json) // message creator that generates Text Message

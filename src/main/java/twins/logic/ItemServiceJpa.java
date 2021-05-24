@@ -160,7 +160,6 @@ public class ItemServiceJpa implements UpdatedItemsService {
                 dirty = true;
             }
 
-            // update mockup database
             if (dirty) {
                 //TODO
                 // Found new bug here(I think it's because of MongoDB)
