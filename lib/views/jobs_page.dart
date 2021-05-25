@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/routes/routes.dart';
+import 'package:myapp/widgets/jobs-table/jobs_table.dart';
 
 class JobPage extends StatelessWidget {
   final JobFilter filter;
@@ -8,6 +9,12 @@ class JobPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text("Job Page - " + this.filter.toString()));
+    return Container(
+        child: Column(
+      children: [
+        Text("Header"),
+        JobsTable(),
+      ],
+    ));
   }
 }

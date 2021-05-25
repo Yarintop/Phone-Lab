@@ -7,26 +7,27 @@ import 'package:myapp/views/login_page.dart';
 import 'package:myapp/views/parts_page.dart';
 
 class RouteGenerator {
-  static Route<dynamic> generateRoute(RouteSettings settings) {
-    switch (settings.name) {
+  static Route<dynamic> generateRoute({RouteSettings settings, String routeName}) {
+    String name = "";
+    if (settings != null)
+      name = settings.name;
+    else
+      name = routeName;
+    switch (name) {
       case ROUTE_CREATE_JOB:
         return MaterialPageRoute(builder: (_) => CreateJobPage());
         break;
       case ROUTE_ALL_JOBS:
-        return MaterialPageRoute(
-            builder: (_) => JobPage(filter: JobFilter.ALL));
+        return MaterialPageRoute(builder: (_) => JobPage(filter: JobFilter.ALL));
         break;
       case ROUTE_NEW_JOBS:
-        return MaterialPageRoute(
-            builder: (_) => JobPage(filter: JobFilter.NEW));
+        return MaterialPageRoute(builder: (_) => JobPage(filter: JobFilter.NEW));
         break;
       case ROUTE_ONGOING_JOBS:
-        return MaterialPageRoute(
-            builder: (_) => JobPage(filter: JobFilter.ONGOING));
+        return MaterialPageRoute(builder: (_) => JobPage(filter: JobFilter.ONGOING));
         break;
       case ROUTE_COMPLETED_JOBS:
-        return MaterialPageRoute(
-            builder: (_) => JobPage(filter: JobFilter.COMPLETED));
+        return MaterialPageRoute(builder: (_) => JobPage(filter: JobFilter.COMPLETED));
         break;
       case ROUTE_PARTS:
         return MaterialPageRoute(builder: (_) => PartsPage());

@@ -20,16 +20,20 @@ class NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        navKey.currentState.pushNamed(route);
-        onSelect();
-        //TODO - Implement this logic outside later. (for hovering and clicking)
-      },
-      child: Padding(
-        //TODO - Add style when hovered or clicked.
-        padding: EdgeInsets.symmetric(vertical: padding),
-        child: Text(this.text),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: InkWell(
+        onTap: () {
+          navKey.currentState.popAndPushNamed(route);
+          // navKey.currentState.pushNamed(route);
+          onSelect(this.route);
+        },
+        child: Center(
+          child: Text(
+            this.text,
+            style: TextStyle(color: this.selected ? Colors.red : Colors.black),
+          ),
+        ),
       ),
     );
   }

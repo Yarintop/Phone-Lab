@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/widgets/nav_bar.dart';
+import 'package:myapp/widgets/navbar/nav_bar.dart';
 
 class AppView extends StatelessWidget {
   final Widget child;
-
-  AppView({this.child});
+  final String currentRoute;
+  AppView({this.child, this.currentRoute});
 
   @override
   Widget build(BuildContext context) {
