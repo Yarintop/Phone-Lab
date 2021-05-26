@@ -28,10 +28,18 @@ class NavItem extends StatelessWidget {
           // navKey.currentState.pushNamed(route);
           onSelect(this.route);
         },
-        child: Center(
-          child: Text(
-            this.text,
-            style: TextStyle(color: this.selected ? Colors.red : Colors.black),
+        child: Container(
+          decoration: BoxDecoration(
+              border: Border(
+                  left: BorderSide(
+            color: selected ? Colors.red : Colors.white,
+            width: selected ? 10 : 0,
+          ))),
+          child: Center(
+            child: Text(
+              this.text,
+              style: TextStyle(color: this.selected ? Colors.red : Colors.black),
+            ),
           ),
         ),
       ),

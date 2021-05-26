@@ -10,8 +10,6 @@ class NavBar extends StatelessWidget {
     return Consumer<UtilsProvider>(
         builder: (context, utilProvider, child) => Container(
               child: Column(
-                // mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   buildNavItem(utilProvider, "Create New Job", ROUTE_CREATE_JOB),
@@ -19,7 +17,8 @@ class NavBar extends StatelessWidget {
                   buildNavItem(utilProvider, "New Jobs", ROUTE_NEW_JOBS),
                   buildNavItem(utilProvider, "Ongoing jobs", ROUTE_ONGOING_JOBS),
                   buildNavItem(utilProvider, "Completed Jobs", ROUTE_COMPLETED_JOBS),
-                  buildNavItem(utilProvider, "Parts List", ROUTE_PARTS)
+                  buildNavItem(utilProvider, "Parts List", ROUTE_PARTS),
+                  buildNavItem(utilProvider, "Users", ROUTE_USERS),
                 ],
               ),
             ));

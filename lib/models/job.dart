@@ -1,6 +1,10 @@
 import 'Item.dart';
 
 class Job extends Item {
+  Job() : super();
+  Job.fromParams(_id, _space, _type, _name, _active, _createdTimestamp, _createdBy, _lat, _lng, attributes)
+      : super.fromParams(_id, _space, _type, _name, _active, _createdTimestamp, _createdBy, _lat, _lng, attributes);
+
   get customer => this.itemAttributes["customer"];
   get phoneNumber => this.itemAttributes["phoneNumber"];
   get phoneModel => this.itemAttributes["phoneModel"];

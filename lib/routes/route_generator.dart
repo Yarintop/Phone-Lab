@@ -5,6 +5,7 @@ import 'package:myapp/views/create_job_page.dart';
 import 'package:myapp/views/jobs_page.dart';
 import 'package:myapp/views/login_page.dart';
 import 'package:myapp/views/parts_page.dart';
+import 'package:myapp/views/user_page.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute({RouteSettings settings, String routeName}) {
@@ -31,6 +32,9 @@ class RouteGenerator {
         break;
       case ROUTE_PARTS:
         return MaterialPageRoute(builder: (_) => PartsPage());
+        break;
+      case ROUTE_USERS:
+        return MaterialPageRoute(builder: (_) => UsersPage());
         break;
       default: // if the text is "login-page" or anything else, go to the login page.
         return MaterialPageRoute(builder: (_) => LoginPage());

@@ -7,9 +7,9 @@ import 'package:provider/provider.dart';
 class JobsTable extends StatelessWidget {
   List<DataColumn> getHeaders() {
     return <DataColumn>[
-      DataColumn(
-        label: Text("ID"),
-      ),
+      // DataColumn(
+      // label: Text("ID"),
+      // ),
       DataColumn(
         label: Text("Customer"),
       ),
@@ -31,14 +31,21 @@ class JobsTable extends StatelessWidget {
     ];
   }
 
-  List<DataRow> getJobRows(provider) {
-    return <DataRow>[
-      //TODO - read items from the provider and map them with translateJobToRow
-    ];
+  List<DataRow> getJobRows(ItemProvider provider) {
+    return provider.jobs.map((Job e) => translateJobToRow(e)).toList();
+    //TODO - read items from the provider and map them with translateJobToRow
   }
 
   DataRow translateJobToRow(Job job) {
-    //TODO - translate each Job to a row with 7 DataCell widgets
+    return DataRow(cells: [
+      // DataCell(Text(job.id)),
+      DataCell(Text(job.customer)),
+      DataCell(Text(job.phoneNumber)),
+      DataCell(Text(job.phoneModel)),
+      DataCell(Text(job.jobDescription)),
+      DataCell(Text(job.status)),
+      DataCell(Text(job.createdTimestamp.toString())),
+    ]);
   }
 
   @override

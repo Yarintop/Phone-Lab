@@ -1,16 +1,32 @@
 class User {
-  String _id;
+  String _space;
   String _email;
   String _username;
   String _avatar;
+  String _role;
 
-  String get id => _id;
+  // Constructors
+  User();
+  User.fromParams(this._space, this._email, this._username, this._avatar, this._role);
+  factory User.fromJSON(json) {
+    return User.fromParams(
+      json["userId"]["space"],
+      json["userId"]["email"],
+      json["username"],
+      json["avatar"],
+      json["role"],
+    );
+  }
+
+  String get space => _space;
   String get email => _email;
   String get username => _username;
   String get avatar => _avatar;
+  String get role => _role;
 
-  set id(String id) => _id = id;
+  set space(String id) => _space = space;
   set email(String email) => _email = email;
   set username(String username) => _username = username;
   set avatar(String avatar) => _avatar = avatar;
+  set role(String role) => _role = role;
 }

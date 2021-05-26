@@ -9,5 +9,6 @@ const String ROUTE_NEW_JOBS = "/new-jobs";
 const String ROUTE_ONGOING_JOBS = "/ongoing";
 const String ROUTE_COMPLETED_JOBS = "/completed-jobs";
 const String ROUTE_PARTS = "/parts";
+const String ROUTE_USERS = "/users";
 
 final navKey = new GlobalKey<NavigatorState>();
