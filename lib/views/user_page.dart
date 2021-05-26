@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/widgets/user-form/user_display.dart';
-import 'package:myapp/widgets/user-form/user_form.dart';
+import 'package:myapp/widgets/user_form/user_display.dart';
+import 'package:myapp/widgets/user_form/user_form.dart';
 
 // class UsersPage extends StatelessWidget {
 //   @override

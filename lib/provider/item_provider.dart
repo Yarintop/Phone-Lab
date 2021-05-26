@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:myapp/models/Item.dart';
-import 'package:myapp/models/User.dart';
+import 'package:myapp/models/user.dart';
 import 'package:myapp/models/job.dart';
 
 class ItemProvider extends ChangeNotifier {
@@ -29,5 +29,10 @@ class ItemProvider extends ChangeNotifier {
   //
   final List<Item> items = [];
 
-  //TODO - add methods to get items or specific type items
+  // TODO - maybe change bool to enum of error types
+  Future<bool> addJob(Job job) async {
+    //TODO - make an API call
+    jobs.add(job);
+    return true;
+  }
 }

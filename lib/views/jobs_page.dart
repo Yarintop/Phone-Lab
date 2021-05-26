@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/routes/routes.dart';
-import 'package:myapp/widgets/jobs-table/jobs_table.dart';
+import 'package:myapp/widgets/jobs_table/jobs_table.dart';
 
 class JobPage extends StatelessWidget {
   final JobFilter filter;

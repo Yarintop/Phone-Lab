@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/models/user.dart';
 import 'package:myapp/provider/user_provider.dart';
+import 'package:myapp/widgets/form_widgets/dropdown_button.dart';
+import 'package:myapp/widgets/form_widgets/input_field.dart';
 import 'package:provider/provider.dart';
 
 class UserForm extends StatefulWidget {
@@ -20,11 +22,19 @@ class _UserFormState extends State<UserForm> {
   TextEditingController avatarController = TextEditingController();
 
   final String space = "2021b.noam.levi1";
-
+  final List<String> roles = ["Player", "Manager", "Admin"];
   // TextEditingController universalTextController = TextEditingController();
 
   void addUser(UserProvider provider) {
-    User user = User.fromParams(space, _currentEmail, _currentUsername, _currentAvatar, _selectedRole);
+    // This function would try to add a user using the provider which will invoke an async api call.
+    User user = User.fromParams(
+      space,
+      usernameController.text,
+      emailController.text,
+      avatarController.text,
+      _selectedRole,
+    );
+
     provider.addUser(user).then((success) {
       if (success) {
         //TODO - add confirmation alert
@@ -60,22 +70,6 @@ class _UserFormState extends State<UserForm> {
             .toList());
   }
 
-  Widget createTextField(String hint, TextEditingController controller, Function callback) {
-    return Padding(
-      padding: EdgeInsets.all(4.0),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          hintText: hint,
-          contentPadding: EdgeInsets.all(4.0),
-          fillColor: Colors.white,
-          filled: true,
-        ),
-        onChanged: callback,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<UserProvider>(
@@ -93,10 +87,15 @@ class _UserFormState extends State<UserForm> {
             child: Column(
               children: [
                 Text("Title"), //TODO make it better later
-                createTextField("Username", usernameController, (v) => {_currentUsername = v}),
-                createTextField("Email", emailController, (v) => {_currentEmail = v}),
-                createTextField("Avatar", avatarController, (v) => {_currentAvatar = v}),
-                Container(child: getDropDownButton()),
+                InputField(hint: "Username", controller: usernameController),
+                InputField(hint: "Email", controller: emailController),
+                InputField(hint: "Avatar", controller: avatarController),
+                Container(
+                    child: CustomDropdownButton(
+                  defaultValue: "Player",
+                  values: roles,
+                  onChange: (v) => _selectedRole = v,
+                )),
                 ElevatedButton(onPressed: () => addUser(provider), child: Text("Create")),
               ],
             ),

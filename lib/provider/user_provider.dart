@@ -26,4 +26,8 @@ class UserProvider extends ChangeNotifier {
     //wait
     notifyListeners();
   }
+
+  User findUserByEmail(String email) {
+    return users.firstWhere((user) => user.email == email);
+  }
 }

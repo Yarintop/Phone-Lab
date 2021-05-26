@@ -1,7 +1,7 @@
 // ignore: unnecessary_getters_setters
 import 'dart:collection';
 
-import 'User.dart';
+import 'user.dart';
 
 class Item {
   String _id;

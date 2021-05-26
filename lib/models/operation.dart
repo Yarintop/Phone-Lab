@@ -1,7 +1,7 @@
 import 'dart:collection';
 
-import 'Item.dart';
-import 'User.dart';
+import 'item.dart';
+import 'user.dart';
 
 class Operation {
   String id;
