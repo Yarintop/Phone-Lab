@@ -24,7 +24,8 @@ class NavItem extends StatelessWidget {
       cursor: SystemMouseCursors.click,
       child: InkWell(
         onTap: () {
-          navKey.currentState.popAndPushNamed(route);
+          // navKey.currentState.popAndPushNamed(route);
+          navKey.currentState.pushReplacementNamed(route);
           // navKey.currentState.pushNamed(route);
           onSelect(this.route);
         },

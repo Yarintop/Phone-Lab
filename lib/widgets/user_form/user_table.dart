@@ -22,6 +22,7 @@ class UsersTable extends StatelessWidget {
       DataCell(Text(user.username)),
       DataCell(Text(user.email)),
       DataCell(Text(user.role)),
+      //TODO - show icon instead
       DataCell(Text(user.avatar)),
     ]);
   }

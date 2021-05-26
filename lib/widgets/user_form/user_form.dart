@@ -21,6 +21,7 @@ class _UserFormState extends State<UserForm> {
   TextEditingController emailController = TextEditingController();
   TextEditingController avatarController = TextEditingController();
 
+  // TODO - Find a better way to get default values, env file / const file
   final String space = "2021b.noam.levi1";
   final List<String> roles = ["Player", "Manager", "Admin"];
   // TextEditingController universalTextController = TextEditingController();

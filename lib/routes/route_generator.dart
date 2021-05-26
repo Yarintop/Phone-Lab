@@ -16,28 +16,51 @@ class RouteGenerator {
       name = routeName;
     switch (name) {
       case ROUTE_CREATE_JOB:
-        return MaterialPageRoute(builder: (_) => CreateJobPage());
+        return PageRouteBuilder(
+          pageBuilder: (_, __, ___) => CreateJobPage(),
+          transitionDuration: Duration(seconds: 0), // added duration=0 to disable minimize waiting time
+        );
         break;
       case ROUTE_ALL_JOBS:
-        return MaterialPageRoute(builder: (_) => JobPage(filter: JobFilter.ALL));
+        return PageRouteBuilder(
+          pageBuilder: (_, __, ___) => JobPage(filter: JobFilter.ALL),
+          transitionDuration: Duration(seconds: 0),
+        );
         break;
       case ROUTE_NEW_JOBS:
-        return MaterialPageRoute(builder: (_) => JobPage(filter: JobFilter.NEW));
+        return PageRouteBuilder(
+          pageBuilder: (_, __, ___) => JobPage(filter: JobFilter.NEW),
+          transitionDuration: Duration(seconds: 0),
+        );
         break;
       case ROUTE_ONGOING_JOBS:
-        return MaterialPageRoute(builder: (_) => JobPage(filter: JobFilter.ONGOING));
+        return PageRouteBuilder(
+          pageBuilder: (_, __, ___) => JobPage(filter: JobFilter.ONGOING),
+          transitionDuration: Duration(seconds: 0),
+        );
         break;
       case ROUTE_COMPLETED_JOBS:
-        return MaterialPageRoute(builder: (_) => JobPage(filter: JobFilter.COMPLETED));
+        return PageRouteBuilder(
+            pageBuilder: (_, __, ___) => JobPage(filter: JobFilter.COMPLETED),
+            transitionDuration: Duration(seconds: 0));
         break;
       case ROUTE_PARTS:
-        return MaterialPageRoute(builder: (_) => PartsPage());
+        return PageRouteBuilder(
+          pageBuilder: (_, __, ___) => PartsPage(),
+          transitionDuration: Duration(seconds: 0),
+        );
         break;
       case ROUTE_USERS:
-        return MaterialPageRoute(builder: (_) => UsersPage());
+        return PageRouteBuilder(
+          pageBuilder: (_, __, ___) => UsersPage(),
+          transitionDuration: Duration(seconds: 0),
+        );
         break;
       default: // if the text is "login-page" or anything else, go to the login page.
-        return MaterialPageRoute(builder: (_) => LoginPage());
+        return PageRouteBuilder(
+          pageBuilder: (_, __, ___) => LoginPage(),
+          transitionDuration: Duration(seconds: 0),
+        );
     }
   }
 }
