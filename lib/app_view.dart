@@ -10,7 +10,7 @@ class AppView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text("Repair CRM")),
+        title: Center(child: Text("Repair Manager")),
       ),
       body: Row(
         children: [

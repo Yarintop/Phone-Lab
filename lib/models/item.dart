@@ -37,13 +37,13 @@ class Item {
   get type => this._type;
   get name => this._name;
   get active => this._active;
-  get createdTimestamp => this._createdTimestamp;
-  get createdBy => this._createdBy;
+  DateTime get createdTimestamp => this._createdTimestamp;
+  User get createdBy => this._createdBy;
   get lat => this._lat;
   get lng => this._lng;
   get itemAttributes => this._itemAttributes;
-  get children => this._children;
-  get parents => this._parents;
+  List<Item> get children => this._children;
+  List<Item> get parents => this._parents;
 
   set id(value) => this._id = value;
   set space(value) => this._space = value;

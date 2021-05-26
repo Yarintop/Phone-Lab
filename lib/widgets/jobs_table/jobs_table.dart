@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/constants/job_specific.dart';
 import 'package:myapp/models/job.dart';
 import 'package:myapp/provider/item_provider.dart';
+import 'package:myapp/widgets/popups/job_detail_alert.dart';
 import 'package:provider/provider.dart';
 
 //TODO - add filter to get specific type of jobs (completed, new, ongoing and etc.)
 class JobsTable extends StatelessWidget {
+  Future<dynamic> generateJobDialog(BuildContext context, Job job) {
+    return showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Job Details"),
+        content: JobDetail(job: job),
+      ),
+    );
+  }
+
   List<DataColumn> getHeaders() {
     return <DataColumn>[
       // DataColumn(
@@ -31,21 +43,23 @@ class JobsTable extends StatelessWidget {
     ];
   }
 
-  List<DataRow> getJobRows(ItemProvider provider) {
-    return provider.jobs.map((Job e) => translateJobToRow(e)).toList();
+  List<DataRow> getJobRows(BuildContext context, ItemProvider provider) {
+    return provider.jobs.map((Job e) => translateJobToRow(context, provider, e)).toList();
     //TODO - read items from the provider and map them with translateJobToRow
   }
 
-  DataRow translateJobToRow(Job job) {
-    return DataRow(cells: [
-      // DataCell(Text(job.id)),
-      DataCell(Text(job.customer)),
-      DataCell(Text(job.phoneNumber)),
-      DataCell(Text(job.phoneModel)),
-      DataCell(Text(job.jobDescription)),
-      DataCell(Text(job.status)),
-      DataCell(Text(job.createdTimestamp.toString())),
-    ]);
+  DataRow translateJobToRow(BuildContext context, ItemProvider provider, Job job) {
+    return DataRow(
+      cells: [
+        // DataCell(Text(job.id)),
+        DataCell(Text(job.customer), onTap: () => generateJobDialog(context, job)),
+        DataCell(Text(job.phoneNumber)),
+        DataCell(Text(job.phoneModel)),
+        DataCell(Text(job.jobDescription)),
+        DataCell(Text(job.status == null ? Progress.UNDEFINED.value : job.status.value)),
+        DataCell(Text(job.createdTimestamp.toString())),
+      ],
+    );
   }
 
   @override
@@ -54,7 +68,7 @@ class JobsTable extends StatelessWidget {
         builder: (context, provider, child) => Container(
               child: DataTable(
                 columns: getHeaders(),
-                rows: getJobRows(provider),
+                rows: getJobRows(context, provider),
               ),
             ));
   }

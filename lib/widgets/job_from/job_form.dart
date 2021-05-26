@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/constants/job_specific.dart';
 import 'package:myapp/models/job.dart';
 import 'package:myapp/models/user.dart';
 import 'package:myapp/provider/item_provider.dart';
@@ -25,12 +26,12 @@ class _JobCreationFormState extends State<JobCreationForm> {
     //BUG - should throw an exception
     if (_selectedUser == null) return;
     Job job = Job();
-    job.status = "In Progress";
+    job.status = Progress.IN_PROGRESS;
     job.customer = controllers["customer"].text;
     job.phoneNumber = controllers["phone"].text;
     job.phoneModel = controllers["model"].text;
     job.jobDescription = controllers["description"].text;
-    job.assignedTechnician = _selectedUser.username;
+    job.assignedTechnician = _selectedUser.email; // could be changed
     job.active = true;
     job.createdTimestamp = DateTime.now();
     job.space = "2021b.noam.levi1";
