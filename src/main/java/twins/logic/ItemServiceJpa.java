@@ -2,6 +2,7 @@ package twins.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -212,7 +213,7 @@ public class ItemServiceJpa implements UpdatedItemsService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail, int size, int page) {
+    public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail, int size, int page, String type) {
 
         ErrorType managerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.MANAGER);
         if (managerRoleCheck == ErrorType.USER_DOES_NOT_EXIST)
@@ -223,20 +224,30 @@ public class ItemServiceJpa implements UpdatedItemsService {
             throw new NoPermissionException("User " + userEmail + " with space ID: " + userSpace +
                     " doesn't have permission for this action!");
 
-        if(managerRoleCheck == ErrorType.GOOD) // User role is manager
-            return this.itemDao
-                    .findAll(PageRequest.of(page, size))
-                    .getContent()
-                    .stream()
-                    .map(this.entityConverter::toBoundary)
-                    .collect(Collectors.toList());
-        else // User role is Player
-            return this.itemDao
-                    .findAllByActiveTrue(PageRequest.of(page, size)) // Find all items where active=true
-                    .getContent()
-                    .stream()
-                    .map(this.entityConverter::toBoundary)
-                    .collect(Collectors.toList());
+        Page<ItemEntity> items;
+
+        if (managerRoleCheck == ErrorType.GOOD)
+        {
+            // User role is Manager
+            if (type.isEmpty())
+                items = this.itemDao.findAll(PageRequest.of(page, size));
+            else
+                items = this.itemDao.findAllByType(type, PageRequest.of(page, size));
+        }
+        else
+        {
+            // User role is Player
+            if (type.isEmpty())
+                items = this.itemDao.findAllByActiveTrue(PageRequest.of(page, size));
+            else
+                items = this.itemDao.findAllByTypeAndActiveTrue(type, PageRequest.of(page, size));
+        }
+        
+        return items
+                .getContent()
+                .stream()
+                .map(this.entityConverter::toBoundary)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -250,10 +261,8 @@ public class ItemServiceJpa implements UpdatedItemsService {
             ItemEntity entity = optionalItem.get();
             return entityConverter.toBoundary(entity);
         } 
-        else {
-            // TODO have server return status 404 here
-            throw new NotFoundException("could not find message by id: " + itemKey);// NullPointerException
-        }
+        else 
+            throw new NotFoundException("could not find message by id: " + itemKey);
     }
 
     @Override

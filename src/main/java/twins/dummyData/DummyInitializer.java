@@ -1,6 +1,6 @@
 package twins.dummyData;
 
-import java.util.stream.IntStream;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,7 +12,7 @@ import twins.logic.OperationsService;
 import twins.logic.UpdatedItemsService;
 import twins.logic.UsersService;
 
-//@Component
+// @Component
 public class DummyInitializer implements CommandLineRunner{
 	private UpdatedItemsService items;
     private UsersService users;
@@ -35,6 +35,7 @@ public class DummyInitializer implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception {
+	    Random rand = new Random();
         // Create 3 Users - Player | Manager | Admin
         UserBoundary user = dataGenerator.getRandomUser();
         user.setRole("Player");
@@ -60,6 +61,7 @@ public class DummyInitializer implements CommandLineRunner{
         for(int i = 0; i < 10; i++){
             DigitalItemBoundary randomItem = dataGenerator.getRandomDigitalItem(space, email);
             randomItem.setActive(i % 2 == 0);
+            randomItem.getItemAttributes().put("price", rand.nextDouble()*100);
             randomItem = this.items.createItem(space, email, randomItem);
             randomItem.getItemId().getSpace();
             this.items.bindChild(space, email, randomItem.getItemId().getSpace(), randomItem.getItemId().getId(), specialItem.getItemId());
