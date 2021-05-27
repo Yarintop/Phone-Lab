@@ -50,17 +50,12 @@ class RouteGenerator {
           transitionDuration: Duration(seconds: 0),
         );
         break;
-      case ROUTE_USERS:
+      default: // return user page if asked or asked something that is not valid
         return PageRouteBuilder(
           pageBuilder: (_, __, ___) => UsersPage(),
           transitionDuration: Duration(seconds: 0),
         );
         break;
-      default: // if the text is "login-page" or anything else, go to the login page.
-        return PageRouteBuilder(
-          pageBuilder: (_, __, ___) => LoginPage(),
-          transitionDuration: Duration(seconds: 0),
-        );
     }
   }
 }

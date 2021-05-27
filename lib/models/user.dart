@@ -18,6 +18,9 @@ class User {
     );
   }
 
+  @override
+  bool operator ==(Object obj) => obj is User && (obj.space == _space && obj.email == _email);
+
   String get space => _space;
   String get email => _email;
   String get username => _username;

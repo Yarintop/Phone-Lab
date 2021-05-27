@@ -3,6 +3,9 @@ import 'package:myapp/models/user.dart';
 
 class UserProvider extends ChangeNotifier {
   bool addingUser; // Flag to handle async adding user
+  User _loggedInUser; // Loggedin user, if not logged in, it would be null
+
+  get loggedInUser => _loggedInUser;
 
   //TEMP
   final List<User> users = [
@@ -27,7 +30,22 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> login(User user) async {
+    // TODO - implement API call
+    User test = users.firstWhere((u) => user == u);
+    if (test != user) return false;
+    _loggedInUser = user;
+    notifyListeners();
+    return true;
+  }
+
   User findUserByEmail(String email) {
     return users.firstWhere((user) => user.email == email);
+  }
+
+  /// Checks if there is a logged in user, if so, returns [askedPage] otherwise, returns [defaultPage]
+  Widget getPageBasedOnLogin(Widget askedPage, Widget defaultPage) {
+    if (_loggedInUser == null) return defaultPage;
+    return askedPage;
   }
 }

@@ -50,13 +50,9 @@ class JobsTable extends StatelessWidget {
 
   DataRow translateJobToRow(BuildContext context, ItemProvider provider, Job job) {
     return DataRow(
-      onSelectChanged: (bool selected) {
-        // Allows to open the menu of job details when pressing on the row instead of a specific cell
-        if (selected) generateJobDialog(context, job);
-      },
       cells: [
         // DataCell(Text(job.id)),
-        DataCell(Text(job.customer)),
+        DataCell(Text(job.customer), onTap: () => generateJobDialog(context, job)),
         DataCell(Text(job.phoneNumber)),
         DataCell(Text(job.phoneModel)),
         DataCell(Text(job.jobDescription)),
@@ -71,7 +67,6 @@ class JobsTable extends StatelessWidget {
     return Consumer<ItemProvider>(
         builder: (context, provider, child) => Container(
               child: DataTable(
-                showCheckboxColumn: false, // To hide the checkboxes that are being put when selecting by rows
                 columns: getHeaders(),
                 rows: getJobRows(context, provider),
               ),

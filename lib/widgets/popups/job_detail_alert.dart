@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/constants/job_specific.dart';
 import 'package:myapp/models/job.dart';
-import 'package:myapp/provider/item_provider.dart';
+import 'package:myapp/providers/item_provider.dart';
 import 'package:myapp/widgets/form_widgets/dropdown_button.dart';
 import 'package:myapp/widgets/popups/customer_details.dart';
 import 'package:myapp/widgets/popups/technical_details.dart';

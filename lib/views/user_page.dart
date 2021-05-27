@@ -2,19 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:myapp/widgets/user_form/user_display.dart';
 import 'package:myapp/widgets/user_form/user_form.dart';
 
-// class UsersPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       child: Column(
-//         children: [
-//           Center(child: Text("Users go here")),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
 class UsersPage extends StatefulWidget {
   @override
   _UsersPageState createState() => _UsersPageState();

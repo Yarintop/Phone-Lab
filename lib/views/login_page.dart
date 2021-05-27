@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/provider/user_provider.dart';
+import 'package:myapp/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget with RouteAware {

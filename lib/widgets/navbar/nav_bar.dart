@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/provider/utils_provider.dart';
+import 'package:myapp/providers/utils_provider.dart';
 import 'package:myapp/routes/routes.dart';
 import 'package:myapp/widgets/navbar/nav_item.dart';
 import 'package:provider/provider.dart';

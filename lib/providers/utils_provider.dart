@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:myapp/models/user.dart';
 import 'package:myapp/routes/routes.dart';
 
 class UtilsProvider extends ChangeNotifier {

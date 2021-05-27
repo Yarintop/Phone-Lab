@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/provider/item_provider.dart';
-import 'package:myapp/provider/user_provider.dart';
-import 'package:myapp/provider/operation_provider.dart';
-import 'package:myapp/provider/utils_provider.dart';
+import 'package:myapp/providers/item_provider.dart';
+import 'package:myapp/providers/user_provider.dart';
+import 'package:myapp/providers/operation_provider.dart';
+import 'package:myapp/providers/utils_provider.dart';
 import 'package:myapp/routes/route_generator.dart';
 import 'package:myapp/routes/route_observer.dart';
 import 'package:myapp/routes/routes.dart';

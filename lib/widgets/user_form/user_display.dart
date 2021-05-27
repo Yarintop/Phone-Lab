@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/provider/user_provider.dart';
+import 'package:myapp/providers/user_provider.dart';
 import 'package:myapp/widgets/user_form/user_table.dart';
 
 class UserDisplay extends StatelessWidget {
