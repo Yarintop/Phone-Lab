@@ -40,7 +40,7 @@ public class OperationServiceJpa implements OperationsService {
 
     // DAOs for checking user & items are correct
     private UserDao usersDao;
-    private ItemDao itemsDao;
+    private ItemDao itemDao;
 
     // User utils
     private UserUtilsService userUtilsService;
@@ -55,7 +55,7 @@ public class OperationServiceJpa implements OperationsService {
     public void setDAOs(OperationDao operationsDao, UserDao usersDao, ItemDao itemsDao) {
         this.operationsDao = operationsDao;
         this.usersDao = usersDao;
-        this.itemsDao = itemsDao;
+        this.itemDao = itemsDao;
     }
 
     @Autowired
@@ -147,7 +147,7 @@ public class OperationServiceJpa implements OperationsService {
                 break;
 
             case "getSparePartsCount":
-                rv = itemsDao.countByTypeAndActiveTrue(itemBoundary.getType());
+                rv = itemDao.countByTypeAndActiveTrue(itemBoundary.getType());
                 break;
 
             case "addSpareParts":
@@ -167,7 +167,7 @@ public class OperationServiceJpa implements OperationsService {
 
             case "getJobSparePartsCost":
                 String parentId = itemConverter.toSecondaryId(itemSpace, itemId);
-                List<DigitalItemBoundary> children = itemsDao
+                List<DigitalItemBoundary> children = itemDao
                         .findAllByParents_id(parentId)
                         .stream()
                         .map(itemConverter :: toBoundary)
@@ -181,6 +181,21 @@ public class OperationServiceJpa implements OperationsService {
                 msg.put("numberOfParts", children.size());
                 rv = msg;
                 break;
+
+            // case "deleteSpecificItem":
+            //     itemDao.deleteById(arg0);
+            //     break;
+            
+            // THE DIMA HAS SPOKEN
+            // case "deleteSpecificUser":
+            //     break;
+
+            // case "getAllItemsByType":
+            //     return itemDao
+            //             .findAllByType(itemBoundary.getType())
+            //             .stream()
+            //             .map(itemConverter::toBoundary)
+            //             .collect(Collectors.toList());
 
             default:
                 msg.put("ERROR", "!!~UNDEFINED OPERATION~!!");
@@ -208,7 +223,7 @@ public class OperationServiceJpa implements OperationsService {
                     " doesn't have permission for this action!");
 
         // Check operation format
-        if (operation.getType() == null || operation.getType().length() == 0) //TODO: check from a given list also
+        if (operation.getType() == null || operation.getType().length() == 0)
             throw new BadRequestException("Invalid operation type! (" + operation.getType() + ")");
 
         OperationEntity entity = operationConverter.toEntity(operation);
@@ -277,7 +292,7 @@ public class OperationServiceJpa implements OperationsService {
     public boolean checkItemMissing(OperationEntity oe) {
         if (oe.getItem() == null) return true;
         String itemKey = oe.getItem();
-        return !itemsDao.findById(itemKey).isPresent();
+        return !itemDao.findById(itemKey).isPresent();
     }
 }
 

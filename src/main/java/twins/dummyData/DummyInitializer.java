@@ -1,6 +1,5 @@
 package twins.dummyData;
 
-import java.util.stream.IntStream;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,7 @@ import twins.logic.OperationsService;
 import twins.logic.UpdatedItemsService;
 import twins.logic.UsersService;
 
-//@Component
+// @Component
 public class DummyInitializer implements CommandLineRunner{
 	private UpdatedItemsService items;
     private UsersService users;

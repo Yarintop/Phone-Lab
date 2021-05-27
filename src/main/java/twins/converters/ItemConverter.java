@@ -45,7 +45,7 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
         if (boundaryObject.isActive() != null)
             rv.setActive(boundaryObject.isActive());
         rv.setCreatedTimestamp(boundaryObject.getCreatedTimestamp());
-//        rv.setCreatedBy(userConverter.toEntity(boundaryObject.getCreatedBy()));
+        // rv.setCreatedBy(userConverter.toEntity(boundaryObject.getCreatedBy()));
         rv.setCreatedBy(boundaryObject.getCreatedBy().getUserId().toString());
         rv.setLongitude(boundaryObject.getLocation().getLng());
         rv.setLatitude(boundaryObject.getLocation().getLat());
@@ -63,7 +63,7 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
         rv.setName(entityObject.getName());
         rv.setActive(entityObject.isActive());
         rv.setCreatedTimestamp(entityObject.getCreatedTimestamp());
-//        rv.setCreatedBy(userConverter.toBoundary(entityObject.getCreatedBy())); // This line might change
+        // rv.setCreatedBy(userConverter.toBoundary(entityObject.getCreatedBy())); // This line might change
 
         Optional<UserEntity> userEntity = userDao.findById(entityObject.getCreatedBy());
         // This line might change

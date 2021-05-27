@@ -74,9 +74,10 @@ public class DigitalItemController {
             @PathVariable("userSpace") String userSpace,
             @PathVariable("userEmail") String userEmail,
             @RequestParam(name="size", required=false, defaultValue="20") int size,
-            @RequestParam(name="page", required=false, defaultValue="0") int page) {
+            @RequestParam(name="page", required=false, defaultValue="0") int page,
+            @RequestParam(name="type", required=false, defaultValue="") String type) {
         List<DigitalItemBoundary> allItems =
-                this.itemLogic.getAllItems(userSpace, userEmail, size, page);
+                this.itemLogic.getAllItems(userSpace, userEmail, size, page, type);
 
         return allItems.toArray(new DigitalItemBoundary[0]);
     }
