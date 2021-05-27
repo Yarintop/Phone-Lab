@@ -14,15 +14,14 @@ import java.util.Date;
 public class OperationEntity implements Entity {
     private String id = "";
     private String operationType = "undefined";
-//    private ItemEntity item;
+    // private ItemEntity item;
     private String item;
     private Date createdTimestamp = new Date();
-//    private UserEntity invokedBy;
+    // private UserEntity invokedBy;
     private String invokedBy;
     private String operationAttributes;
 
-    public OperationEntity() {
-    }
+    public OperationEntity() { }
 
     @Id
     public String getId() {
