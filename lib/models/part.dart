@@ -8,8 +8,10 @@ class Part extends Item {
   get isUsed => this.itemAttributes["isUsed"];
   get price => this.itemAttributes["price"];
   get usedIn => this.parents;
+  get quality => this.itemAttributes["quality"];
 
   set isUsed(value) => this.itemAttributes["isUsed"] = value;
+  set quality(value) => this.itemAttributes["quality"] = value;
   set price(value) => this.itemAttributes["price"] = value;
   set usedIn(value) => this.parents = value;
 }

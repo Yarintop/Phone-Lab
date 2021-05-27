@@ -44,19 +44,26 @@ class JobsTable extends StatelessWidget {
   }
 
   List<DataRow> getJobRows(BuildContext context, ItemProvider provider) {
-    return provider.jobs.map((Job e) => translateJobToRow(context, provider, e)).toList();
+    return provider.jobs
+        .map((Job e) => translateJobToRow(context, provider, e))
+        .toList();
     //TODO - read items from the provider and map them with translateJobToRow
   }
 
-  DataRow translateJobToRow(BuildContext context, ItemProvider provider, Job job) {
+  DataRow translateJobToRow(
+      BuildContext context, ItemProvider provider, Job job) {
     return DataRow(
+      onSelectChanged: (bool selected) { // Allows to open the menu of job details when pressing on the row instead of a specific cell
+        if (selected) generateJobDialog(context, job);
+      },
       cells: [
         // DataCell(Text(job.id)),
-        DataCell(Text(job.customer), onTap: () => generateJobDialog(context, job)),
+        DataCell(Text(job.customer)),
         DataCell(Text(job.phoneNumber)),
         DataCell(Text(job.phoneModel)),
         DataCell(Text(job.jobDescription)),
-        DataCell(Text(job.status == null ? Progress.UNDEFINED.value : job.status.value)),
+        DataCell(Text(
+            job.status == null ? Progress.UNDEFINED.value : job.status.value)),
         DataCell(Text(job.createdTimestamp.toString())),
       ],
     );
@@ -67,6 +74,7 @@ class JobsTable extends StatelessWidget {
     return Consumer<ItemProvider>(
         builder: (context, provider, child) => Container(
               child: DataTable(
+                showCheckboxColumn: false, // To hide the checkboxes that are being put when selecting by rows
                 columns: getHeaders(),
                 rows: getJobRows(context, provider),
               ),

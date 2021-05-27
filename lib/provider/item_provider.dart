@@ -3,6 +3,8 @@ import 'package:myapp/constants/job_specific.dart';
 import 'package:myapp/models/Item.dart';
 import 'package:myapp/models/user.dart';
 import 'package:myapp/models/job.dart';
+import 'package:myapp/models/part.dart';
+
 
 class ItemProvider extends ChangeNotifier {
   //TEMP
@@ -24,6 +26,27 @@ class ItemProvider extends ChangeNotifier {
         "description": "Sample Phone",
         "status": Progress.IN_PROGRESS,
         "assignedTechnician": "Jimmy",
+      },
+    )
+  ];
+
+
+   final List<Part> parts = [
+    Part.fromParams(
+      "partId",
+      "2021b.noam.levi1",
+      "Screen",
+      "Samsung Galaxy S21+ Screen",
+      true,
+      DateTime.now(),
+      User(),
+      1,
+      1,
+      {
+        "isUsed": true,
+        "description": "Samsung Galaxy S21+ screen (6.7\" Inch)",
+        "quality": "New",
+        "price": "50\$",
       },
     )
   ];
