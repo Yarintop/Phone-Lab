@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:myapp/models/user.dart';
 
 class UserProvider extends ChangeNotifier {
   bool addingUser; // Flag to handle async adding user
   User _loggedInUser; // Loggedin user, if not logged in, it would be null
 
-  get loggedInUser => _loggedInUser;
+  User get loggedInUser => _loggedInUser;
 
   //TEMP
   final List<User> users = [
@@ -30,11 +31,15 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> login(User user) async {
+  Future<bool> login({User user, String email}) async {
+    User test;
+    if (user != null)
+      test = users.firstWhere((u) => user == u);
+    else if (email != null) test = findUserByEmail(email);
+
     // TODO - implement API call
-    User test = users.firstWhere((u) => user == u);
-    if (test != user) return false;
-    _loggedInUser = user;
+    if ((user != null && user != test) || (user == null && test.email != email)) return false;
+    _loggedInUser = test;
     notifyListeners();
     return true;
   }

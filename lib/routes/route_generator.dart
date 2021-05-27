@@ -8,12 +8,20 @@ import 'package:myapp/views/parts_page.dart';
 import 'package:myapp/views/user_page.dart';
 
 class RouteGenerator {
-  static Route<dynamic> generateRoute({RouteSettings settings, String routeName}) {
+  static Route<dynamic> generateRoute({RouteSettings settings, String routeName, bool loggedIn = false}) {
+    // if not logged in, return only users page
+    if (!loggedIn)
+      return PageRouteBuilder(
+        pageBuilder: (_, __, ___) => UsersPage(),
+        transitionDuration: Duration(seconds: 0),
+      );
+
     String name = "";
     if (settings != null)
       name = settings.name;
     else
       name = routeName;
+
     switch (name) {
       case ROUTE_CREATE_JOB:
         return PageRouteBuilder(

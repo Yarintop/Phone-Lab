@@ -6,6 +6,7 @@ class NavItem extends StatelessWidget {
   final String text;
   final double padding;
   final bool selected;
+  final bool disabled;
   final Function onSelect;
 
   final String route;
@@ -13,10 +14,18 @@ class NavItem extends StatelessWidget {
   NavItem({
     @required this.text,
     @required this.route,
+    this.disabled,
     this.padding = 50.0,
     this.selected,
     this.onSelect,
   });
+
+  Color getColor() {
+    if (disabled) return Colors.grey;
+    if (selected) return Colors.red;
+
+    return Colors.black;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +33,10 @@ class NavItem extends StatelessWidget {
       cursor: SystemMouseCursors.click,
       child: InkWell(
         onTap: () {
-          // navKey.currentState.popAndPushNamed(route);
+          // If button is disabled, onTap will do nothing.
+          if (disabled) return;
+
           navKey.currentState.pushReplacementNamed(route);
-          // navKey.currentState.pushNamed(route);
           onSelect(this.route);
         },
         child: Container(
@@ -39,7 +49,7 @@ class NavItem extends StatelessWidget {
           child: Center(
             child: Text(
               this.text,
-              style: TextStyle(color: this.selected ? Colors.red : Colors.black),
+              style: TextStyle(color: getColor()),
             ),
           ),
         ),

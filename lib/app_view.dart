@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/widgets/appbar/user_info.dart';
 import 'package:myapp/widgets/navbar/nav_bar.dart';
 
 class AppView extends StatelessWidget {
@@ -11,6 +12,7 @@ class AppView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text("Repair Manager")),
+        actions: [UserInfo()],
       ),
       body: Row(
         children: [

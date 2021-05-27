@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:myapp/models/user.dart';
 import 'package:myapp/routes/routes.dart';
 
 class UtilsProvider extends ChangeNotifier {
-  String selectedRoute = ROUTE_LOGIN;
+  String selectedRoute = ROUTE_USERS;
 
   void selectRouteAndNotify(String route) {
     this.selectedRoute = route;

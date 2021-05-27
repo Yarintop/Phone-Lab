@@ -13,10 +13,6 @@ class UserForm extends StatefulWidget {
 class _UserFormState extends State<UserForm> {
   String _selectedRole = "Player";
 
-  String _currentUsername = "";
-  String _currentEmail = "";
-  String _currentAvatar = "";
-
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController avatarController = TextEditingController();
@@ -30,8 +26,8 @@ class _UserFormState extends State<UserForm> {
     // This function would try to add a user using the provider which will invoke an async api call.
     User user = User.fromParams(
       space,
-      usernameController.text,
       emailController.text,
+      usernameController.text,
       avatarController.text,
       _selectedRole,
     );

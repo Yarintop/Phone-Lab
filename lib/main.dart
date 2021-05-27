@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/models/user.dart';
 import 'package:myapp/providers/item_provider.dart';
 import 'package:myapp/providers/user_provider.dart';
 import 'package:myapp/providers/operation_provider.dart';
@@ -24,20 +25,21 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     // observer.subscribe(RepairRouteObserver(), RouteGenerator.generateRoute(routeName: ROUTE_LOGIN));
 
-    return Consumer<UtilsProvider>(
-      builder: (context, utilsProvider, child) => MaterialApp(
+    return Consumer2<UtilsProvider, UserProvider>(
+      builder: (context, utilsProvider, userProvider, child) => MaterialApp(
         title: 'Repair System',
         // theme: ThemeData.dark().copyWith(
         // primaryColor: Colors.deepPurple,
         // ),
 
         // * This observer is to detect routes changes
-        navigatorObservers: [RepairRouteObserver(provider: utilsProvider)],
+        // navigatorObservers: [RepairRouteObserver(provider: utilsProvider)],
+
         initialRoute: ROUTE_LOGIN,
         navigatorKey: navKey,
         onGenerateRoute: (settings) {
           // utilsProvider.selectRoute(settings.name);
-          return RouteGenerator.generateRoute(settings: settings);
+          return RouteGenerator.generateRoute(settings: settings, loggedIn: userProvider.loggedInUser != null);
         },
         builder: (context, child) => AppView(
           child: child,

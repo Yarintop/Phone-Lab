@@ -10,11 +10,12 @@ class JobPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Column(
-      children: [
-        Text("Header"),
-        JobsTable(),
-      ],
-    ));
+      child: Column(
+        children: [
+          Text("Header"),
+          JobsTable(),
+        ],
+      ),
+    );
   }
 }
