@@ -8,10 +8,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import twins.boundaries.DigitalItemBoundary;
-import twins.boundaries.ItemIdBoundary;
-import twins.boundaries.OperationBoundary;
-import twins.boundaries.UserIdBoundary;
+import twins.boundaries.*;
 import twins.converters.ItemConverter;
 import twins.converters.OperationConverter;
 import twins.dao.ItemDao;
@@ -48,6 +45,7 @@ public class OperationServiceJpa implements OperationsService {
     // User utils
     private UserUtilsService userUtilsService;
     private UpdatedItemsService itemsService;
+    private UsersService usersService;
 
     private OperationConverter operationConverter;
     private ItemConverter itemConverter;
@@ -61,20 +59,17 @@ public class OperationServiceJpa implements OperationsService {
     }
 
     @Autowired
-    public void setServices(UserUtilsService userUtilsService) {
+    public void setServices(UserUtilsService userUtilsService, UpdatedItemsService itemsService, UsersService usersService) {
         this.userUtilsService = userUtilsService;
+        this.itemsService = itemsService;
+        this.usersService = usersService;
     }
 
     @Autowired
     public void setJmsTemplate(JmsTemplate jmsTemplate) {
         this.jmsTemplate = jmsTemplate;
     }
-    
-    @Autowired
-    public void setItemsService(UpdatedItemsService itemsService)
-    {
-        this.itemsService = itemsService;
-    }
+
 
     @Autowired
     public void setItemConverter(ItemConverter itemConverter)
@@ -127,36 +122,49 @@ public class OperationServiceJpa implements OperationsService {
         Map<String, Object> itemAttrs = itemBoundary.getItemAttributes();
         Map<String, Object> msg = new HashMap<>();
 
+        //Change Player to be a Manager to be able to activate update role
+        UserIdBoundary userId = operation.getInvokedBy().getUserId();
+        UserBoundary userBoundary = usersService.login(userId.getSpace(), userId.getEmail());
+        Object rv = null;
+        userBoundary.setRole("Manager");
+        usersService.updateUser(userId.getSpace(), userId.getEmail(), userBoundary);
+
         switch(entity.getOperationType())
         {
             case "assignTechnician":
-                String tech = (String) operationAttrs.get("Technician");
+                String tech = (String) operationAttrs.get("technician");
                 itemAttrs.put("assignedTechnician", tech);
                 itemsService.updateItem(userSpace, userEmail, itemSpace, itemId, itemBoundary);
-                return itemBoundary;
+                rv = itemBoundary;
+                break;
 
             case "useSparePart":
             case "markAsDone":
                 itemAttrs.put("Deactivation Date", new Date());
                 itemBoundary.setActive(false);
                 itemBoundary = itemsService.updateItem(userSpace, userEmail, itemSpace, itemId, itemBoundary);
-                return itemBoundary;
+                rv = itemBoundary;
+                break;
 
             case "getSparePartsCount":
-                return itemsDao.countByTypeAndActiveTrue(itemBoundary.getType());
+                rv = itemsDao.countByTypeAndActiveTrue(itemBoundary.getType());
+                break;
 
             case "addSpareParts":
                 int amount = (int) itemAttrs.getOrDefault("amount", 0);
                 int amountToAdd = (int) operationAttrs.getOrDefault("amountToAdd", 1);
                 itemAttrs.put("amount", amount + amountToAdd);
                 itemBoundary = itemsService.updateItem(userSpace, userEmail, itemSpace, itemId, itemBoundary);
-                return itemBoundary;
+                rv = itemBoundary;
+                break;
 
             case "bindPartsToJob":
-                ItemIdBoundary child = (ItemIdBoundary) operationAttrs.get("childItem");
-                itemsService.bindChild(userSpace, userEmail, itemSpace, itemId, child);
-                return itemBoundary;
-            
+                Map<String, String> child = (Map<String, String>) operationAttrs.get("childItem");
+                ItemIdBoundary childId = new ItemIdBoundary(child.getOrDefault("space", ""), child.getOrDefault("id", ""));
+                itemsService.bindChild(userSpace, userEmail, itemSpace, itemId, childId);
+                rv = itemBoundary;
+                break;
+
             case "getJobSparePartsCost":
                 String parentId = itemConverter.toSecondaryId(itemSpace, itemId);
                 List<DigitalItemBoundary> children = itemsDao
@@ -165,18 +173,23 @@ public class OperationServiceJpa implements OperationsService {
                         .map(itemConverter :: toBoundary)
                         .collect(Collectors.toList());
                 
-                float price = 0;
+                double price = 0;
                 for (DigitalItemBoundary item : children)
-                    price += (float) item.getItemAttributes().getOrDefault("price", 0);
+                    price += (double) item.getItemAttributes().getOrDefault("price", 0);
 
                 msg.put("totalPrice", price);
                 msg.put("numberOfParts", children.size());
-                return msg;
-            
+                rv = msg;
+                break;
+
             default:
                 msg.put("ERROR", "!!~UNDEFINED OPERATION~!!");
-                return msg;
-        }        
+                rv = msg;
+                break;
+        }
+        userBoundary.setRole("Player");
+        usersService.updateUser(userId.getSpace(), userId.getEmail(), userBoundary);
+        return rv;
     }
 
     @Override

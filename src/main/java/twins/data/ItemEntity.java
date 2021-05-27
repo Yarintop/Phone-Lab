@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 //@javax.persistence.Entity
@@ -142,5 +143,17 @@ public class ItemEntity implements Entity {
             ie.addChild(this, false);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ItemEntity that = (ItemEntity) o;
+        return active == that.active && Double.compare(that.longitude, longitude) == 0 && Double.compare(that.latitude, latitude) == 0 && Objects.equals(id, that.id) && Objects.equals(type, that.type) && Objects.equals(name, that.name) && Objects.equals(createdTimestamp, that.createdTimestamp) && Objects.equals(createdBy, that.createdBy) && Objects.equals(itemAttributes, that.itemAttributes) && Objects.equals(children, that.children) && Objects.equals(parents, that.parents);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type, name, active, createdTimestamp, createdBy, longitude, latitude, itemAttributes, children, parents);
+    }
 }
 
