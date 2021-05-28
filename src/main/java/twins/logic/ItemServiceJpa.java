@@ -275,6 +275,14 @@ public class ItemServiceJpa implements UpdatedItemsService {
     @Override
     @Transactional
     public void bindChild(String userSpace, String userEmail, String itemSpace, String itemId, ItemIdBoundary childId) {
+
+        ErrorType managerRoleCheck = userUtilsService.checkRoleUser(userSpace, userEmail, UserRole.MANAGER);
+        if (managerRoleCheck == ErrorType.USER_DOES_NOT_EXIST)
+            throw new NotFoundException("User " + userEmail + " with space ID: " + userSpace + " not found!");
+        if (managerRoleCheck != ErrorType.GOOD)
+            throw new NoPermissionException("User " + userEmail + " with space ID: " + userSpace +
+                    " doesn't have permission for this action!");
+
         String parentId = this.entityConverter.toSecondaryId(itemSpace, itemId);
 
         ItemEntity parentItem = this.itemDao.findById(parentId)
