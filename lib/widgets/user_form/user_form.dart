@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/constants/project_specific.dart';
+import 'package:myapp/constants/user_specific.dart';
 import 'package:myapp/models/user.dart';
 import 'package:myapp/providers/user_provider.dart';
 import 'package:myapp/widgets/form_widgets/dropdown_button.dart';
@@ -11,21 +13,16 @@ class UserForm extends StatefulWidget {
 }
 
 class _UserFormState extends State<UserForm> {
-  String _selectedRole = "Player";
+  String _selectedRole = Role.PLAYER.value;
 
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController avatarController = TextEditingController();
 
-  // TODO - Find a better way to get default values, env file / const file
-  final String space = "2021b.noam.levi1";
-  final List<String> roles = ["Player", "Manager", "Admin"];
-  // TextEditingController universalTextController = TextEditingController();
-
   void addUser(UserProvider provider) {
     // This function would try to add a user using the provider which will invoke an async api call.
     User user = User.fromParams(
-      space,
+      SPACE,
       emailController.text,
       usernameController.text,
       avatarController.text,
@@ -89,11 +86,15 @@ class _UserFormState extends State<UserForm> {
                 InputField(hint: "Avatar", controller: avatarController),
                 Container(
                     child: CustomDropdownButton(
-                  defaultValue: "Player",
-                  values: roles,
+                  defaultValue: Role.PLAYER.value,
+                  values: Role.values.map((Role r) => r.value).toList(),
                   onChange: (v) => _selectedRole = v,
                 )),
-                ElevatedButton(onPressed: () => addUser(provider), child: Text("Create")),
+                ElevatedButton(
+                    onPressed: () {
+                      addUser(provider);
+                    },
+                    child: Text("Create")),
               ],
             ),
           ),

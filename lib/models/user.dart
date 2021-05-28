@@ -18,6 +18,13 @@ class User {
     );
   }
 
+  Map<String, dynamic> toJson() => {
+        "userId": {"email": email, "space": space},
+        "role": role,
+        "avatar": avatar,
+        "username": username,
+      };
+
   @override
   bool operator ==(Object obj) => obj is User && (obj.space == _space && obj.email == _email);
 

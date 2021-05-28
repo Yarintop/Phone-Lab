@@ -1,6 +1,20 @@
-const NOT_ASSIGNED = "Not Assigned";
+import 'package:json_annotation/json_annotation.dart';
 
-enum Progress { IN_PROGRESS, COMPLETED, FAILED_TO_FIX, WAITING_FOR_PICKUP, UNDEFINED }
+const NOT_ASSIGNED = "Not Assigned";
+const REPAIR_JOB_TYPE = "Job";
+
+enum Progress {
+  @JsonValue("In Progress")
+  IN_PROGRESS,
+  @JsonValue("Completed")
+  COMPLETED,
+  @JsonValue("Failed to fix")
+  FAILED_TO_FIX,
+  @JsonValue("Waiting For Pickup")
+  WAITING_FOR_PICKUP,
+  @JsonValue("Undefined")
+  UNDEFINED
+}
 
 extension ProgressExtension on Progress {
   String get value {

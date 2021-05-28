@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/models/user.dart';
 import 'package:myapp/providers/item_provider.dart';
 import 'package:myapp/providers/user_provider.dart';
 import 'package:myapp/providers/operation_provider.dart';
 import 'package:myapp/providers/utils_provider.dart';
 import 'package:myapp/routes/route_generator.dart';
-import 'package:myapp/routes/route_observer.dart';
 import 'package:myapp/routes/routes.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:provider/provider.dart';
 import 'app_view.dart';
 
-void main() {
+Future main() async {
+  await DotEnv.load(fileName: ".env");
+  print("Server address: ${DotEnv.env["HOST"]}:${DotEnv.env["PORT"]}");
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => ItemProvider()),
     ChangeNotifierProvider(create: (context) => UserProvider()),

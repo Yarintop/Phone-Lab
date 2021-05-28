@@ -1,4 +1,4 @@
-import 'Item.dart';
+import 'item.dart';
 
 class Part extends Item {
   Part() : super();

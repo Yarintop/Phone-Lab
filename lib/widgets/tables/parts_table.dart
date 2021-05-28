@@ -16,13 +16,13 @@ class PartsTable extends StatelessWidget {
         label: Text("Name"),
       ),
       DataColumn(
-        label: Text("Is Used"),
+        label: Text("Is Inventory"),
       ),
       DataColumn(
         label: Text("Price"),
-      ),
-      DataColumn(
-        label: Text("Quality"),
+        // ),
+        // DataColumn(
+        // label: Text("Quality"),
       ),
     ];
   }
@@ -41,9 +41,9 @@ class PartsTable extends StatelessWidget {
         // DataCell(Text(job.id)),
         DataCell(Text(part.id)),
         DataCell(Text(part.name)),
-        DataCell(Text(part.isUsed ? "Yes" : "No")),
+        DataCell(Text(part.active ? "Yes" : "No")),
         DataCell(Text(part.price)),
-        DataCell(Text(part.quality)),
+        // DataCell(Text(part.quality)),
       ],
     );
   }

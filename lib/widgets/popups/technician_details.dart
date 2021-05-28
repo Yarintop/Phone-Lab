@@ -20,7 +20,8 @@ class _TechnicianDetailsState extends State<TechnicianDetails> {
 
   String getDefaultValue(UserProvider provider, Job job) {
     if (provider.users.length == 0) return NOT_ASSIGNED;
-    return job.dirty ? job.draftTechnician : job.assignedTechnician;
+    String technician = job.dirty ? job.draftTechnician : job.assignedTechnician;
+    return technician == "" ? NOT_ASSIGNED : technician;
   }
 
   @override

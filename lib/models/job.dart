@@ -1,7 +1,7 @@
 import 'package:myapp/constants/job_specific.dart';
 import 'package:myapp/models/part.dart';
 
-import 'Item.dart';
+import 'item.dart';
 
 class Job extends Item {
   bool _dirty = false;
@@ -12,14 +12,36 @@ class Job extends Item {
   Job() : super();
   Job.fromParams(_id, _space, _type, _name, _active, _createdTimestamp, _createdBy, _lat, _lng, attributes)
       : super.fromParams(_id, _space, _type, _name, _active, _createdTimestamp, _createdBy, _lat, _lng, attributes) {
-    this._draftStatus = attributes["status"];
+    String tmp = attributes["status"];
+    Progress status = Progress.values.firstWhere((p) => p.value == tmp);
+    this.itemAttributes["status"] = status;
+    this._draftStatus = status;
     this._draftFixDescription = attributes["fixDescription"];
     this._draftTechnician = attributes["assignedTechnician"];
+  }
+
+  Job.fromJSON(Map<String, dynamic> json) : super.fromJSON(json) {
+    String tmp = json["itemAttributes"]["status"];
+    Progress status = Progress.values.firstWhere((p) => p.value == tmp);
+    this.itemAttributes["status"] = status;
+    this._draftStatus = status;
+    this._draftFixDescription = json["itemAttributes"]["fixDescription"];
+    this._draftTechnician = json["itemAttributes"]["assignedTechnician"];
+  }
+
+  factory Job.createFromJSON(Map<String, dynamic> json) {
+    return new Job.fromJSON(json);
   }
 
   void addPart(Part part) {
     //TODO - the class that calls this function, should make an API call to bind also
     this.children.add(part);
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    print("trying to encode json");
+    return super.toJson();
   }
 
   // GETTERS

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/constants/job_specific.dart';
 import 'package:myapp/models/job.dart';
 import 'package:myapp/providers/item_provider.dart';
+import 'package:myapp/providers/user_provider.dart';
 import 'package:myapp/widgets/popups/job_detail_alert.dart';
 import 'package:provider/provider.dart';
 
@@ -66,15 +67,35 @@ class JobsTable extends StatelessWidget {
     );
   }
 
+  Widget loadTable(BuildContext context, UserProvider userProvider, ItemProvider itemProvider) {
+    if (!itemProvider.isJobsLoaded) {
+      return Center(
+        child: Text(
+          "Loading Data...",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+      );
+    } else
+      return Container(
+        child: DataTable(
+          showCheckboxColumn: false, // To hide the checkboxes that are being put when selecting by rows
+          columns: getHeaders(),
+          rows: getJobRows(context, itemProvider),
+        ),
+      );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<ItemProvider>(
-        builder: (context, provider, child) => Container(
-              child: DataTable(
-                showCheckboxColumn: false, // To hide the checkboxes that are being put when selecting by rows
-                columns: getHeaders(),
-                rows: getJobRows(context, provider),
-              ),
-            ));
+    return Consumer2<UserProvider, ItemProvider>(
+      builder: (context, userProvider, itemProvider, child) => loadTable(
+        context,
+        userProvider,
+        itemProvider,
+      ),
+    );
   }
 }

@@ -18,19 +18,49 @@ class Item {
   List<Item> _parents = [];
 
   Item();
-  Item.fromParams(
-    this._id,
-    this._space,
-    this._type,
-    this._name,
-    this._active,
-    this._createdTimestamp,
-    this._createdBy,
-    this._lat,
-    this._lng,
-    this._itemAttributes,
-  );
-  //TODO create JSON constructor
+  Item.fromParams(this._id, this._space, this._type, this._name, this._active, this._createdTimestamp, this._createdBy,
+      this._lat, this._lng, this._itemAttributes);
+
+  Item.fromJSON(Map<String, dynamic> json) {
+    this.id = json["itemId"]["id"];
+    this.space = json["itemId"]["space"];
+    this.type = json["type"];
+    this.name = json["name"];
+    this.active = json["active"];
+    this.createdTimestamp = DateTime.parse(json["createdTimestamp"]);
+    this.createdBy = User.fromJSON(json["createdBy"]);
+    this.lat = json["location"]["lat"];
+    this.lng = json["location"]["lng"];
+    this.itemAttributes = HashMap.from(json["itemAttributes"]);
+  }
+
+  factory Item.createFromJSON(Map<String, dynamic> json) {
+    return new Item.fromJSON(json);
+  }
+
+  Map<String, dynamic> toJson() {
+    print("item - to json");
+    Map tmp = {
+      "itemId": {"space": space, "id": id},
+      "type": type,
+      "name": name,
+      "active": active.toString(),
+      "createdTimestamp": createdTimestamp.toString(),
+      "createdBy": {
+        "userId": {
+          "space": createdBy.space,
+          "email": createdBy.email,
+        },
+      },
+      "location": {
+        "lat": lat,
+        "lng": lng,
+      },
+      // "itemAttributes": itemAttributes,
+    };
+    print(tmp.toString());
+    return tmp;
+  }
 
   get id => this._id;
   get space => this._space;

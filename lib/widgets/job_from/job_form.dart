@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/constants/job_specific.dart';
+import 'package:myapp/constants/project_specific.dart';
 import 'package:myapp/models/job.dart';
 import 'package:myapp/models/user.dart';
 import 'package:myapp/providers/item_provider.dart';
@@ -22,7 +23,7 @@ class _JobCreationFormState extends State<JobCreationForm> {
   };
   User _selectedUser;
 
-  void addJob(ItemProvider provider) {
+  void addJob(ItemProvider provider, User user) {
     //BUG - should throw an exception
     if (_selectedUser == null) return;
     Job job = Job();
@@ -34,8 +35,8 @@ class _JobCreationFormState extends State<JobCreationForm> {
     job.assignedTechnician = _selectedUser.email; // could be changed
     job.active = true;
     job.createdTimestamp = DateTime.now();
-    job.space = "2021b.noam.levi1";
-    job.type = "Job";
+    job.space = SPACE;
+    job.type = REPAIR_JOB_TYPE;
     job.name = "RepairJob";
     //TODO - get signed in user instead
 
@@ -44,7 +45,7 @@ class _JobCreationFormState extends State<JobCreationForm> {
     //TODO - figure out what to do with lat/lng
     job.lat = 1;
     job.lng = 1;
-    provider.addJob(job).then((success) => controllers.forEach((key, controller) => {controller.clear()}));
+    provider.addJob(job, user).then((success) => controllers.forEach((key, controller) => {controller.clear()}));
   }
 
   void _selectUser(String email, UserProvider userProvider) {
@@ -91,7 +92,8 @@ class _JobCreationFormState extends State<JobCreationForm> {
                         )
                       ],
                     ),
-                    ElevatedButton(onPressed: () => addJob(itemProvider), child: Text("Create Job"))
+                    ElevatedButton(
+                        onPressed: () => addJob(itemProvider, userProvider.loggedInUser), child: Text("Create Job"))
                   ],
                 ),
               ),

@@ -27,13 +27,19 @@ class UsersTable extends StatelessWidget {
     ]);
   }
 
+  Widget getDisplayWidget(UserProvider provider) {
+    if (provider.loggedInUser != null) {
+      return DataTable(columns: createTableHeaders(), rows: createUserRows(provider.users));
+    }
+
+    return Text(
+      "Please login to view all users",
+      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red, fontSize: 18),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserProvider>(
-      builder: (context, provider, child) => DataTable(
-        columns: createTableHeaders(),
-        rows: createUserRows(provider.users),
-      ),
-    );
+    return Consumer<UserProvider>(builder: (context, provider, child) => getDisplayWidget(provider));
   }
 }
