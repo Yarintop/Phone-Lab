@@ -84,17 +84,23 @@ class _UserFormState extends State<UserForm> {
                 InputField(hint: "Username", controller: usernameController),
                 InputField(hint: "Email", controller: emailController),
                 InputField(hint: "Avatar", controller: avatarController),
-                Container(
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
                     child: CustomDropdownButton(
-                  defaultValue: Role.PLAYER.value,
-                  values: Role.values.map((Role r) => r.value).toList(),
-                  onChange: (v) => _selectedRole = v,
-                )),
+                      hint: "Player's Role",
+                      defaultValue: Role.PLAYER.value,
+                      values: Role.values.map((Role r) => r.value).toList(),
+                      onChange: (v) => _selectedRole = v,
+                    ),
+                  ),
+                ),
                 ElevatedButton(
-                    onPressed: () {
-                      addUser(provider);
-                    },
-                    child: Text("Create")),
+                  onPressed: () {
+                    addUser(provider);
+                  },
+                  child: Text("Create"),
+                ),
               ],
             ),
           ),

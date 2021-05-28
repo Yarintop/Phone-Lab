@@ -32,6 +32,7 @@ class App extends StatelessWidget {
         // theme: ThemeData.dark().copyWith(
         // primaryColor: Colors.deepPurple,
         // ),
+        theme: ThemeData(primaryColor: Colors.blueGrey),
 
         // * This observer is to detect routes changes
         // navigatorObservers: [RepairRouteObserver(provider: utilsProvider)],

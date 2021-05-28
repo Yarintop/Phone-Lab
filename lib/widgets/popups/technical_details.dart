@@ -47,6 +47,14 @@ class _TechnicalDetailsState extends State<TechnicalDetails> {
               Text("Repair Proccess Description: "),
               // Text(widget.job.fixDescription != null ? widget.job.fixDescription : "")
               TextField(
+                decoration: InputDecoration(
+                  hintText: "Fix Description",
+                  fillColor: Colors.white,
+                  filled: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
                 controller: controller,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,

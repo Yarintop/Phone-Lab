@@ -31,16 +31,28 @@ class _TechnicianDetailsState extends State<TechnicianDetails> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text("Created By: "), Text(widget.job.createdBy.email)],
+            children: [
+              Text("Created By: "),
+              Text(
+                widget.job.createdBy.email,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("Assigned To: "),
-              CustomDropdownButton(
-                  defaultValue: getDefaultValue(provider, widget.job),
-                  onChange: widget.callback,
-                  values: [NOT_ASSIGNED, ...provider.users.map<String>((u) => u.email)])
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: SizedBox(
+                  width: 350,
+                  child: CustomDropdownButton(
+                      defaultValue: getDefaultValue(provider, widget.job),
+                      onChange: widget.callback,
+                      values: [NOT_ASSIGNED, ...provider.users.map<String>((u) => u.email)]),
+                ),
+              )
             ],
           ),
         ],

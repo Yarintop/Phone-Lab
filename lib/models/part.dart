@@ -1,3 +1,5 @@
+import 'package:myapp/models/job.dart';
+
 import 'item.dart';
 
 class Part extends Item {
@@ -5,13 +7,18 @@ class Part extends Item {
   Part.fromParams(_id, _space, _type, _name, _active, _createdTimestamp, _createdBy, _lat, _lng, attributes)
       : super.fromParams(_id, _space, _type, _name, _active, _createdTimestamp, _createdBy, _lat, _lng, attributes);
 
-  get isUsed => this.itemAttributes["isUsed"];
-  get price => this.itemAttributes["price"];
-  get usedIn => this.parents;
-  get quality => this.itemAttributes["quality"];
+  Part.fromJSON(json) : super.fromJSON(json);
 
-  set isUsed(value) => this.itemAttributes["isUsed"] = value;
-  set quality(value) => this.itemAttributes["quality"] = value;
+  List<Job> _userIn = [];
+
+  @override
+  String convertToJson() {
+    return super.convertToJson();
+  }
+
+  get price => this.itemAttributes["price"];
+  get usedIn => this._userIn;
+
   set price(value) => this.itemAttributes["price"] = value;
-  set usedIn(value) => this.parents = value;
+  set usedIn(List<Job> jobs) => this._userIn = List.from(jobs);
 }

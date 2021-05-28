@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/widgets/user_form/user_table.dart';
+import 'package:myapp/widgets/tables/user_table.dart';
 
 class UserDisplay extends StatelessWidget {
   @override

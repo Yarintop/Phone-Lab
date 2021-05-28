@@ -28,16 +28,10 @@ class _UserLoginState extends State<UserLogin> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("Login as: "),
-            // CustomDropdownButton(
-            //   defaultValue: getDefaultValue(provider),
-            //   values: provider.users.map<String>((u) => u.email).toList(),
-            //   onChange: (v) => {_userToLogin = v},
-            // ),
             SizedBox(
               child: InputField(hint: "Email", controller: controller),
               width: 200,
             ),
-
             ElevatedButton(
                 onPressed: () {
                   provider.login(email: controller.text);

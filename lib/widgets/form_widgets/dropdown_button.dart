@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
 // class CustomDropdownButton extends StatelessWidget {
@@ -9,17 +10,25 @@ import 'package:flutter/material.dart';
 class CustomDropdownButton extends StatefulWidget {
   final String defaultValue;
   final Function onChange;
+  final String hint;
   final List<String> values;
-
-  CustomDropdownButton({this.defaultValue, this.onChange, this.values});
+  final bool showClearButton;
+  CustomDropdownButton({
+    @required this.defaultValue,
+    this.onChange,
+    @required this.values,
+    this.hint,
+    this.showClearButton,
+  });
 
   @override
   _CustomDropdownButtonState createState() => _CustomDropdownButtonState();
 }
 
 class _CustomDropdownButtonState extends State<CustomDropdownButton> {
-  String _innerValue;
+  String _innerValue = "";
 
+  TextEditingController controller = TextEditingController();
   _CustomDropdownButtonState();
 
   void innerChange(value) {
@@ -28,21 +37,26 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
     setState(() {
       _innerValue = value;
     });
-    widget.onChange(value);
+    if (widget.onChange != null) widget.onChange(value);
   }
 
-  @override
   Widget build(BuildContext context) {
-    return DropdownButton<String>(
-        value: _innerValue == null ? widget.defaultValue : _innerValue,
-        onChanged: innerChange,
-
-        // focusNode: _secondNode,
-        items: widget.values
-            .map((e) => DropdownMenuItem(
-                  child: Text(e),
-                  value: e,
-                ))
-            .toList());
+    return DropdownSearch<String>(
+      selectedItem: (_innerValue == null || _innerValue == "") ? widget.defaultValue : _innerValue,
+      onChanged: innerChange,
+      searchBoxStyle: TextStyle(backgroundColor: Colors.white),
+      dropdownSearchDecoration: InputDecoration(
+        contentPadding: EdgeInsets.fromLTRB(12, 12, 0, 0),
+        border: OutlineInputBorder(),
+        fillColor: Colors.white,
+        filled: true,
+      ),
+      mode: Mode.MENU,
+      showSearchBox: true,
+      label: widget.hint,
+      showClearButton: widget.showClearButton,
+      items: widget.values,
+      searchBoxController: controller,
+    );
   }
 }

@@ -82,18 +82,23 @@ class _JobCreationFormState extends State<JobCreationForm> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text("Technician:"),
-                        SizedBox(
-                          width: 16.0,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            width: 350,
+                            child: CustomDropdownButton(
+                              defaultValue: getDefaultValue(userProvider),
+                              values: userProvider.users.map<String>((User u) => u.email).toList(),
+                              onChange: (val) => _selectUser(val, userProvider),
+                            ),
+                          ),
                         ),
-                        CustomDropdownButton(
-                          defaultValue: getDefaultValue(userProvider),
-                          values: userProvider.users.map<String>((User u) => u.email).toList(),
-                          onChange: (val) => _selectUser(val, userProvider),
-                        )
                       ],
                     ),
                     ElevatedButton(
-                        onPressed: () => addJob(itemProvider, userProvider.loggedInUser), child: Text("Create Job"))
+                      onPressed: () => addJob(itemProvider, userProvider.loggedInUser),
+                      child: Text("Create Job"),
+                    )
                   ],
                 ),
               ),

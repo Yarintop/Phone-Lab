@@ -28,23 +28,32 @@ class NavBar extends StatelessWidget {
   }
 
   Expanded buildNavItem(
-      UtilsProvider utilProvider, UserProvider userProvider, ItemProvider itemProvider, String text, String route) {
-    void pullData(UserProvider userPovider, ItemProvider itemProvider) {
-      print("\n\n\n\nPulling data");
-      itemProvider.pullData(userProvider).then((v) => {userProvider.pullData()});
+    UtilsProvider utilProvider,
+    UserProvider userProvider,
+    ItemProvider itemProvider,
+    String text,
+    String route,
+  ) {
+    void pullData(UserProvider userPovider, ItemProvider itemProvider, String route) async {
+      if (route == ROUTE_USERS)
+        await userProvider.pullData();
+      else
+        // For testing and first alpha, I'm pullig all the items. otherwise I would pull only relevent items
+        await itemProvider.pullData(userProvider);
     }
 
     return Expanded(
       flex: 1,
       child: Container(
         width: 150,
+        color: Colors.blueGrey[100],
         child: NavItem(
           text: text,
           route: route,
           selected: utilProvider.selectedRoute == route,
           disabled: route != ROUTE_USERS ? userProvider.loggedInUser == null : false,
           onSelect: (route) {
-            pullData(userProvider, itemProvider);
+            pullData(userProvider, itemProvider, route);
             utilProvider.selectRouteAndNotify(route);
           },
         ),

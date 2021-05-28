@@ -3,6 +3,8 @@ import 'package:json_annotation/json_annotation.dart';
 const NOT_ASSIGNED = "Not Assigned";
 const REPAIR_JOB_TYPE = "Job";
 
+const CHANGES_DETECTED_STRING = "Unsaved changes detected, please save";
+
 enum Progress {
   @JsonValue("In Progress")
   IN_PROGRESS,

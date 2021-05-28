@@ -1,5 +1,6 @@
 // ignore: unnecessary_getters_setters
 import 'dart:collection';
+import 'dart:convert';
 
 import 'user.dart';
 
@@ -14,8 +15,6 @@ class Item {
   double _lat;
   double _lng;
   HashMap _itemAttributes = HashMap();
-  List<Item> _children = [];
-  List<Item> _parents = [];
 
   Item();
   Item.fromParams(this._id, this._space, this._type, this._name, this._active, this._createdTimestamp, this._createdBy,
@@ -39,8 +38,7 @@ class Item {
   }
 
   Map<String, dynamic> toJson() {
-    print("item - to json");
-    Map tmp = {
+    return {
       "itemId": {"space": space, "id": id},
       "type": type,
       "name": name,
@@ -58,8 +56,26 @@ class Item {
       },
       // "itemAttributes": itemAttributes,
     };
-    print(tmp.toString());
-    return tmp;
+  }
+
+  String convertToJson() {
+    //Convert Progress to string
+    return jsonEncode(
+      {
+        "type": type,
+        "name": name,
+        "active": active,
+        "createdTimestamp": createdTimestamp.toIso8601String(),
+        "createdBy": {
+          "userId": {"space": createdBy.space, "email": createdBy.email}
+        },
+        "itemAttributes": itemAttributes,
+        "location": {
+          "lat": lat,
+          "lng": lng,
+        }
+      },
+    );
   }
 
   get id => this._id;
@@ -72,13 +88,9 @@ class Item {
   get lat => this._lat;
   get lng => this._lng;
   get itemAttributes => this._itemAttributes;
-  List<Item> get children => this._children;
-  List<Item> get parents => this._parents;
 
   set id(value) => this._id = value;
   set space(value) => this._space = value;
-  set parents(parents) => this._parents = parents;
-  set children(children) => this._children = children;
   set itemAttributes(itemAttributes) => this._itemAttributes = itemAttributes;
   set lng(lng) => this._lng = lng;
   set type(type) => this._type = type;

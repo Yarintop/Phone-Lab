@@ -60,9 +60,7 @@ class UserProvider extends ChangeNotifier {
     String tempRole;
     if (loggedInUser.role != Role.ADMIN.value) {
       tempRole = loggedInUser.role;
-      print("(USER) Saving role - " + tempRole);
       await updateRole(loggedInUser, Role.ADMIN.value);
-      print("(USER) new Role is - " + loggedInUser.role);
     }
 
     //get all users
@@ -76,17 +74,11 @@ class UserProvider extends ChangeNotifier {
     _users.addAll(users);
 
     // Restore role if it was changed
-    print("(USER) tempRole is - $tempRole");
     if (tempRole != null) {
-      print("(USER) Restoring role - $tempRole");
       await updateRole(loggedInUser, tempRole);
       User tempUser = users.firstWhere((u) => u == loggedInUser);
-      if (tempUser != null)
-        tempUser.role = tempRole;
-      else
-        print("SOME KIND OF BUG");
+      if (tempUser != null) tempUser.role = tempRole;
     }
-    print("USER DONEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
     notifyListeners();
   }
 
