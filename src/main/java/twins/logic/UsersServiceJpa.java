@@ -2,6 +2,7 @@ package twins.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import twins.boundaries.UserBoundary;
@@ -159,7 +160,7 @@ public class UsersServiceJpa implements UsersService, UserUtilsService {
             throw (new NoPermissionException("User doesn't have the required permissions"));
 
         return this.usersDao
-                .findAll(PageRequest.of(page, size))
+                .findAll(PageRequest.of(page, size, Sort.Direction.ASC, "email"))
                 .getContent()
                 .stream()
                 .map(this.converter::toBoundary)

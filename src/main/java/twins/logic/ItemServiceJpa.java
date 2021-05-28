@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import twins.boundaries.DigitalItemBoundary;
@@ -230,17 +231,17 @@ public class ItemServiceJpa implements UpdatedItemsService {
         {
             // User role is Manager
             if (type.isEmpty())
-                items = this.itemDao.findAll(PageRequest.of(page, size));
+                items = this.itemDao.findAll(PageRequest.of(page, size, Sort.Direction.ASC, "createdTimestamp"));
             else
-                items = this.itemDao.findAllByType(type, PageRequest.of(page, size));
+                items = this.itemDao.findAllByType(type, PageRequest.of(page, size, Sort.Direction.ASC, "createdTimestamp"));
         }
         else
         {
             // User role is Player
             if (type.isEmpty())
-                items = this.itemDao.findAllByActiveTrue(PageRequest.of(page, size));
+                items = this.itemDao.findAllByActiveTrue(PageRequest.of(page, size, Sort.Direction.ASC, "createdTimestamp"));
             else
-                items = this.itemDao.findAllByTypeAndActiveTrue(type, PageRequest.of(page, size));
+                items = this.itemDao.findAllByTypeAndActiveTrue(type, PageRequest.of(page, size, Sort.Direction.ASC, "createdTimestamp"));
         }
         
         return items
@@ -341,14 +342,14 @@ public class ItemServiceJpa implements UpdatedItemsService {
 
         if (managerRoleCheck == ErrorType.GOOD) // User role is Manager
             return this.itemDao
-                    .findAllByParents_id(parentId, PageRequest.of(page,size))
+                    .findAllByParents_id(parentId, PageRequest.of(page,size, Sort.Direction.ASC, "createdTimestamp"))
                     .getContent()
                     .stream()
                     .map(this.entityConverter::toBoundary)
                     .collect(Collectors.toList());
         else // User role is Player
             return this.itemDao
-                    .findAllByActiveTrueAndParents_id(parentId, PageRequest.of(page,size))
+                    .findAllByActiveTrueAndParents_id(parentId, PageRequest.of(page,size, Sort.Direction.ASC, "createdTimestamp"))
                     .getContent()
                     .stream()
                     .map(this.entityConverter::toBoundary)
@@ -405,14 +406,14 @@ public class ItemServiceJpa implements UpdatedItemsService {
 
         if (managerRoleCheck == ErrorType.GOOD) // User role is Manager
             return this.itemDao
-                    .findAllByChildren_id(childId, PageRequest.of(page,size))
+                    .findAllByChildren_id(childId, PageRequest.of(page,size, Sort.Direction.ASC, "createdTimestamp"))
                     .getContent()
                     .stream()
                     .map(this.entityConverter::toBoundary)
                     .collect(Collectors.toList());
         else // User role is Player
             return this.itemDao
-                    .findAllByActiveTrueAndChildren_id(childId, PageRequest.of(page,size))
+                    .findAllByActiveTrueAndChildren_id(childId, PageRequest.of(page,size, Sort.Direction.ASC, "createdTimestamp"))
                     .getContent()
                     .stream()
                     .map(this.entityConverter::toBoundary)

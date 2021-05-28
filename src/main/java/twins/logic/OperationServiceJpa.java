@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -270,7 +271,7 @@ public class OperationServiceJpa implements OperationsService {
             throw new NoPermissionException("User: " + adminEmail + " is not permitted to view all operations");
 
         return operationsDao
-            .findAll(PageRequest.of(page, size))
+            .findAll(PageRequest.of(page, size, Sort.Direction.ASC, "createdTimestamp"))
             .getContent()
             .stream()
             .map(this.operationConverter::toBoundary)
