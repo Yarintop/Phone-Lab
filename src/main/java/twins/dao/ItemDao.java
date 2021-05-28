@@ -21,7 +21,10 @@ public interface ItemDao extends MongoRepository<ItemEntity, String> {
     
     public Page<ItemEntity> findAllByType(String type, Pageable pageable);
     public Page<ItemEntity> findAllByTypeAndActiveTrue(String type, Pageable pageable);
-    
+
     public int countByType(String type);
     public int countByTypeAndActiveTrue(String type);
+
+    public int countByName(String name);
+    public int countByNameIgnoreCaseAndActiveTrue(String name);
 }

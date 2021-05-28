@@ -148,10 +148,10 @@ public class OperationServiceJpa implements OperationsService {
                 break;
 
             case "getSparePartsCount":
-                rv = itemDao.countByTypeAndActiveTrue(itemBoundary.getType());
+                rv = itemDao.countByNameIgnoreCaseAndActiveTrue(itemBoundary.getName());
                 break;
 
-            case "addSpareParts":
+            case "addSpareParts": //TODO - DELETE?
                 int amount = (int) itemAttrs.getOrDefault("amount", 0);
                 int amountToAdd = (int) operationAttrs.getOrDefault("amountToAdd", 1);
                 itemAttrs.put("amount", amount + amountToAdd);
@@ -159,7 +159,7 @@ public class OperationServiceJpa implements OperationsService {
                 rv = itemBoundary;
                 break;
 
-            case "bindPartsToJob":
+            case "bindPartsToJob": // TODO - SHOULD MAKE IT MARKED AS USED AS WELL
                 Map<String, String> child = (Map<String, String>) operationAttrs.get("childItem");
                 ItemIdBoundary childId = new ItemIdBoundary(child.getOrDefault("space", ""), child.getOrDefault("id", ""));
                 itemsService.bindChild(userSpace, userEmail, itemSpace, itemId, childId);
@@ -175,8 +175,10 @@ public class OperationServiceJpa implements OperationsService {
                         .collect(Collectors.toList());
                 
                 double price = 0;
-                for (DigitalItemBoundary item : children)
-                    price += (double) item.getItemAttributes().getOrDefault("price", 0);
+                for (DigitalItemBoundary item : children){
+                    Integer tmp = (int) item.getItemAttributes().getOrDefault("price", 0);
+                    price += tmp.doubleValue();
+                }
 
                 msg.put("totalPrice", price);
                 msg.put("numberOfParts", children.size());
