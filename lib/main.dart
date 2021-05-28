@@ -24,8 +24,6 @@ Future main() async {
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // observer.subscribe(RepairRouteObserver(), RouteGenerator.generateRoute(routeName: ROUTE_LOGIN));
-
     return Consumer2<UtilsProvider, UserProvider>(
       builder: (context, utilsProvider, userProvider, child) => MaterialApp(
         title: 'Repair System',
@@ -33,9 +31,6 @@ class App extends StatelessWidget {
         // primaryColor: Colors.deepPurple,
         // ),
         theme: ThemeData(primaryColor: Colors.blueGrey),
-
-        // * This observer is to detect routes changes
-        // navigatorObservers: [RepairRouteObserver(provider: utilsProvider)],
 
         initialRoute: ROUTE_LOGIN,
         navigatorKey: navKey,

@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/constants/job_specific.dart';
 import 'package:myapp/models/job.dart';
-import 'package:myapp/models/user.dart';
 import 'package:myapp/providers/item_provider.dart';
+import 'package:myapp/providers/operation_provider.dart';
 import 'package:myapp/providers/user_provider.dart';
-import 'package:myapp/widgets/popups/job_detail_alert.dart';
+import 'package:myapp/routes/routes.dart';
+import 'package:myapp/widgets/popups/job_popup/job_detail_alert.dart';
+import 'package:myapp/widgets/popups/snackbar/snack_error.dart';
 import 'package:provider/provider.dart';
 
-//TODO - add filter to get specific type of jobs (completed, new, ongoing and etc.)
 class JobsTable extends StatelessWidget {
+  final JobFilter filter;
+
+  JobsTable(this.filter);
+
   Future<dynamic> generateJobDialog(BuildContext context, Job job, {Function onSaved}) {
     return showDialog<String>(
       context: context,
@@ -94,38 +99,55 @@ class JobsTable extends StatelessWidget {
     ];
   }
 
-  List<DataRow> getJobRows(BuildContext context, ItemProvider itemProvider, UserProvider userProvider) {
+  List<DataRow> getJobRows(
+      BuildContext context, ItemProvider itemProvider, UserProvider userProvider, OperationProvider operationProvider) {
     int index = 0;
     return itemProvider.jobs
         .map(
-          (Job e) => translateJobToRow(
+          (Job job) => translateJobToRow(
             context,
             itemProvider,
             userProvider,
-            e,
+            operationProvider,
+            job,
             index: index++,
             onSaved: (Job job) {
               itemProvider.updateJob(job, userProvider).then(
                 (value) {
                   //when the item updated, load all items back
                   Navigator.pop(context);
-                  itemProvider.loadAllJobs(userProvider);
+                  itemProvider.loadAllJobs(userProvider, filter: filter);
                 },
-              );
+              ).onError((error, stackTrace) {
+                showErrorSnack(context, error);
+              });
             },
           ),
         )
         .toList();
   }
 
-  DataRow translateJobToRow(BuildContext context, ItemProvider provider, UserProvider userProvider, Job job,
-      {Function onSaved, int index}) {
+  DataRow translateJobToRow(
+    BuildContext context,
+    ItemProvider itemProvider,
+    UserProvider userProvider,
+    OperationProvider operationProvider,
+    Job job, {
+    Function onSaved,
+    int index,
+  }) {
     return DataRow(
       color: MaterialStateColor.resolveWith((states) => index % 2 == 0 ? Colors.blueGrey[50] : Colors.blueGrey[100]),
       onSelectChanged: (bool selected) {
         // Allows to open the menu of job details when pressing on the row instead of a specific cell
         if (selected) {
-          provider.updateJobParts(job, userProvider);
+          itemProvider
+              .updateJobParts(job, userProvider)
+              .then((value) => operationProvider.pullJobPrice(job, userProvider.loggedInUser))
+              .onError((error, stackTrace) {
+            showErrorSnack(context, error);
+          });
+
           generateJobDialog(context, job, onSaved: onSaved);
         }
       },
@@ -149,7 +171,12 @@ class JobsTable extends StatelessWidget {
     );
   }
 
-  Widget loadTable(BuildContext context, UserProvider userProvider, ItemProvider itemProvider) {
+  Widget loadTable(
+    BuildContext context,
+    UserProvider userProvider,
+    ItemProvider itemProvider,
+    OperationProvider operationProvider,
+  ) {
     if (!itemProvider.isJobsLoaded) {
       return Center(
         child: Text(
@@ -173,18 +200,19 @@ class JobsTable extends StatelessWidget {
           headingRowColor: MaterialStateColor.resolveWith((states) => Colors.blueGrey[200]),
           showCheckboxColumn: false, // To hide the checkboxes that are being put when selecting by rows
           columns: getHeaders(),
-          rows: getJobRows(context, itemProvider, userProvider),
+          rows: getJobRows(context, itemProvider, userProvider, operationProvider),
         ),
       );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<UserProvider, ItemProvider>(
-      builder: (context, userProvider, itemProvider, child) => loadTable(
+    return Consumer3<UserProvider, ItemProvider, OperationProvider>(
+      builder: (context, userProvider, itemProvider, operationProvider, child) => loadTable(
         context,
         userProvider,
         itemProvider,
+        operationProvider,
       ),
     );
   }

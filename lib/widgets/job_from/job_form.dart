@@ -7,6 +7,8 @@ import 'package:myapp/providers/item_provider.dart';
 import 'package:myapp/providers/user_provider.dart';
 import 'package:myapp/widgets/form_widgets/dropdown_button.dart';
 import 'package:myapp/widgets/form_widgets/input_field.dart';
+import 'package:myapp/widgets/popups/snackbar/snack_confim.dart';
+import 'package:myapp/widgets/popups/snackbar/snack_error.dart';
 import 'package:provider/provider.dart';
 
 class JobCreationForm extends StatefulWidget {
@@ -24,7 +26,6 @@ class _JobCreationFormState extends State<JobCreationForm> {
   User _selectedUser;
 
   void addJob(ItemProvider provider, User user) {
-    //BUG - should throw an exception
     if (_selectedUser == null) return;
     Job job = Job();
     job.status = Progress.IN_PROGRESS;
@@ -38,14 +39,17 @@ class _JobCreationFormState extends State<JobCreationForm> {
     job.space = SPACE;
     job.type = REPAIR_JOB_TYPE;
     job.name = "RepairJob";
-    //TODO - get signed in user instead
 
-    job.createdBy = _selectedUser;
+    job.createdBy = user;
 
-    //TODO - figure out what to do with lat/lng
     job.lat = 1;
     job.lng = 1;
-    provider.addJob(job, user).then((success) => controllers.forEach((key, controller) => {controller.clear()}));
+    provider.addJob(job, user).then((success) {
+      controllers.forEach((key, controller) => {controller.clear()});
+      showConfirmationSnack(context, "Job added successfully!");
+    }).onError((error, stackTrace) {
+      showErrorSnack(context, error);
+    });
   }
 
   void _selectUser(String email, UserProvider userProvider) {

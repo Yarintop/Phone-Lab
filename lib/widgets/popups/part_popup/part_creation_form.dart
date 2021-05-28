@@ -6,6 +6,8 @@ import 'package:myapp/models/user.dart';
 import 'package:myapp/providers/item_provider.dart';
 import 'package:myapp/providers/user_provider.dart';
 import 'package:myapp/widgets/form_widgets/input_field.dart';
+import 'package:myapp/widgets/popups/snackbar/snack_confim.dart';
+import 'package:myapp/widgets/popups/snackbar/snack_error.dart';
 import 'package:provider/provider.dart';
 
 class PartCreationForm extends StatefulWidget {
@@ -19,21 +21,28 @@ class _PartCreationFormState extends State<PartCreationForm> {
     "price": TextEditingController(),
   };
 
-  void addPart(ItemProvider provider, User user) {
+  void addPart(ItemProvider itemProvider, UserProvider userProvider) {
     //BUG - should throw an exception
     Part part = Part();
+    User loggedInUser = userProvider.loggedInUser;
     part.name = controllers["name"].text;
-    part.price = controllers["price"].text;
+    part.price = double.parse(controllers["price"].text);
     part.active = true;
     part.createdTimestamp = DateTime.now();
     part.space = SPACE;
     part.type = PART_TYPE;
 
-    part.createdBy = user;
+    part.createdBy = loggedInUser;
 
     part.lat = 1;
     part.lng = 1;
-    provider.addPart(part, user).then((success) => controllers.forEach((key, controller) => {controller.clear()}));
+    itemProvider.addPart(part, loggedInUser).then((success) {
+      showConfirmationSnack(context, "Part ${part.name} was added successfully!");
+      controllers.forEach((key, controller) => {controller.clear()});
+      itemProvider.loadAllParts(userProvider);
+    }).onError((error, stackTrace) {
+      showErrorSnack(context, error);
+    });
   }
 
   @override
@@ -54,9 +63,9 @@ class _PartCreationFormState extends State<PartCreationForm> {
               child: Column(
                 children: [
                   InputField(hint: "Part Name", controller: controllers["name"]),
-                  InputField(hint: "Part Price", controller: controllers["price"]),
+                  InputField(hint: "Part Price", controller: controllers["price"], numbersOnly: true),
                   ElevatedButton(
-                    onPressed: () => addPart(itemProvider, userProvider.loggedInUser),
+                    onPressed: () => addPart(itemProvider, userProvider),
                     child: Text("Add Part"),
                   ),
                 ],

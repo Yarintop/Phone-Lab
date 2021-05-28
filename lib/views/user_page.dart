@@ -28,9 +28,11 @@ class _UsersPageState extends State<UsersPage> {
     return Column(
       children: [
         SizedBox(height: 32),
-        Text("User Control Area"),
+        Text(
+          "User Control Area",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+        ),
         SizedBox(height: 32),
-        //TODO - add option to logout
         UserLogin(),
         SizedBox(height: 32),
         ElevatedButton(onPressed: toggleMode, child: Text(btnText)),

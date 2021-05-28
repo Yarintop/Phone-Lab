@@ -4,14 +4,16 @@ import 'package:myapp/models/part.dart';
 import 'package:myapp/providers/item_provider.dart';
 import 'package:myapp/providers/user_provider.dart';
 import 'package:myapp/widgets/form_widgets/dropdown_button.dart';
-import 'package:myapp/widgets/popups/part_list.dart';
+import 'package:myapp/widgets/popups/job_popup/part_list.dart';
 import 'package:provider/provider.dart';
 
 class JobPartsInfo extends StatefulWidget {
   final Job job;
   final Function onChange;
   final Function onBind;
-  JobPartsInfo({@required this.job, this.onChange, this.onBind});
+  final double totalCost;
+
+  JobPartsInfo({@required this.job, this.onChange, this.onBind, this.totalCost = 0});
 
   @override
   _JobPartsInfoState createState() => _JobPartsInfoState();
@@ -59,6 +61,10 @@ class _JobPartsInfoState extends State<JobPartsInfo> {
           ),
           SizedBox(height: 16),
           JobPartList(job: widget.job),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text("Total Price: "), Text(widget.totalCost.toString())],
+          )
         ],
       ),
     );

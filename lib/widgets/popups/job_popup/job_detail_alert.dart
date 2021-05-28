@@ -3,17 +3,20 @@ import 'package:myapp/constants/job_specific.dart';
 import 'package:myapp/models/job.dart';
 import 'package:myapp/models/part.dart';
 import 'package:myapp/providers/item_provider.dart';
+import 'package:myapp/providers/operation_provider.dart';
 import 'package:myapp/providers/user_provider.dart';
 import 'package:myapp/widgets/form_widgets/dropdown_button.dart';
-import 'package:myapp/widgets/popups/customer_details.dart';
-import 'package:myapp/widgets/popups/job_parts.dart';
-import 'package:myapp/widgets/popups/technical_details.dart';
-import 'package:myapp/widgets/popups/technician_details.dart';
+import 'package:myapp/widgets/popups/job_popup/customer_details.dart';
+import 'package:myapp/widgets/popups/job_popup/job_parts.dart';
+import 'package:myapp/widgets/popups/job_popup/technical_details.dart';
+import 'package:myapp/widgets/popups/job_popup/technician_details.dart';
+import 'package:myapp/widgets/popups/snackbar/snack_confim.dart';
+import 'package:myapp/widgets/popups/snackbar/snack_error.dart';
 import 'package:provider/provider.dart';
 
 class JobDetail extends StatefulWidget {
   final Job job;
-  Function onSaved;
+  final Function onSaved;
   JobDetail({this.job, this.onSaved});
 
   @override
@@ -34,16 +37,23 @@ class _JobDetailState extends State<JobDetail> {
 
   String _partNameAndPrice;
 
-  void _bindPart(ItemProvider itemProvider, UserProvider userProvider) {
+  void _bindPart(ItemProvider itemProvider, UserProvider userProvider, OperationProvider operationProvider) {
     //Get the last location because price won't have ':' (need to implement validation )
     int delimeter = _partNameAndPrice.lastIndexOf(":");
     String partName = _partNameAndPrice.substring(0, delimeter);
     String partPrice = _partNameAndPrice.substring(delimeter + 1);
     // Get the first part that have the same name and price, exact isn't matter (only the active one matter [for this build] )
-    Part part = itemProvider.parts.firstWhere((p) => p.name == partName && p.price == partPrice);
+    Part part = itemProvider.parts.firstWhere((p) => p.name == partName && p.price == int.parse(partPrice) && p.active);
     itemProvider
         .bindPart(widget.job, part, userProvider)
-        .then((res) => res ? itemProvider.updateJobParts(widget.job, userProvider) : null);
+        .then((res) {
+          showConfirmationSnack(context, "Part binded successfully!");
+          return res ? itemProvider.updateJobParts(widget.job, userProvider) : null;
+        })
+        .then((value) => operationProvider.pullJobPrice(widget.job, userProvider.loggedInUser))
+        .onError((error, stackTrace) {
+          showErrorSnack(context, error);
+        });
   }
 
   void _setPartName(String name) {
@@ -61,8 +71,8 @@ class _JobDetailState extends State<JobDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ItemProvider, UserProvider>(
-      builder: (context, itemProvider, userProvider, child) => Column(
+    return Consumer3<ItemProvider, UserProvider, OperationProvider>(
+      builder: (context, itemProvider, userProvider, operationProvider, child) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
@@ -89,9 +99,13 @@ class _JobDetailState extends State<JobDetail> {
                 ),
                 JobPartsInfo(
                   job: widget.job,
-                  onBind: _partNameAndPrice == null ? null : () => _bindPart(itemProvider, userProvider),
+                  onBind:
+                      _partNameAndPrice == null ? null : () => _bindPart(itemProvider, userProvider, operationProvider),
                   onChange: _setPartName,
+                  totalCost: operationProvider.totalCost,
                 ),
+
+                //* END PART
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

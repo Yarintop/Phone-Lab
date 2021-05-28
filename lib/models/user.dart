@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class User {
   String _space;
   String _email;
@@ -24,6 +26,15 @@ class User {
         "avatar": avatar,
         "username": username,
       };
+
+  String convertToJson() {
+    return jsonEncode({
+      "userId": {"email": email, "space": space},
+      "role": role,
+      "avatar": avatar,
+      "username": username,
+    });
+  }
 
   @override
   bool operator ==(Object obj) => obj is User && (obj.space == _space && obj.email == _email);

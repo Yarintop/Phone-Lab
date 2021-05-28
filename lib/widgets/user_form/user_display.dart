@@ -7,7 +7,10 @@ class UserDisplay extends StatelessWidget {
     return Column(
       children: [
         Container(
-          child: Text("Users List:"),
+          child: Text(
+            "Users List:",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+          ),
         ),
         UsersTable()
       ],

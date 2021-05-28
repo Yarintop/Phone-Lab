@@ -8,9 +8,11 @@ class CreateJobPage extends StatelessWidget {
       child: Column(
         children: [
           SizedBox(height: 32.0),
-          //TODO - style the header
-          Text("Creating New Job"),
-          SizedBox(height: 64.0),
+          Text(
+            "Creating New Job",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+          ),
+          SizedBox(height: 48.0),
           JobCreationForm(),
         ],
       ),

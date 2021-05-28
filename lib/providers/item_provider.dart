@@ -12,65 +12,25 @@ import 'package:myapp/models/job.dart';
 import 'package:myapp/models/part.dart';
 import 'package:myapp/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:myapp/routes/routes.dart';
 
 class ItemProvider extends ChangeNotifier {
   final baseUrl = "http://${env["HOST"]}:${env["PORT"]}/$BASE_API";
 
-  //TEMP
-
-  // Job.fromParams(
-  //   "temp",
-  //   "2021b.noam.levi1",
-  //   "Phone",
-  //   "SN-950F",
-  //   true,
-  //   DateTime.now(),
-  //   User(),
-  //   1,
-  //   1,
-  //   {
-  //     "customer": "John",
-  //     "phoneModel": "SN-950F",
-  //     "phoneNumber": "054-1234567",
-  //     "description": "Sample Phone",
-  //     "status": Progress.IN_PROGRESS,
-  //     "assignedTechnician": "Jimmy",
-  //   },
-  // )
   final List<Job> jobs = [];
 
-  final List<Part> parts = [
-    Part.fromParams(
-      "partId",
-      "2021b.noam.levi1",
-      "Screen",
-      "Samsung Galaxy S21+ Screen",
-      true,
-      DateTime.now(),
-      User(),
-      1,
-      1,
-      {
-        "isUsed": true,
-        "description": "Samsung Galaxy S21+ screen (6.7\" Inch)",
-        "quality": "New",
-        "price": "50\$",
-      },
-    )
-  ];
-  //
+  final List<Part> parts = [];
 
   final List<Item> items = [];
   bool _isJobsLoaded = false;
   bool _isPartsLoaded = false;
+
   bool get isJobsLoaded => _isJobsLoaded;
   set isJobsLoaded(val) => _isJobsLoaded = val;
 
   Future<Iterable> loadAllItems(UserProvider provider, String type) async {
     User user = provider.loggedInUser;
-    if (user == null) {
-      return []; //TODO - make an error box or something
-    }
+    if (user == null) return Future.error("User not logged in!");
 
     String tempRole;
     if (user.role != Role.MANAGER.value) {
@@ -81,16 +41,8 @@ class ItemProvider extends ChangeNotifier {
     final res = await http.get(Uri.parse("$baseUrl/$ITEM_API/${user.space}/${user.email}?type=$type"));
 
     //get all users
-    if (res.statusCode != 200) {
-      //TODO - make erorr show bahshah
-      return [];
-    }
-    // Iterable tmp = jsonDecode(res.body);
-    // List<Job> resJobs = tmp.map<Job>((j) => Job.fromJSON(j)).toList();
-    // jobs.clear();
-    // jobs.addAll(resJobs);
+    if (res.statusCode != 200) return Future.error(jsonDecode(res.body)["message"]);
 
-    // Restore role if it was changed
     if (tempRole != null) {
       await provider.updateRole(user, tempRole);
       User tempUser = provider.users.firstWhere((u) => u == user);
@@ -100,23 +52,40 @@ class ItemProvider extends ChangeNotifier {
     return jsonDecode(res.body);
   }
 
-  Future<bool> loadAllJobs(UserProvider provider) async {
-    Iterable rawJobs = await loadAllItems(provider, REPAIR_JOB_TYPE);
-    if (rawJobs == null || rawJobs.length == 0) return false;
+  bool matchJobToFilter(Job job, User user, JobFilter filter) {
+    switch (filter) {
+      case JobFilter.COMPLETED:
+        return job.status == Progress.COMPLETED || job.status == Progress.FAILED_TO_FIX;
+      case JobFilter.ONGOING:
+        return job.status == Progress.IN_PROGRESS;
+      case JobFilter.MY_JOBS:
+        return job.assignedTechnician == user.email;
+      default:
+        return true;
+    }
+  }
 
+  Future<bool> loadAllJobs(UserProvider provider, {JobFilter filter = JobFilter.ALL}) async {
+    Iterable rawJobs = await loadAllItems(provider, REPAIR_JOB_TYPE).onError((error, stackTrace) {
+      print("Test");
+      print(error);
+      return Future.error(error);
+    });
+    // if (rawJobs == null || rawJobs.length == 0) return false;
+    print("pepe");
     List<Job> resJobs = rawJobs.map<Job>((j) => Job.fromJSON(j)).toList();
+    resJobs = resJobs.where((j) => matchJobToFilter(j, provider.loggedInUser, filter)).toList();
     jobs.clear();
     jobs.addAll(resJobs);
 
     notifyListeners();
 
-    //TODO - implement error message
     return true;
   }
 
   Future<bool> loadAllParts(UserProvider provider) async {
-    Iterable rawParts = await loadAllItems(provider, PART_TYPE);
-    if (rawParts == null || rawParts.length == 0) return false;
+    Iterable rawParts = await loadAllItems(provider, PART_TYPE).onError((error, stackTrace) => Future.error(error));
+    // if (rawParts == null || rawParts.length == 0) return false;
 
     List<Part> resParts = rawParts.map<Part>((j) => Part.fromJSON(j)).toList();
     parts.clear();
@@ -124,29 +93,25 @@ class ItemProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    //TODO - implement error message
     return true;
   }
 
-  // TODO - maybe change bool to enum of error types
   Future<bool> addJob(Job job, User user) async {
     _isJobsLoaded = false;
     jobs.clear();
 
-    return await addItem(job, user);
+    return addItem(job, user);
   }
 
-  // TODO - maybe change bool to enum of error types
   Future<bool> addPart(Part part, User user) async {
     _isPartsLoaded = false;
     parts.clear();
 
-    return await addItem(part, user);
+    return addItem(part, user);
   }
 
   Future<bool> addItem(Item item, User user) async {
-    //TODO = make an error message
-    if (user.role != Role.MANAGER.value) return false;
+    if (user.role != Role.MANAGER.value) Future.error("User must be a Manager! Current user is ${user.role}");
     String url = "$baseUrl/$ITEM_API/${user.space}/${user.email}";
 
     final res = await http.post(
@@ -158,8 +123,7 @@ class ItemProvider extends ChangeNotifier {
     if (res.statusCode == 200)
       notifyListeners();
     else
-      print(res.body);
-    //TODO - add error / success messsage
+      return Future.error(jsonDecode(res.body)["message"]);
     return res.statusCode == 200;
   }
 
@@ -229,7 +193,7 @@ class ItemProvider extends ChangeNotifier {
     );
     part.active = false;
     await updatePart(part, userProvider);
-    if (res.statusCode != 200) print(res.body);
+    if (res.statusCode != 200) return Future.error(jsonDecode(res.body)["message"]);
     if (tempRole != null) await userProvider.updateRole(user, tempRole);
     notifyListeners();
     return true;
@@ -243,7 +207,7 @@ class ItemProvider extends ChangeNotifier {
       headers: {"Content-Type": "application/json"},
     );
     //For now just log the error
-    if (res.statusCode != 200) print(res.body);
+    if (res.statusCode != 200) return Future.error(jsonDecode(res.body)["message"]);
     return res.statusCode == 200;
   }
 
@@ -258,10 +222,7 @@ class ItemProvider extends ChangeNotifier {
     }
 
     final res = await http.get(Uri.parse(url));
-    if (res.statusCode != 200) {
-      print(res.body);
-      return false;
-    }
+    if (res.statusCode != 200) return Future.error(jsonDecode(res.body)["message"]);
     Iterable tmp = jsonDecode(res.body);
     List<Part> resParts = tmp.map((j) => Part.fromJSON(j)).toList();
     job.partsUsed = resParts;
@@ -279,12 +240,12 @@ class ItemProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> pullData(UserProvider provider) async {
+  Future<bool> pullData(UserProvider provider, JobFilter filter) async {
     jobs.clear();
     parts.clear();
     _isJobsLoaded = false;
     _isPartsLoaded = false;
-    bool success = await loadAllJobs(provider);
+    bool success = await loadAllJobs(provider, filter: filter);
     success = success && await loadAllParts(provider);
     return success;
   }

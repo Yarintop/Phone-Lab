@@ -7,13 +7,32 @@ class JobPage extends StatelessWidget {
 
   JobPage({this.filter = JobFilter.ALL});
 
+  String getTitle(JobFilter filter) {
+    switch (filter) {
+      case JobFilter.ONGOING:
+        return "On Going Jobs";
+      case JobFilter.COMPLETED:
+        return "Completed Jobs";
+      case JobFilter.MY_JOBS:
+        return "My Jobs";
+      default:
+        return "All Jobs";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       child: Column(
         children: [
-          Text("Header"),
-          JobsTable(),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              getTitle(filter),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+          JobsTable(filter),
         ],
       ),
     );

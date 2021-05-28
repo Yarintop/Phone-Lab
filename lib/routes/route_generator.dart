@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:myapp/routes/routes.dart';
 import 'package:myapp/views/create_job_page.dart';
 import 'package:myapp/views/jobs_page.dart';
-import 'package:myapp/views/login_page.dart';
 import 'package:myapp/views/parts_page.dart';
 import 'package:myapp/views/user_page.dart';
 
@@ -35,9 +34,9 @@ class RouteGenerator {
           transitionDuration: Duration(seconds: 0),
         );
         break;
-      case ROUTE_NEW_JOBS:
+      case ROUTE_MY_JOBS:
         return PageRouteBuilder(
-          pageBuilder: (_, __, ___) => JobPage(filter: JobFilter.NEW),
+          pageBuilder: (_, __, ___) => JobPage(filter: JobFilter.MY_JOBS),
           transitionDuration: Duration(seconds: 0),
         );
         break;

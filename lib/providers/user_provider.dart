@@ -28,7 +28,7 @@ class UserProvider extends ChangeNotifier {
 
   Future<bool> addUser(User user) async {
     if (_users.contains(user)) return false;
-    bool resStatus = false; //TODO - convert to error codes
+    bool resStatus = false;
     final res = await http.post(
       Uri.parse("$baseUrl/$USER_API"),
       body: jsonEncode(
@@ -47,9 +47,8 @@ class UserProvider extends ChangeNotifier {
       _users.add(user);
       resStatus = true;
     } else
-      notifyListeners();
+      return Future.error(jsonDecode(res.body)["message"]);
 
-    // TODO - add logic to validate the info
     notifyListeners();
     return resStatus;
   }
@@ -66,7 +65,7 @@ class UserProvider extends ChangeNotifier {
     //get all users
     final res = await http.get(Uri.parse("$baseUrl/$ADMIN_API/$USER_API/${loggedInUser.space}/${loggedInUser.email}"));
     if (res.statusCode != 200) {
-      return;
+      return Future.error(jsonDecode(res.body)["message"]);
     }
     Iterable tmp = jsonDecode(res.body);
     List<User> users = tmp.map<User>((j) => User.fromJSON(j)).toList();
@@ -87,7 +86,8 @@ class UserProvider extends ChangeNotifier {
     user.role = role;
     final res = await http.put(Uri.parse("$baseUrl/$USER_API/$SPACE/${user.email}"),
         body: jsonEncode(user), headers: {"Content-Type": "application/json"});
-    return res.statusCode == 200;
+    if (res.statusCode != 200) return Future.error(jsonDecode(res.body)["message"]);
+    return true;
   }
 
   Future<bool> login({String email}) async {
@@ -106,7 +106,8 @@ class UserProvider extends ChangeNotifier {
       _loggedInUser = null;
     }
     notifyListeners();
-    return res.statusCode == 200;
+    if (res.statusCode != 200) return Future.error(jsonDecode(res.body)["message"]);
+    return true;
   }
 
   User findUserByEmail(String email) {

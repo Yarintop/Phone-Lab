@@ -16,9 +16,9 @@ class Part extends Item {
     return super.convertToJson();
   }
 
-  get price => this.itemAttributes["price"];
+  double get price => this.itemAttributes["price"];
   get usedIn => this._userIn;
 
-  set price(value) => this.itemAttributes["price"] = value;
+  set price(double value) => this.itemAttributes["price"] = value;
   set usedIn(List<Job> jobs) => this._userIn = List.from(jobs);
 }

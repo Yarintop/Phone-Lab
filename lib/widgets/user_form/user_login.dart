@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:myapp/providers/user_provider.dart';
 import 'package:myapp/widgets/form_widgets/dropdown_button.dart';
 import 'package:myapp/widgets/form_widgets/input_field.dart';
+import 'package:myapp/widgets/popups/snackbar/snack_confim.dart';
+import 'package:myapp/widgets/popups/snackbar/snack_error.dart';
 import 'package:provider/provider.dart';
 
 class UserLogin extends StatefulWidget {
@@ -34,7 +36,15 @@ class _UserLoginState extends State<UserLogin> {
             ),
             ElevatedButton(
                 onPressed: () {
-                  provider.login(email: controller.text);
+                  provider
+                      .login(email: controller.text)
+                      .then((value) => showConfirmationSnack(context, "Logged In Successfully!"))
+                      .onError(
+                    (error, stackTrace) {
+                      showErrorSnack(context, error);
+                      return true;
+                    },
+                  );
                 },
                 child: Text("Login")),
           ],

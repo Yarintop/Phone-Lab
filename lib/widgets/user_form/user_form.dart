@@ -5,6 +5,8 @@ import 'package:myapp/models/user.dart';
 import 'package:myapp/providers/user_provider.dart';
 import 'package:myapp/widgets/form_widgets/dropdown_button.dart';
 import 'package:myapp/widgets/form_widgets/input_field.dart';
+import 'package:myapp/widgets/popups/snackbar/snack_confim.dart';
+import 'package:myapp/widgets/popups/snackbar/snack_error.dart';
 import 'package:provider/provider.dart';
 
 class UserForm extends StatefulWidget {
@@ -30,14 +32,12 @@ class _UserFormState extends State<UserForm> {
     );
 
     provider.addUser(user).then((success) {
-      if (success) {
-        //TODO - add confirmation alert
-        usernameController.clear();
-        emailController.clear();
-        avatarController.clear();
-      } else {
-        //TODO - show error alert
-      }
+      usernameController.clear();
+      emailController.clear();
+      avatarController.clear();
+      showConfirmationSnack(context, "User - ${user.email} added successfully!");
+    }).onError((error, stackTrace) {
+      showErrorSnack(context, error);
     });
   }
 
@@ -80,7 +80,10 @@ class _UserFormState extends State<UserForm> {
             width: 250,
             child: Column(
               children: [
-                Text("Title"), //TODO make it better later
+                Text(
+                  "Title",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
                 InputField(hint: "Username", controller: usernameController),
                 InputField(hint: "Email", controller: emailController),
                 InputField(hint: "Avatar", controller: avatarController),

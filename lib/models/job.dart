@@ -38,7 +38,6 @@ class Job extends Item {
   }
 
   void addPart(Part part) {
-    //TODO - the class that calls this function, should make an API call to bind also
     this._children.add(part);
   }
 

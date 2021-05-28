@@ -13,12 +13,14 @@ class CustomDropdownButton extends StatefulWidget {
   final String hint;
   final List<String> values;
   final bool showClearButton;
+  final String selected;
   CustomDropdownButton({
     @required this.defaultValue,
     this.onChange,
     @required this.values,
     this.hint,
     this.showClearButton,
+    this.selected,
   });
 
   @override
@@ -40,9 +42,14 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
     if (widget.onChange != null) widget.onChange(value);
   }
 
+  String getSelectedValue() {
+    if (widget.selected != null) return widget.selected;
+    return (_innerValue == null || _innerValue == "") ? widget.defaultValue : _innerValue;
+  }
+
   Widget build(BuildContext context) {
     return DropdownSearch<String>(
-      selectedItem: (_innerValue == null || _innerValue == "") ? widget.defaultValue : _innerValue,
+      selectedItem: getSelectedValue(),
       onChanged: innerChange,
       searchBoxStyle: TextStyle(backgroundColor: Colors.white),
       dropdownSearchDecoration: InputDecoration(
