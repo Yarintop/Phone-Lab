@@ -46,8 +46,6 @@ public class AsyncOperationHandler {
     @Transactional
     @JmsListener(destination = "opInbox") // receive messages from MOM
     public void handleJson (String json) {
-        //TODO
-        // Implement real project specific operations that really require async
         try {
             System.err.println("waiting 3s to handle: " + json);
 //            Thread.sleep(3L * 1000);

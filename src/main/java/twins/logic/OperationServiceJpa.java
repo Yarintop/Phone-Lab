@@ -157,7 +157,7 @@ public class OperationServiceJpa implements OperationsService {
                 rv = itemDao.countByNameIgnoreCaseAndActiveTrue(itemBoundary.getName());
                 break;
 
-            case "addSpareParts": //TODO - DELETE?
+            case "addSpareParts":
                 int amount = (int) itemAttrs.getOrDefault("amount", 0);
                 int amountToAdd = (int) operationAttrs.getOrDefault("amountToAdd", 1);
                 itemAttrs.put("amount", amount + amountToAdd);
@@ -165,7 +165,7 @@ public class OperationServiceJpa implements OperationsService {
                 rv = itemBoundary;
                 break;
 
-            case "bindPartsToJob": // TODO - SHOULD MAKE IT MARKED AS USED AS WELL
+            case "bindPartsToJob":
                 Map<String, String> child = (Map<String, String>) operationAttrs.get("childItem");
                 ItemIdBoundary childId = new ItemIdBoundary(child.getOrDefault("space", ""), child.getOrDefault("id", ""));
                 itemsService.bindChild(userSpace, userEmail, itemSpace, itemId, childId);

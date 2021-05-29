@@ -84,7 +84,7 @@ public class OperationConverter implements EntityConverter<OperationEntity, Oper
         boundary.setType(entity.getOperationType());
         boundary.setCreatedTimestamp(entity.getCreatedTimestamp());
 //      boundary.setInvokedBy(userConverter.toBoundary(entity.getInvokedBy()));
-        if (entity.getInvokedBy() != null) {  //TODO: add logic when item & user not present
+        if (entity.getInvokedBy() != null) {
             Optional<UserEntity> userEntity = userDao.findById(entity.getInvokedBy());
             if (userEntity.isPresent())
                 boundary.setInvokedBy(userConverter.toBoundary(userEntity.get()));
