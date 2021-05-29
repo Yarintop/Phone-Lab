@@ -9,6 +9,7 @@ import twins.logic.UpdatedItemsService;
 
 import java.util.List;
 
+@CrossOrigin //Because we don't value security, everyone is welcomed
 @RestController
 public class DigitalItemController {
     private UpdatedItemsService itemLogic;
@@ -67,12 +68,16 @@ public class DigitalItemController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+
     public DigitalItemBoundary[] getAllItems(
             // public DigitalItemBoundary[] getAllItems(
             @PathVariable("userSpace") String userSpace,
-            @PathVariable("userEmail") String userEmail) {
+            @PathVariable("userEmail") String userEmail,
+            @RequestParam(name="size", required=false, defaultValue="20") int size,
+            @RequestParam(name="page", required=false, defaultValue="0") int page,
+            @RequestParam(name="type", required=false, defaultValue="") String type) {
         List<DigitalItemBoundary> allItems =
-                this.itemLogic.getAllItems(userSpace, userEmail);
+                this.itemLogic.getAllItems(userSpace, userEmail, size, page, type);
 
         return allItems.toArray(new DigitalItemBoundary[0]);
     }
@@ -102,8 +107,10 @@ public class DigitalItemController {
             @PathVariable("userSpace") String userSpace,
             @PathVariable("userEmail") String userEmail,
             @PathVariable("itemSpace") String itemSpace,
-            @PathVariable("itemId") String itemId) {
-        List<DigitalItemBoundary> allChildren = this.itemLogic.getAllChildren(userSpace, userEmail, itemSpace, itemId);
+            @PathVariable("itemId") String itemId,
+            @RequestParam(name="size", required=false, defaultValue="20") int size,
+            @RequestParam(name="page", required=false, defaultValue="0") int page) {
+        List<DigitalItemBoundary> allChildren = this.itemLogic.getAllChildren(userSpace, userEmail, itemSpace, itemId, size, page);
         return allChildren.toArray(new DigitalItemBoundary[0]);
     }
 
@@ -116,9 +123,11 @@ public class DigitalItemController {
             @PathVariable("userSpace") String userSpace,
             @PathVariable("userEmail") String userEmail,
             @PathVariable("itemSpace") String itemSpace,
-            @PathVariable("itemId") String itemId) {
+            @PathVariable("itemId") String itemId,
+            @RequestParam(name="size", required=false, defaultValue="20") int size,
+            @RequestParam(name="page", required=false, defaultValue="0") int page) {
         List<DigitalItemBoundary> allItems =
-                this.itemLogic.getParents(userSpace, userEmail, itemSpace, itemId);
+                this.itemLogic.getAllParents(userSpace, userEmail, itemSpace, itemId, size, page);
 
         return allItems.toArray(new DigitalItemBoundary[0]);
     }

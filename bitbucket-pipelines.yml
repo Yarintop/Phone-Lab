@@ -7,11 +7,15 @@
 
 image: maven:3.6.3-jdk-8
 
+
+
 pipelines:
   branches:
-    '{production, dev-sprint-4}':
+    '{production, dev-sprint-5}':
     - parallel:
       - step:
+          services:
+            - mongo
           name: Build and Test
           caches:
             - maven
@@ -26,3 +30,8 @@ pipelines:
             # Run a security scan for sensitive data.
             # See more security tools at https://bitbucket.org/product/features/pipelines/integrations?&category=security
             - pipe: atlassian/git-secrets-scan:0.4.3
+            
+definitions: 
+  services: 
+    mongo: 
+      image: mongo

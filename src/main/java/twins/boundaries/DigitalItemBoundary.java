@@ -10,19 +10,14 @@ import java.util.Map;
 public class DigitalItemBoundary implements Boundary {
 
     private ItemIdBoundary itemId;
-
     private String type;
-
     private String name;
-
     private Boolean active;
-
     private Date createdTimestamp;
-
     private UserBoundary createdBy;
-//    private UserIdBoundary createdBy = new UserIdBoundary(); // This line might change
+    // private UserIdBoundary createdBy = new UserIdBoundary(); // This line might change
 
-    //    private Map<String, Object> location = new HashMap<>();
+    // private Map<String, Object> location = new HashMap<>();
     private LocationBoundary location;
 
     private Map<String, Object> itemAttributes;
@@ -52,8 +47,8 @@ public class DigitalItemBoundary implements Boundary {
     }
 
     @JsonProperty("createdBy")
-//    @JsonInclude(JsonInclude.Include.NON_NULL)
-//    @JsonIgnore
+    // @JsonInclude(JsonInclude.Include.NON_NULL)
+    // @JsonIgnore
     public void setCreatedBy(UserBoundary createdBy) {
         this.createdBy = createdBy;
     }
@@ -64,7 +59,7 @@ public class DigitalItemBoundary implements Boundary {
         HashMap<String, UserIdBoundary> temp = new HashMap<>();
         temp.put("userId", createdBy.getUserId());
         return temp;
-//        return createdBy == null ? null : createdBy.getUserId();
+        // return createdBy == null ? null : createdBy.getUserId();
     }
 
 
@@ -96,7 +91,7 @@ public class DigitalItemBoundary implements Boundary {
         this.name = name;
     }
 
-    public Boolean getActive() {
+    public Boolean isActive() {
         return active;
     }
 

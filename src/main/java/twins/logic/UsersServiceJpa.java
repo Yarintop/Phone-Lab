@@ -1,11 +1,14 @@
 package twins.logic;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import twins.boundaries.UserBoundary;
 import twins.converters.UserConverter;
 import twins.dao.UserDao;
+import twins.data.ErrorType;
 import twins.data.UserEntity;
 import twins.data.UserRole;
 import twins.exceptions.BadRequestException;
@@ -20,7 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
-public class UsersServiceJpa implements UsersService {
+public class UsersServiceJpa implements UsersService, UserUtilsService {
 
     private UserConverter converter;
     private UserDao usersDao; // Users data
@@ -61,7 +64,8 @@ public class UsersServiceJpa implements UsersService {
 
         // If it doesn't changing it to 'Player' by default
         catch (IllegalArgumentException e) {
-            user.setRole("PLAYER");
+            throw new BadRequestException("Invalid role type! (" + user.getRole() + ")");
+        //    user.setRole("PLAYER");
         }
 
         if (user.getAvatar() == null || user.getAvatar().isEmpty()) {
@@ -76,8 +80,8 @@ public class UsersServiceJpa implements UsersService {
         UserEntity userEntity = this.converter.toEntity(user);
 
         // Generating key
-//        String key = userEntity.getSpace() + "&" + userEntity.getEmail();
-        String key = userEntity.getUserId();
+        // String key = userEntity.getSpace() + "&" + userEntity.getEmail();
+        String key = userEntity.getId();
 
 
         if (!this.usersDao.findById(key).isPresent()) // Making sure the user is a new user in the system
@@ -113,9 +117,13 @@ public class UsersServiceJpa implements UsersService {
         }
 
 
-        if (updateEntity.getRole() != null)
-            user.setRole(updateEntity.getRole());
-
+        if (updateEntity.getRole() != null) {
+            try {
+                user.setRole(updateEntity.getRole());
+            } catch (IllegalArgumentException e) {
+                throw new BadRequestException("Invalid role type! (" + updateEntity.getRole() + ")");
+            }
+        }
 
         if (updateEntity.getUsername() != null)
             user.setUsername(updateEntity.getUsername());
@@ -127,17 +135,34 @@ public class UsersServiceJpa implements UsersService {
 
     @Override
     @Transactional(readOnly = true)
+    @Deprecated
     public List<UserBoundary> getAllUsers(String adminSpace, String adminEmail) throws RuntimeException {
 
         // If the user is not an admin
         if (findUser(adminSpace, adminEmail).getRole() != UserRole.ADMIN)
-            throw (new NoPermissionException("User doesn't have permissions"));
+            throw (new NoPermissionException("User doesn't have the required permissions"));
 
         Iterable<UserEntity> allEntities = this.usersDao
                 .findAll();
 
         return StreamSupport
                 .stream(allEntities.spliterator(), false) // get stream from iterable
+                .map(this.converter::toBoundary)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserBoundary> getAllUsers(String adminSpace, String adminEmail, int size, int page) throws RuntimeException {
+
+        // If the user is not an admin
+        if (findUser(adminSpace, adminEmail).getRole() != UserRole.ADMIN)
+            throw (new NoPermissionException("User doesn't have the required permissions"));
+
+        return this.usersDao
+                .findAll(PageRequest.of(page, size, Sort.Direction.ASC, "email"))
+                .getContent()
+                .stream()
                 .map(this.converter::toBoundary)
                 .collect(Collectors.toList());
     }
@@ -151,7 +176,7 @@ public class UsersServiceJpa implements UsersService {
 
         // If the user is not an admin
         if (adminUser.getRole() != UserRole.ADMIN)
-            throw (new NoPermissionException("User doesn't have permissions"));
+            throw (new NoPermissionException("User doesn't have the required permissions"));
 
         // Deleting all the users from the users table
         this.usersDao.deleteAll();
@@ -171,5 +196,15 @@ public class UsersServiceJpa implements UsersService {
         // Return found user's entity
         return optionalUser.get();
 
+    }
+
+    @Override
+    public ErrorType checkRoleUser(String space, String email, UserRole role) {
+        Optional<UserEntity> optionalUser = this.usersDao.findById(email + "&" + space);
+        if (!optionalUser.isPresent())
+            return ErrorType.USER_DOES_NOT_EXIST;
+        if (optionalUser.get().getRole() != role)
+            return ErrorType.BAD_USER_ROLE;
+        return ErrorType.GOOD;
     }
 }

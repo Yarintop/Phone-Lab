@@ -1,14 +1,18 @@
 package twins.data;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
+
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@javax.persistence.Entity
-@Table(name = "USERS")
+//@javax.persistence.Entity
+//@Document
+//@Table(name = "USERS")
+@Document(collection="Users")
 public class UserEntity implements Entity {
 
-    @Id
-    private String userId;
+    private String id;
     private String email;
     private UserRole role;
     private String username;
@@ -20,16 +24,17 @@ public class UserEntity implements Entity {
         return email;
     }
 
-    public String getUserId() {
-        return userId;
+    @Id
+    public String getId() {
+        return id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setId(String userId) {
+        this.id = userId;
     }
 
     public void setUserId(String email, String space) {
-        this.userId = email + "&" + space;
+        this.id = email + "&" + space;
     }
 
 

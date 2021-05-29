@@ -1,27 +1,50 @@
 package twins.data;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@javax.persistence.Entity
-@Table(name = "ITEMS")
+//@javax.persistence.Entity
+//@Table(name = "ITEMS")
+@Document(collection="Items")
 public class ItemEntity implements Entity {
-    private String itemId = ""; // This line might change
+    private String id = ""; // This line might change
     private String type = "no type";
     private String name = "no name yet";
     private boolean active = false;
     private Date createdTimestamp = new Date();
-    //    private UserIdBoundary createdBy = new UserIdBoundary(); // This line might change
-    private UserEntity createdBy;
-    private String location = "{}";
+    private String createdBy;
+    private double longitude;
+    private double latitude;
     private String itemAttributes = "{}";
-
+    @DBRef(lazy = true)
     private Set<ItemEntity> children;
-
+    @DBRef(lazy = true)
     private Set<ItemEntity> parents;
+    //  private UserIdBoundary createdBy = new UserIdBoundary(); // This line might change
+    //  private UserEntity createdBy;
 
+    
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
 
     public ItemEntity() {
         super();
@@ -30,12 +53,12 @@ public class ItemEntity implements Entity {
     }
 
     @Id
-    public String getItemId() {
-        return itemId;
+    public String getId() {
+        return id;
     }
 
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
+    public void setId(String itemId) {
+        this.id = itemId;
     }
 
     public String getType() {
@@ -72,22 +95,13 @@ public class ItemEntity implements Entity {
         this.createdTimestamp = createdTimestamp;
     }
 
-    @ManyToOne
-    public UserEntity getCreatedBy() {
+    @Lob
+    public String getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(UserEntity createdBy) {
+    public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
-    }
-
-    @Lob
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     @Lob
@@ -99,7 +113,7 @@ public class ItemEntity implements Entity {
         this.itemAttributes = itemAttributes;
     }
 
-    @ManyToMany()
+//    @ManyToMany(fetch=FetchType.LAZY)
     public Set<ItemEntity> getChildren() {
         return children;
     }
@@ -108,12 +122,12 @@ public class ItemEntity implements Entity {
         this.children = children;
     }
 
-    @ManyToMany(mappedBy = "children")
-    public Set<ItemEntity> getParents() {
+//    @ManyToMany(mappedBy="children", fetch=FetchType.LAZY)
+    public Set<ItemEntity> getAllParents() {
         return parents;
     }
 
-    public void setParents(Set<ItemEntity> parents) {
+    public void setAllParents(Set<ItemEntity> parents) {
         this.parents = parents;
     }
 
@@ -129,5 +143,17 @@ public class ItemEntity implements Entity {
             ie.addChild(this, false);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ItemEntity that = (ItemEntity) o;
+        return active == that.active && Double.compare(that.longitude, longitude) == 0 && Double.compare(that.latitude, latitude) == 0 && Objects.equals(id, that.id) && Objects.equals(type, that.type) && Objects.equals(name, that.name) && Objects.equals(createdTimestamp, that.createdTimestamp) && Objects.equals(createdBy, that.createdBy) && Objects.equals(itemAttributes, that.itemAttributes) && Objects.equals(children, that.children) && Objects.equals(parents, that.parents);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type, name, active, createdTimestamp, createdBy, longitude, latitude, itemAttributes, children, parents);
+    }
 }
 

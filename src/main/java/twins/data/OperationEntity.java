@@ -1,32 +1,39 @@
 package twins.data;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
+
 import javax.persistence.*;
 import java.util.Date;
 
-@javax.persistence.Entity
-@Table(name = "OPERATIONS")
+//@javax.persistence.Entity
+//@Document
+//@Table(name = "OPERATIONS")
+@Document(collection="Operations")
+
 public class OperationEntity implements Entity {
-    private String operationId = "";
+    private String id = "";
     private String operationType = "undefined";
-    private ItemEntity item;
+    // private ItemEntity item;
+    private String item;
     private Date createdTimestamp = new Date();
-    private UserEntity invokedBy;
+    // private UserEntity invokedBy;
+    private String invokedBy;
     private String operationAttributes;
 
-    public OperationEntity() {
-    }
+    public OperationEntity() { }
 
     @Id
-    public String getOperationId() {
-        return operationId;
+    public String getId() {
+        return id;
     }
 
-    public void setOperationId(String operationId) {
-        this.operationId = operationId;
+    public void setId(String operationId) {
+        this.id = operationId;
     }
 
     public void setOperationId(String id, String spaceId) {
-        this.operationId = id + "&" + spaceId;
+        this.id = id + "&" + spaceId;
     }
 
     public String getOperationType() {
@@ -37,12 +44,12 @@ public class OperationEntity implements Entity {
         this.operationType = operationType;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    public ItemEntity getItem() {
+    @Lob
+    public String getItem() {
         return item;
     }
 
-    public void setItem(ItemEntity item) {
+    public void setItem(String item) {
         this.item = item;
     }
 
@@ -55,12 +62,12 @@ public class OperationEntity implements Entity {
         this.createdTimestamp = createdTimestamp;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    public UserEntity getInvokedBy() {
+    @Lob
+    public String getInvokedBy() {
         return invokedBy;
     }
 
-    public void setInvokedBy(UserEntity invokedBy) {
+    public void setInvokedBy(String invokedBy) {
         this.invokedBy = invokedBy;
     }
 
