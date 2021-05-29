@@ -227,7 +227,7 @@ class MainModel extends ChangeNotifier {
             u.space == user["userId"]["space"];
       }, orElse: () => User());
       if (savedUser.email == "")
-        print("SIZE: ${_users.length} FUCK");
+        print("SIZE: ${_users.length}");
       else {
         user["role"] = savedUser.role;
         user["username"] = savedUser.name;
@@ -245,7 +245,7 @@ class MainModel extends ChangeNotifier {
               i.space == item["itemId"]["space"],
           orElse: () => Item());
       if (savedItem.id == "")
-        print("SIZE: ${_items.length} FUCK");
+        print("SIZE: ${_items.length}");
       else {
         item["type"] = savedItem.type;
         item["name"] = savedItem.name;

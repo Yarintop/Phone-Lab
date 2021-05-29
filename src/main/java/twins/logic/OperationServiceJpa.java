@@ -195,7 +195,6 @@ public class OperationServiceJpa implements OperationsService {
             //     itemDao.deleteById(arg0);
             //     break;
             
-            // THE DIMA HAS SPOKEN
             // case "deleteSpecificUser":
             //     break;
 
