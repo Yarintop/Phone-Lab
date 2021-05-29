@@ -20,4 +20,4 @@
 !test_tool/*/android/
 !test_tool/*/android/**
 !test_tool/*/.metadata
-
+!docker-compose.yml
