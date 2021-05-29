@@ -1,6 +1,7 @@
 package twins.logic;
 
 import twins.boundaries.OperationBoundary;
+import twins.data.ItemEntity;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface OperationsService {
     public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail, int size, int page);
 
     public void deleteAllOperations(String adminSpace, String adminEmail);
+
+    public void sendSMSNotification(ItemEntity Job) throws InterruptedException;
 }
