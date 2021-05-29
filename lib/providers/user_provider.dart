@@ -9,7 +9,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class UserProvider extends ChangeNotifier {
-  final baseUrl = "http://${env["HOST"]}:${env["PORT"]}/$BASE_API";
+  final baseUrl = "$BASE_API";
+  // final baseUrl = "http://${env["HOST"]}:${env["PORT"]}/$BASE_API";
 
   bool addingUser; // Flag to handle async adding user
   User _loggedInUser; // Loggedin user, if not logged in, it would be null
