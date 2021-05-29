@@ -1,10 +1,10 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:myapp/constants/operation_specific.dart';
 import 'package:myapp/constants/project_specific.dart';
-import 'package:myapp/models/error.dart';
 import 'package:myapp/models/item.dart';
 import 'package:myapp/models/job.dart';
 import 'package:myapp/models/operation.dart';
@@ -25,8 +25,9 @@ class OperationProvider extends ChangeNotifier {
     operationToInvoke.type = type;
     operationToInvoke.invokedBy = user;
     operationToInvoke.item = item;
-    operationToInvoke.operationAttributes = {};
+    operationToInvoke.operationAttributes = HashMap();
     operationToInvoke.createdTimestamp = DateTime.now();
+
     return operationToInvoke;
   }
 

@@ -67,12 +67,9 @@ class ItemProvider extends ChangeNotifier {
 
   Future<bool> loadAllJobs(UserProvider provider, {JobFilter filter = JobFilter.ALL}) async {
     Iterable rawJobs = await loadAllItems(provider, REPAIR_JOB_TYPE).onError((error, stackTrace) {
-      print("Test");
-      print(error);
       return Future.error(error);
     });
     // if (rawJobs == null || rawJobs.length == 0) return false;
-    print("pepe");
     List<Job> resJobs = rawJobs.map<Job>((j) => Job.fromJSON(j)).toList();
     resJobs = resJobs.where((j) => matchJobToFilter(j, provider.loggedInUser, filter)).toList();
     jobs.clear();
