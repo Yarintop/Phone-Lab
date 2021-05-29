@@ -100,13 +100,11 @@ public class OperationsServiceMockup implements OperationsService {
 
     @Override
     public List<OperationBoundary> getAllOperations(String adminSpace, String adminEmail) {
-        //TODO: Do something with adminSpace and adminEmail here
         return operations.values().stream().map(converter::toBoundary).collect(Collectors.toList());
     }
 
     @Override
     public void deleteAllOperations(String adminSpace, String adminEmail) {
-        //TODO: remove only operations from adminSpace and adminEmail (?)
         operations.clear();
     }
 }

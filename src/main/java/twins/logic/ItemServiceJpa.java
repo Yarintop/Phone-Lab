@@ -169,7 +169,6 @@ public class ItemServiceJpa implements UpdatedItemsService {
             ItemEntity entity = optionalItem.get();
             return entityConverter.toBoundary(entity);
         } else {
-            // TODO have server return status 404 here
             throw new NotFoundException("could not find message by id: " + itemKey);// NullPointerException
         }
     }

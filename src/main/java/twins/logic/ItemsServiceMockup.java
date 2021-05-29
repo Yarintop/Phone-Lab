@@ -119,7 +119,6 @@ public class ItemsServiceMockup implements ItemsService {
             return existing;
 
         } else {
-            // TODO have server return status 404 here
             throw new NotFoundException("could not find message by id: " + itemKey);// NullPointerException
         }
     }
@@ -145,7 +144,6 @@ public class ItemsServiceMockup implements ItemsService {
             DigitalItemBoundary boundary = entityConverter.toBoundary(entity);
             return boundary;
         } else {
-            // TODO have server return status 404 here
             throw new RuntimeException("could not find message by id: " + "primaryId" + "&" + "secondaryId");// NullPointerException
         }
     }
