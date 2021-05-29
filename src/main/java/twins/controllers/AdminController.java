@@ -2,16 +2,14 @@ package twins.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import twins.boundaries.OperationBoundary;
 import twins.boundaries.UserBoundary;
 import twins.logic.ItemsService;
 import twins.logic.OperationsService;
 import twins.logic.UsersService;
 
+@CrossOrigin //Because we don't value security, everyone is welcomed
 @RestController
 public class AdminController {
 
@@ -45,8 +43,14 @@ public class AdminController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public UserBoundary[] exportAllUsers(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail) {
-        return usersService.getAllUsers(id, userEmail).toArray(new UserBoundary[0]);
+    public UserBoundary[] exportAllUsers(
+            @PathVariable("userSpace") String id,
+            @PathVariable("userEmail") String userEmail,
+            @RequestParam(name="size", required=false, defaultValue="20") int size,
+            @RequestParam(name="page", required=false, defaultValue="0") int page) {
+        return usersService
+                .getAllUsers(id, userEmail, size, page)
+                .toArray(new UserBoundary[0]);
     }
 
     /**
@@ -61,8 +65,14 @@ public class AdminController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public OperationBoundary[] exportAllOperations(@PathVariable("userSpace") String id, @PathVariable("userEmail") String userEmail) {
-        return operationsService.getAllOperations(id, userEmail).toArray(new OperationBoundary[0]);
+    public OperationBoundary[] exportAllOperations(
+            @PathVariable("userSpace") String id,
+            @PathVariable("userEmail") String userEmail,
+            @RequestParam(name="size", required=false, defaultValue="20") int size,
+            @RequestParam(name="page", required=false, defaultValue="0") int page) {
+        return operationsService
+                .getAllOperations(id, userEmail, size, page)
+                .toArray(new OperationBoundary[0]);
     }
 
     /**

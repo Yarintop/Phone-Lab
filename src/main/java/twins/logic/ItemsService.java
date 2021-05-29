@@ -9,6 +9,7 @@ public interface ItemsService {
 
     public DigitalItemBoundary updateItem(String userSpace, String userEmail, String itemSpace, String itemId, DigitalItemBoundary update);
 
+    @Deprecated
     public List<DigitalItemBoundary> getAllItems(String userSpace, String userEmail);
 
     public DigitalItemBoundary getSpecificItem(String userSpace, String userEmail, String itemSpace, String itemId);

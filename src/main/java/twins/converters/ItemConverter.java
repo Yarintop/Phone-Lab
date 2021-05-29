@@ -5,20 +5,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import twins.boundaries.DigitalItemBoundary;
 import twins.boundaries.ItemIdBoundary;
-import twins.boundaries.LocationBoundary;
+import twins.dao.UserDao;
 import twins.data.ItemEntity;
+import twins.data.UserEntity;
+import twins.exceptions.NotFoundException;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBoundary> {
     private final ObjectMapper jackson;
 
     private UserConverter userConverter;
+    private UserDao userDao;
 
     @Autowired
     public void setConverters(UserConverter userConverter) {
         this.userConverter = userConverter;
+    }
+
+    @Autowired
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
     }
 
     public ItemConverter() {
@@ -30,14 +39,16 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
     public ItemEntity toEntity(DigitalItemBoundary boundaryObject) {
         ItemEntity rv = new ItemEntity();
 
-        rv.setItemId(this.convertMapKey(boundaryObject.getItemId()));
+        rv.setId(this.convertMapKey(boundaryObject.getItemId()));
         rv.setType(boundaryObject.getType());
         rv.setName(boundaryObject.getName());
-        if (boundaryObject.getActive() != null)
-            rv.setActive(boundaryObject.getActive());
+        if (boundaryObject.isActive() != null)
+            rv.setActive(boundaryObject.isActive());
         rv.setCreatedTimestamp(boundaryObject.getCreatedTimestamp());
-        rv.setCreatedBy(userConverter.toEntity(boundaryObject.getCreatedBy()));
-        rv.setLocation(this.fromMapToJson(boundaryObject.getLocation()));
+        // rv.setCreatedBy(userConverter.toEntity(boundaryObject.getCreatedBy()));
+        rv.setCreatedBy(boundaryObject.getCreatedBy().getUserId().toString());
+        rv.setLongitude(boundaryObject.getLocation().getLng());
+        rv.setLatitude(boundaryObject.getLocation().getLat());
         rv.setItemAttributes(this.fromMapToJson(boundaryObject.getItemAttributes()));
 
         return rv;
@@ -46,14 +57,21 @@ public class ItemConverter implements EntityConverter<ItemEntity, DigitalItemBou
     @Override
     public DigitalItemBoundary toBoundary(ItemEntity entityObject) {
         DigitalItemBoundary rv = new DigitalItemBoundary();
-
-        rv.setItemId(this.convertStringKey(entityObject.getItemId()));
+        System.err.println(entityObject);
+        rv.setItemId(this.convertStringKey(entityObject.getId()));
         rv.setType(entityObject.getType());
         rv.setName(entityObject.getName());
         rv.setActive(entityObject.isActive());
         rv.setCreatedTimestamp(entityObject.getCreatedTimestamp());
-        rv.setCreatedBy(userConverter.toBoundary(entityObject.getCreatedBy())); // This line might change
-        rv.setLocation((LocationBoundary) this.fromJsonToMap(entityObject.getLocation(), LocationBoundary.class));
+        // rv.setCreatedBy(userConverter.toBoundary(entityObject.getCreatedBy())); // This line might change
+
+        Optional<UserEntity> userEntity = userDao.findById(entityObject.getCreatedBy());
+        // This line might change
+        if (userEntity.isPresent())
+            rv.setCreatedBy(userConverter.toBoundary(userEntity.get()));
+        else
+            throw new NotFoundException("Related user not found (" + entityObject.getCreatedBy() + ") in the given item");
+        rv.setLocation(entityObject.getLatitude(), entityObject.getLongitude());
         rv.setItemAttributes((Map<String, Object>) this.fromJsonToMap(entityObject.getItemAttributes(), Map.class));
 
         return rv;
