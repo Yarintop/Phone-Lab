@@ -4,6 +4,11 @@ services:
     build: client-side
     ports:
       - "8080:8080"
+
+  test_tool:
+    build: ./server-side/test_tool/test_tool
+    ports:
+      - "1234:8080"
   mongo:
     image: mongo
 
