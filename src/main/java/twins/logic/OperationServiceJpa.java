@@ -15,10 +15,7 @@ import twins.converters.OperationConverter;
 import twins.dao.ItemDao;
 import twins.dao.OperationDao;
 import twins.dao.UserDao;
-import twins.data.ErrorType;
-import twins.data.OperationEntity;
-import twins.data.UserEntity;
-import twins.data.UserRole;
+import twins.data.*;
 import twins.exceptions.BadRequestException;
 import twins.exceptions.NoPermissionException;
 import twins.exceptions.NotFoundException;
@@ -110,6 +107,8 @@ public class OperationServiceJpa implements OperationsService {
         OperationEntity entity = operationConverter.toEntity(operation);
         if (checkItemMissing(entity))
             throw new NotFoundException("The item inside the operation was not found!");
+        if (!checkItemActive(entity))
+            throw new NotFoundException("The item inside the operation is not active!");
 
         entity.setOperationId(UUID.randomUUID().toString(), spaceId);
         entity.setCreatedTimestamp(new Date());
@@ -296,6 +295,19 @@ public class OperationServiceJpa implements OperationsService {
         if (oe.getItem() == null) return true;
         String itemKey = oe.getItem();
         return !itemDao.findById(itemKey).isPresent();
+    }
+
+    @Transactional(readOnly = true)
+    public boolean checkItemActive(OperationEntity oe) {
+        String itemKey = oe.getItem();
+        Optional<ItemEntity> optionalItemEntity = itemDao.findById(itemKey);
+        if (optionalItemEntity.isPresent()) {
+            ItemEntity itemEntity = optionalItemEntity.get();
+            if (itemEntity.isActive()){
+                return true;
+            }
+        }
+        return false;
     }
 }
 
