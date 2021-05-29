@@ -122,6 +122,7 @@ public class AdminTest {
         // Save generated data to database
         UserBoundary invokedBy = operation.getInvokedBy();
         DigitalItemBoundary item = operation.getItem();
+        item.setActive(true);
         invokedBy.setRole("Player"); // Invoking user must be a player
         usersService.createUser(invokedBy);
         itemsService.createItem(invokedBy.getUserId().getSpace(), "manager@gmail.com", item);
@@ -210,6 +211,7 @@ public class AdminTest {
             UserBoundary invokedBy = operation.getInvokedBy();
             invokedBy.setRole("Player"); // Invoking user must be a player
             DigitalItemBoundary item = operation.getItem();
+            item.setActive(true);
             usersService.createUser(invokedBy);
             itemsService.createItem(invokedBy.getUserId().getSpace(), "manager@gmail.com", item);
 

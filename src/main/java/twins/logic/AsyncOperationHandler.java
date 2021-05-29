@@ -50,7 +50,7 @@ public class AsyncOperationHandler {
         // Implement real project specific operations that really require async
         try {
             System.err.println("waiting 3s to handle: " + json);
-            Thread.sleep(3L * 1000);
+//            Thread.sleep(3L * 1000);
             // NOTE: this stalls handling the rest of processing for 3 whole seconds - just for demo sake
             // As Eyal said we might not need async operations in our project
             // So first we
