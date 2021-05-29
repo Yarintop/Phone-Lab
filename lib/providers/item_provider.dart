@@ -15,7 +15,8 @@ import 'package:http/http.dart' as http;
 import 'package:myapp/routes/routes.dart';
 
 class ItemProvider extends ChangeNotifier {
-  final baseUrl = "http://${env["HOST"]}:${env["PORT"]}/$BASE_API";
+  // final baseUrl = "http://${env["HOST"]}:${env["PORT"]}/$BASE_API";
+  final baseUrl = "$BASE_API";
 
   final List<Job> jobs = [];
 

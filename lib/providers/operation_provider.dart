@@ -13,7 +13,8 @@ import 'package:myapp/models/user.dart';
 import 'package:http/http.dart' as http;
 
 class OperationProvider extends ChangeNotifier {
-  final baseUrl = "http://${env["HOST"]}:${env["PORT"]}/$BASE_API";
+  // final baseUrl = "http://${env["HOST"]}:${env["PORT"]}/$BASE_API";
+  final baseUrl = "$BASE_API";
   double _totalCost;
 
   double get totalCost => this._totalCost;

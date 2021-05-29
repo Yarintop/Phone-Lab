@@ -1,5 +1,5 @@
 # Install dependencies
-FROM debian:latest AS build-env
+FROM nginx:latest AS build-env
 RUN apt-get update 
 RUN apt-get install -y curl git wget unzip libgconf-2-4 gdb libstdc++6 libglu1-mesa fonts-droid-fallback lib32stdc++6 python3 psmisc
 RUN apt-get clean
@@ -30,11 +30,13 @@ RUN flutter pub get
 # Build the app for the web
 RUN flutter build web
 
-# Document the exposed port
-EXPOSE 8080
+RUN cp -r ./build/web/* /usr/share/nginx/html
 
-# Set the server startup script as executable
-RUN ["chmod", "+x", "/usr/local/bin/app/webserver/server.sh"]
+## This part is from nginx image from github
+ENTRYPOINT ["/docker-entrypoint.sh"]
 
-# Start the web server
-ENTRYPOINT [ "/usr/local/bin/app/webserver/server.sh" ]
+EXPOSE 80
+
+STOPSIGNAL SIGQUIT
+
+CMD ["nginx", "-g", "daemon off;"]
