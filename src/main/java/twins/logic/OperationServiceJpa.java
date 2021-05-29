@@ -299,7 +299,7 @@ public class OperationServiceJpa implements OperationsService {
 
     @Override
     public void sendSMSNotification(ItemEntity Job) throws InterruptedException {
-        System.out.println("Sending an SMS message through a *REAL* API (EYAL KATZ IS KING)"); // Instead of thread sleep we would send a request to an external SMS API.
+        System.out.println("Sending an SMS message through an external API"); // Instead of thread sleep we would send a request to an external SMS API.
     }
 
     @Transactional(readOnly = true)
