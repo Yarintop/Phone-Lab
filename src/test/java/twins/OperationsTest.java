@@ -127,6 +127,7 @@ public class OperationsTest {
         UserBoundary user = operation.getInvokedBy();
         user.setRole("Player");
         DigitalItemBoundary item = operation.getItem();
+        item.setActive(true);
         usersService.createUser(user);
         itemsService.createItem(user.getUserId().getSpace(), "manager@gmail.com", item);
 

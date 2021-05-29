@@ -137,9 +137,16 @@ public class OperationServiceJpa implements OperationsService {
                 itemsService.updateItem(userSpace, userEmail, itemSpace, itemId, itemBoundary);
                 rv = itemBoundary;
                 break;
-
-            case "useSparePart":
             case "markAsDone":
+                Optional<ItemEntity> itemEntity = itemDao.findById(entity.getItem());
+                if (itemEntity.isPresent()) {
+                    try {
+                        this.sendSMSNotification(itemEntity.get());
+                    } catch (InterruptedException e) {
+                        System.err.println(e);
+                    }
+                }
+            case "useSparePart":
                 itemAttrs.put("Deactivation Date", new Date());
                 itemBoundary.setActive(false);
                 itemBoundary = itemsService.updateItem(userSpace, userEmail, itemSpace, itemId, itemBoundary);
@@ -288,6 +295,11 @@ public class OperationServiceJpa implements OperationsService {
             operationsDao.deleteAll();
         else
             throw new NoPermissionException("User: " + adminEmail + " is not permitted to delete operations");
+    }
+
+    @Override
+    public void sendSMSNotification(ItemEntity Job) throws InterruptedException {
+        System.out.println("Sending an SMS message through a *REAL* API (EYAL KATZ IS KING)"); // Instead of thread sleep we would send a request to an external SMS API.
     }
 
     @Transactional(readOnly = true)
