@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Miscellaneous
 *.class
 *.log
@@ -47,3 +48,28 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+=======
+*
+!src
+!src/**
+!.gitignore
+!*.xml
+!bitbucket-pipelines.yml
+!*.md
+!Dockerfile
+!mvn*
+!test_tool
+!test_tool/*/*.yaml
+!test_tool/*/test/
+!test_tool/*/test/**
+!test_tool/*/lib/
+!test_tool/*/lib/**
+!test_tool/*/web/
+!test_tool/*/web/**
+!test_tool/*/ios/
+!test_tool/*/ios/**
+!test_tool/*/android/
+!test_tool/*/android/**
+!test_tool/*/.metadata
+!docker-compose.yml
+>>>>>>> s/production
